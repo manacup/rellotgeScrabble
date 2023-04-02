@@ -16,7 +16,7 @@ const click = new Audio("audio/561660__mattruthsound.wav");
 const velocitat = 1000;
 var nomjugador1;
 var nomjugador2;
-var versio = document.getElementById("verdicc");
+var versio = document.querySelectorAll(".verdicc");
 
 // Add a leading zero to numbers less than 10.
 const padZero = (number) => {
@@ -607,7 +607,7 @@ document.getElementById('toggle').style.backgroundColor = "";
 }, false); */
 document.getElementById("resetBtn").addEventListener("click",()=>{document.getElementById("ajustaments").open = false})
 document.addEventListener("DOMContentLoaded", function () {
-    versio.textContent = disc.version
+    versio.forEach((d)=>{d.textContent = disc.version})
   var temps = localStorage.getItem("temps");
   var temps1 = JSON.parse(localStorage.getItem("tempsjug1"));
   var temps2 = JSON.parse(localStorage.getItem("tempsjug2"));
