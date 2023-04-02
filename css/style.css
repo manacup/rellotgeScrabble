@@ -519,11 +519,14 @@ details[open] summary {
   /* Internet Explorer 10+ */
   font-size: 0.8em;
 }
-small {
-  font-size: 0.8em;
+small{
+    font-size: 0.8em;
 }
 #input,
 input[type=text],
 input[type=number]{
     width: 100%;
+}
+#parametres input{
+    font-size: 1.2rem;
 }
