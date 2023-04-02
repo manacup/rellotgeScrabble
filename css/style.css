@@ -180,7 +180,7 @@ footer p {
         height: auto;
     }
     .player {
-        margin: 1em auto 10px auto;
+        margin: 0.5em auto 10px auto;
         max-width: 700px;
         -webkit-box-orient: horizontal;
         -webkit-box-direction: normal;
@@ -189,6 +189,7 @@ footer p {
                 -webkit-flex-flow: wrap row;
                 flex-flow: wrap row;
     }
+    
     .player__tile {
         height: 150px;
         width: 50%;
@@ -205,6 +206,10 @@ footer p {
     }
     .player__digits {
         font-size: 5.5rem;
+    }
+    .petit{
+        height: 10px;
+        font-size: 1.5rem;
     }
     .timer__buttons {
         display: -webkit-box;
@@ -383,3 +388,9 @@ summary{
     position: fixed;
     right: 4%;
   }
+#res{
+    position:fixed;
+    top: 10%;
+    height: 50%;
+    width: 90%;    
+}
