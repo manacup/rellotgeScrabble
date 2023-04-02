@@ -458,6 +458,7 @@ for (let i = 0; i < buttons.length; i++) {
       }
       document.getElementById("cont").style.display = "";
     } else if (buttons[i].textContent === "CONTINUA") {
+        
       playing = true;
       buttons[i].style.color = "#EEEEEE";
       buttons[i].style.backgroundColor = "#606060";
@@ -484,6 +485,12 @@ for (let i = 0; i < buttons.length; i++) {
     }
   });
 }
+/* else if (buttons[i].textContent === "Valida la jugada") {
+    window.scrollTo(0, 0);
+console.log("funicona")} */
+document.getElementById("buttons").addEventListener("click",()=>{
+    setTimeout(()=>{window.scrollTo(0, 1000)},300) ;
+console.log("funicona")})
 var fullScreen = document.getElementById("checkFullScreen");
 fullScreen.addEventListener("change", () => {
   fullScreen.checked ? openFullscreen() : closeFullscreen();
