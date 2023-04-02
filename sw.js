@@ -1,4 +1,4 @@
-const versio = "1.2.5"
+const versio = "1.2.6"
 self.addEventListener('install', (e) => {
     e.waitUntil(
       caches.open('rellotgeScrabble').then((cache) => cache.addAll([

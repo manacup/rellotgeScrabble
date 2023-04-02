@@ -660,3 +660,4 @@ if ("serviceWorker" in navigator) {
 window.onbeforeunload = function () {
   return "Si recarregues la pàgina el comptador començarà de nou!";
 };
+document.getElementById("copy").addEventListener("click",()=>{document.querySelectorAll(".petit").forEach((e)=>{e.classList.remove("petit")})})

@@ -420,7 +420,7 @@ p.util {
 details {
   /* position: fixed; */
   z-index: 100;
-  padding: 2%;
+  
 }
 summary {
   list-style: none; // Remove arrow
@@ -437,8 +437,8 @@ summary {
   width: 1em;
   height: 1em;
   position: fixed;
-  top: 2%;
-  right: 4%;
+  top: 10px;
+  right: 10px;
 }
 .full-screen:before,
 .full-screen:after {
@@ -530,3 +530,7 @@ input[type=number]{
 #parametres input{
     font-size: 1.2rem;
 }
+#copy{
+    flex: 1 1 auto;
+    bottom: 0;
+  }
