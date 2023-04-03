@@ -1,3 +1,4 @@
+const swver = "1.3.5"
 let playing = false;
 
 let currentPlayer = 1;
@@ -593,6 +594,8 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   document.getElementById("ajustaments").open = false;
 });
 document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("swver").textContent = "v:" + swver
+  
   versio.forEach((d) => {
     d.textContent = disc.version;
   });
