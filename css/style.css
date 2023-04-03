@@ -234,6 +234,7 @@ footer p {
     margin: 1em auto 0 auto;
     color: black;
   }
+
 }
 @media only screen and (orientation: portrait) and (min-width: 400px) {
   .player__tile {
@@ -292,6 +293,9 @@ footer p {
   }
   .penalty {
     left: 50%;
+  }
+  #ajustaments {
+   width: 500px;
   }
 }
 a {
@@ -468,7 +472,7 @@ footer a {
 }
 details[open] summary {
   position: fixed;
-  right: 4%;
+  right: 10px;
 }
 .petit {
   display: none;
