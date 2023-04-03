@@ -199,6 +199,7 @@ function tempsDescompte() {
           //playing = false;
         }
         p1time.seconds = p1secpenal;
+        p1time.penal = jug1;
         p1time.jugador = document.getElementById("nomjug1").value;
 
         localStorage.setItem("tempsjug1", JSON.stringify(p1time));
@@ -234,6 +235,7 @@ function tempsDescompte() {
           //playing = false;
         }
         p2time.seconds = p2secpenal;
+        p2time.penal = jug2;
         p2time.jugador = document.getElementById("nomjug2").value;
 
         localStorage.setItem("tempsjug2", JSON.stringify(p2time));
