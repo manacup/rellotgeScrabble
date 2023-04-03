@@ -105,11 +105,11 @@ const startTimer = () => {
             window.navigator.vibrate([300]);
           }
         }
+        p1time.seconds = p1sec;
+        p1time.penal = jug1;
+        p1time.jugador = document.getElementById("nomjug1").value;
+        localStorage.setItem("tempsjug1", JSON.stringify(p1time));
       }
-      p1time.seconds = p1sec;
-      p1time.penal = jug1;
-      p1time.jugador = document.getElementById("nomjug1").value;
-      localStorage.setItem("tempsjug1", JSON.stringify(p1time));
     } else {
       // Player 2.
 
@@ -150,12 +150,12 @@ const startTimer = () => {
             window.navigator.vibrate([300]);
           }
         }
-      }
-      p2time.seconds = p2sec;
-      p2time.penal = jug2;
-      p2time.jugador = document.getElementById("nomjug2").value;
+        p2time.seconds = p2sec;
+        p2time.penal = jug2;
+        p2time.jugador = document.getElementById("nomjug2").value;
 
-      localStorage.setItem("tempsjug2", JSON.stringify(p2time));
+        localStorage.setItem("tempsjug2", JSON.stringify(p2time));
+      }
     }
   }, velocitat);
 };
@@ -257,9 +257,9 @@ function colors1() {
       .classList.add("penalty_inactiu");
   }
 }
-  
+
 function colors2() {
-jugador2.classList.add("actiu");
+  jugador2.classList.add("actiu");
   if (!jug2) {
     document
       .querySelectorAll(".player__digits")[1]
@@ -426,13 +426,11 @@ for (let i = 0; i < buttons.length; i++) {
 
       if (descompte && !jug1) {
         tempsDescompte();
-        colors1()
-        
+        colors1();
       }
 
       if (descompte && !jug2) {
         tempsDescompte();
-        
       }
     } else if (buttons[i].textContent === "PAUSA / VALIDA") {
       playing = false;
