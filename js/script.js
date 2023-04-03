@@ -325,7 +325,9 @@ function canvitorn(jug) {
   } else if (!playing && botoStart.textContent === "COMENÇA") {
     currentPlayer = jug;
     startTimer();
-    !jug1 || !jug2 ? tempsDescompte() : (botoStart.style.color = "#EEEEEE");
+    /* !jug1 || !jug2 ? tempsDescompte() : console.log("sensepenalitzacions"); */
+    botoStart.style.color = "#EEEEEE";
+
     botoStart.style.backgroundColor = "#606060";
     botoStart.textContent = "PAUSA / VALIDA";
     if (so) {
@@ -515,9 +517,9 @@ for (let i = 0; i < buttons.length; i++) {
       buttons[i].textContent = "PAUSA / VALIDA";
       document.querySelector(".player-" + currentPlayer).classList.add("actiu");
       startTimer();
-      !jug1 || !jug2
-        ? tempsDescompte()
-        : (buttons[i + 1].style.display = "none");
+
+      /* !jug1 || !jug2 ? tempsDescompte() : console.log("sense penalitzacions"); */
+      buttons[i + 1].style.display = "none";
     } else if (buttons[i].textContent === "PAUSA / VALIDA") {
       playing = false;
       buttons[i].style.color = "#FFFFFF";
@@ -710,7 +712,7 @@ document.addEventListener("DOMContentLoaded", function () {
   localStorage.getItem("botoVibr") === "false"
     ? (botoVibr.checked = false)
     : (botoVibr.checked = true);
-  localStorage.getItem("botoSo") === "false" ? (so = v) : (so = true);
+  localStorage.getItem("botoSo") === "false" ? (so = false) : (so = true);
   localStorage.getItem("botoVibr") === "false"
     ? (vibracio = false)
     : (vibracio = true);
@@ -735,11 +737,14 @@ document.addEventListener("DOMContentLoaded", function () {
   jug1 = temps1.penal;
   jug1
     ? console.log(true)
-    : document
-        .querySelectorAll(".player__digits")[0]
-        .classList.add("penalty_inactiu");
+    : activapenal1() 
+    function activapenal1(){
+        document
+          .querySelectorAll(".player__digits")[0]
+          .classList.add("penalty_inactiu");
         document.getElementById("penal1").textContent =
-            "Penalització: -" + (temps1.minutes + 1) * 10 + " punts";
+          "Penalització: -" + (temps1.minutes + 1) * 10 + " punts";
+      };
 
   temps2 === null
     ? (document.getElementById("min2").textContent = temps)
@@ -754,11 +759,14 @@ document.addEventListener("DOMContentLoaded", function () {
   jug2 = temps2.penal;
   jug2
     ? console.log(true)
-    : document
-        .querySelectorAll(".player__digits")[1]
-        .classList.add("penalty_inactiu");
+    : activapenal2()
+    function activapenal2() {
+        document
+          .querySelectorAll(".player__digits")[1]
+          .classList.add("penalty_inactiu");
         document.getElementById("penal2").textContent =
-            "Penalització: -" + (temps2.minutes + 1) * 10 + " punts";
+          "Penalització: -" + (temps2.minutes + 1) * 10 + " punts";
+      };
 });
 
 if ("serviceWorker" in navigator) {
