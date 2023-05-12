@@ -528,7 +528,8 @@ small{
 }
 #input,
 input[type=text],
-input[type=number]{
+input[type=number]
+input[type=search]{
     width: 100%;
 }
 #parametres input{
