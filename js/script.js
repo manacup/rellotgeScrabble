@@ -436,6 +436,7 @@ for (let i = 0; i < buttons.length; i++) {
         tempsDescompte();
       }
     } else if (buttons[i].textContent === "PAUSA / VALIDA") {
+      console.log("pausa")
       playing = false;
       buttons[i].style.color = "#FFFFFF";
       buttons[i].style.backgroundColor = "#0071D5";
@@ -457,6 +458,7 @@ for (let i = 0; i < buttons.length; i++) {
       }
       document.getElementById("cont").style.display = "";
     } else if (buttons[i].textContent === "CONTINUA") {
+      console.log("continua")
       playing = true;
       document.querySelectorAll(".petit").forEach((e) => {
         e.classList.remove("petit");
@@ -497,7 +499,7 @@ document.getElementById("input").addEventListener("click", () => {
       e.classList.add("petit");
     });
   }, 00);
-  console.log("funicona");
+  console.log("funciona");
 });
 var fullScreen = document.getElementById("checkFullScreen");
 fullScreen.addEventListener("change", () => {
@@ -561,6 +563,7 @@ function toggleFullscreen() {
 }
 
 function openFullscreen() {
+  console.log("fullscreen on")
   if (elem.requestFullscreen) {
     elem.requestFullscreen({ navigationUI: "hide" });
   } else if (elem.webkitRequestFullscreen) {
@@ -573,6 +576,7 @@ function openFullscreen() {
 }
 
 function closeFullscreen() {
+  console.log("fullscreen off")
   if (document.exitFullscreen) {
     document.exitFullscreen();
   } else if (document.webkitExitFullscreen) {
