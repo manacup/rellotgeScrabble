@@ -1,4 +1,4 @@
-const swversio = "1.3.7"
+const swversio = "1.3.8"
 self.addEventListener('install', (e) => {
     e.waitUntil(
       caches.open('rellotgeScrabble').then((cache) => cache.addAll([
