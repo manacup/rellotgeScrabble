@@ -680,3 +680,12 @@ document.getElementById("copy").addEventListener("click", () => {
     e.classList.remove("petit");
   });
 });
+
+function mantenirPantallaActiva() {
+    const audio = new Audio('audio/silenci.mp3'); // Pot ser un fitxer silenci
+    audio.play().catch(() => {
+        // Els navegadors solen permetre la reproducció de l'àudio per mantenir la pantalla activa
+    });
+}
+
+setInterval(mantenirPantallaActiva, 60000); // Crida la funció cada minut per mantenir la pantalla activa
