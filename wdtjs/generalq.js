@@ -116,7 +116,7 @@ var qryShow = function() {
 	
 	qryStrCache = jQuery('.qry').val();
 
-	document.getElementById("estadistica").src="https://docs.google.com/forms/d/e/1FAIpQLSeCap0_yZXttq-3Qxlm3YJI7Sf1BoTbGA11AMpS8PyLLaEgVg/viewform?usp=pp_url&entry.174276896="+qryStrCache
+	document.getElementById("estadistica").src="https://docs.google.com/forms/d/e/1FAIpQLSeCap0_yZXttq-3Qxlm3YJI7Sf1BoTbGA11AMpS8PyLLaEgVg/formResponse?entry.174276896="+qryStrCache
 	
 	var wds = qryNorm();
 	
