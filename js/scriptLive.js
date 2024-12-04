@@ -633,11 +633,6 @@ for (let i = 0; i < buttons.length; i++) {
     }
   });
 }
-const escoltaBoto = ()=>{
-  db.ref(`boto`).on("value",(tbot)=>{
-    
-  }
-}
 document.getElementById("input").addEventListener("click", () => {
   setTimeout(() => {
     window.scrollTo(0, 1000);
