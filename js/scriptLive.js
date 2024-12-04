@@ -89,8 +89,8 @@ sincronitzarMarcador("jugador1", "min1", "sec1", "penal1", "nom1");
 sincronitzarMarcador("jugador2", "min2", "sec2", "penal2", "nom2");
 
 // Funció per actualitzar el valor de l'input
-function actualitzarInput(valor) {
-  const inputRef = db.ref(`valida`);
+function actualitzarInput(inpdiv,valor) {
+  const inputRef = db.ref(inpdiv);
   inputRef.set(valor);
 }
 // Sincronitza l'input
@@ -102,6 +102,7 @@ function sincronitzarInput(inputId) {
     });
 }
 sincronitzarInput("jugvalidacio")
+
 
 //Funció per incrementar valors
 function incrementar(jugador,key,valor) {
