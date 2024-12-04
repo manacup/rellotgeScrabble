@@ -55,7 +55,12 @@ function actualitzarVariable(variable,valor) {
 function executaCanvi(funcio) {
     const funcRef = db.ref("funcio");
     funcRef.set(funcio);
-    funcRef.on("value",funcio)
+    funcRef.on("value",(snapshot)=>{
+      if(snapshot.val=="canvijug1"){
+        canvijug1()
+      }else{
+        canvijug2}
+    })
     
   }
 
@@ -400,12 +405,12 @@ function colors2() {
 }
 
 function canvijug1() {
-  executaCanvi("canvijug1()")
+  executaCanvi("canvijug1")
   canvitorn(2);
   colors2();
 }
 function canvijug2() {
-  executaCanvi("canvijug2()")
+  executaCanvi("canvijug2")
   canvitorn(1);
   colors1();
 }
