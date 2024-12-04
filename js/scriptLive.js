@@ -56,10 +56,10 @@ function actualitzarVariable(variable,valor) {
   }
 // Funció per executar funcions
 function executaCanvi(funcio) {
-    const playingRef = db.ref("playing");
+    const funcRef = db.ref(funcio");
     funcRef.set(funcio);}
 function escoltacanvi(){
-   const playingRef = db.ref("playing");
+   const funcRef = db.ref("funcio");
     funcRef.on("value",(snapshot)=>{
       if(snapshot.val=="canvijug1"){
         canvijug1()
