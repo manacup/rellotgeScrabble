@@ -68,10 +68,10 @@ function sincronitzarMarcador(jugador, min, sec, penal, nom) {
 
   // Sincronitza el marcador
   minRef.on("value", (snapshot) => {
-    minDiv.textContent = snapshot.val() || 0;
+    minDiv.textContent = padZero(snapshot.val()) || 00;
   });
   secRef.on("value", (snapshot) => {
-    secDiv.textContent = snapshot.val() || 0;
+    secDiv.textContent = padZero(snapshot.val()) || 00;
     if(jugador=="jugador1"){
       colors1()
     }else{
@@ -80,10 +80,10 @@ function sincronitzarMarcador(jugador, min, sec, penal, nom) {
   });
 
    penalRef.on("value", (snapshot) => {
-    penalDiv.textContent = snapshot.val() || 0;
+    penalDiv.textContent = snapshot.val();
   });
   nomRef.on("value", (snapshot) => {
-   nomDiv.textContent = snapshot.val() || 0;
+   nomDiv.textContent = snapshot.val();
   });
 
   
@@ -175,8 +175,8 @@ const startTimer = () => {
         //timeWarning(currentPlayer, p1time.minutes, p1sec);
         document.getElementById("sec1").textContent = padZero(p1sec);
         document.getElementById("min1").textContent = padZero(p1time.minutes);
-        incrementar("jugador1","min",p1time.minutes)
-        incrementar("jugador1","sec",p1sec)
+        incrementar("jugador1","min",padZero(p1time.minutes))
+        incrementar("jugador1","sec",padZero(p1sec))
         if (p1sec === 0) {
           // If minutes and seconds are zero stop timer with the clearInterval method.
           if (p1sec === 0 && p1time.minutes === 0) {
@@ -227,8 +227,8 @@ const startTimer = () => {
         //timeWarning(currentPlayer, p2time.minutes, p2sec);
         document.getElementById("sec2").textContent = padZero(p2sec);
         document.getElementById("min2").textContent = padZero(p2time.minutes);
-        incrementar("jugador2","min",p2time.minutes)
-        incrementar("jugador2","sec",p2sec)
+        incrementar("jugador2","min",padZero(p2time.minutes))
+        incrementar("jugador2","sec",padZero(p2sec))
 
         if (p2sec === 0) {
           // If minutes and seconds are zero stop timer with the clearInterval method.
@@ -301,8 +301,8 @@ function tempsDescompte() {
         timeWarning(currentPlayer, p1time.minutes, p1secpenal);
         document.getElementById("sec1").textContent = padZero(p1secpenal);
         document.getElementById("min1").textContent = padZero(p1time.minutes);
-        incrementar("jugador1","min",p1time.minutes)
-        incrementar("jugador1","sec",p1secpenal)
+        incrementar("jugador1","min",padZero(p1time.minutes))
+        incrementar("jugador1","sec",padZero(p1secpenal))
 
         if (p1secpenal === 0 && p1time.minutes == penalització.value) {
           // Play a sound effect.
