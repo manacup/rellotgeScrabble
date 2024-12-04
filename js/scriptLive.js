@@ -1,4 +1,4 @@
-const swver = "1.3.8"
+const swver = "1.3.8";
 let playing = false;
 
 let currentPlayer = 1;
@@ -21,6 +21,84 @@ const velocitat = 1000;
 var nomjugador1;
 var nomjugador2;
 var versio = document.querySelectorAll(".verdicc");
+
+//firebase
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCuiHcIayor6a31_oi8g3UhZHKjp513yic",
+  authDomain: "liverellotge.firebaseapp.com",
+  databaseURL:
+    "https://liverellotge-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "liverellotge",
+  storageBucket: "liverellotge.firebasestorage.app",
+  messagingSenderId: "778450817091",
+  appId: "1:778450817091:web:54a6ed6ee3740b204104f6",
+};
+
+// Inicialitza Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Funció per sincronitzar el marcador i l'input
+function sincronitzarMarcador(jugador, min, sec, penal, nom) {
+  const minRef = db.ref(`marcadors/${jugador}/min`);
+  const secRef = db.ref(`marcadors/${jugador}/sec`);
+  const penalRef = db.ref(`marcadors/${jugador}/penal`);
+  const nomRef = db.ref(`marcadors/${jugador}/nom`);
+  const minDiv = document.getElementById(min);
+  const secDiv = document.getElementById(sec);
+  const penalDiv = document.getElementById(penal);
+  const nomDiv = document.getElementById(nom);
+
+  // Sincronitza el marcador
+  minRef.on("value", (snapshot) => {
+    minDiv.textContent = snapshot.val() || 0;
+  });
+  secRef.on("value", (snapshot) => {
+    secDiv.textContent = snapshot.val() || 0;
+  });
+  penalRef.on("value", (snapshot) => {
+    penalDiv.textContent = snapshot.val() || 0;
+  });
+  nomRef.on("value", (snapshot) => {
+   nomDiv.textContent = snapshot.val() || 0;
+  });
+
+  
+
+}
+
+// Sincronitza jugador 1 i jugador 2
+sincronitzarMarcador("jugador1", "min1", "sec1", "penal1", "nom1");
+sincronitzarMarcador("jugador2", "min2", "sec2", "penal2", "nom2");
+
+// Funció per actualitzar el valor de l'input
+function actualitzarInput(valor) {
+  const inputRef = db.ref(`valida`);
+  inputRef.set(valor);
+}
+// Sincronitza l'input
+function sincronitzarInput(inputId) {
+  const inputRef = db.ref(`valida`);
+  const input = document.getElementById(inputId);
+}
+sincronitzarInput("jugvalidacio")
+
+//Funció per incrementar valors
+function incrementar(jugador,key,valor) {
+    const marcadorRef = db.ref(`marcadors/${jugador}/${key}`);
+    
+    marcadorRef.once('value').then((snapshot) => {
+      
+      marcadorRef.set(valor);
+    });
+  }
 
 // Add a leading zero to numbers less than 10.
 const padZero = (number) => {
@@ -45,15 +123,14 @@ let p1time = new Timer("min1", document.getElementById("min1").textContent);
 let p2time = new Timer("min2", document.getElementById("min2").textContent);
 
 // Warn player if time drops below thirty seconds.
-const timeWarning = (player, min, sec) => {
-  // Change the numbers to red during the last 30 seconds.
-  //if (min < 1 && sec <= 30) {
+const timeWarning = (player) => {
+  // Change the numbers to red 
   if (player === 1) {
     document.querySelectorAll(".player__digits")[0].classList.add("penalty");
   } else {
     document.querySelectorAll(" .player__digits")[1].classList.add("penalty");
   }
-  //}
+  
 };
 
 let timerId;
@@ -110,6 +187,10 @@ const startTimer = () => {
         p1time.penal = jug1;
         p1time.jugador = document.getElementById("nomjug1").value;
         localStorage.setItem("tempsjug1", JSON.stringify(p1time));
+        incrementar("jugador1","min",p1time.minutes)
+        incrementar("jugador1","sec",p1time.seconds)
+        incrementar("jugador1","penal",p1time.penal)
+        incrementar("jugador1","nom",p1time.nom)
       }
     } else {
       // Player 2.
@@ -156,6 +237,10 @@ const startTimer = () => {
         p2time.jugador = document.getElementById("nomjug2").value;
 
         localStorage.setItem("tempsjug2", JSON.stringify(p2time));
+        incrementar("jugador2","min",p1time.minutes)
+        incrementar("jugador2","sec",p1time.seconds)
+        incrementar("jugador2","penal",p1time.penal)
+        incrementar("jugador2","nom",p1time.nom)
       }
     }
   }, velocitat);
@@ -436,7 +521,7 @@ for (let i = 0; i < buttons.length; i++) {
         tempsDescompte();
       }
     } else if (buttons[i].textContent === "PAUSA / VALIDA") {
-      console.log("pausa")
+      console.log("pausa");
       playing = false;
       buttons[i].style.color = "#FFFFFF";
       buttons[i].style.backgroundColor = "#0071D5";
@@ -458,7 +543,7 @@ for (let i = 0; i < buttons.length; i++) {
       }
       document.getElementById("cont").style.display = "";
     } else if (buttons[i].textContent === "CONTINUA") {
-      console.log("continua")
+      console.log("continua");
       playing = true;
       document.querySelectorAll(".petit").forEach((e) => {
         e.classList.remove("petit");
@@ -563,7 +648,7 @@ function toggleFullscreen() {
 }
 
 function openFullscreen() {
-  console.log("fullscreen on")
+  console.log("fullscreen on");
   if (elem.requestFullscreen) {
     elem.requestFullscreen({ navigationUI: "hide" });
   } else if (elem.webkitRequestFullscreen) {
@@ -576,7 +661,7 @@ function openFullscreen() {
 }
 
 function closeFullscreen() {
-  console.log("fullscreen off")
+  console.log("fullscreen off");
   if (document.exitFullscreen) {
     document.exitFullscreen();
   } else if (document.webkitExitFullscreen) {
@@ -598,8 +683,8 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   document.getElementById("ajustaments").open = false;
 });
 document.addEventListener("DOMContentLoaded", function () {
-  document.getElementById("swver").textContent = "v:" + swver
-  
+  document.getElementById("swver").textContent = "v:" + swver;
+
   versio.forEach((d) => {
     d.textContent = disc.version;
   });
@@ -682,10 +767,10 @@ document.getElementById("copy").addEventListener("click", () => {
 });
 
 function mantenirPantallaActiva() {
-    const audio = new Audio('audio/silenci.mp3'); // Pot ser un fitxer silenci
-    audio.play().catch(() => {
-        // Els navegadors solen permetre la reproducció de l'àudio per mantenir la pantalla activa
-    });
+  const audio = new Audio("audio/silenci.mp3"); // Pot ser un fitxer silenci
+  audio.play().catch(() => {
+    // Els navegadors solen permetre la reproducció de l'àudio per mantenir la pantalla activa
+  });
 }
 
 setInterval(mantenirPantallaActiva, 60000); // Crida la funció cada minut per mantenir la pantalla activa

@@ -29,10 +29,10 @@
     <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="css/style.css">
-    <script type="text/javascript" src="https://icon.cat/wordertorn/js/jquery.js"></script>
-    <script type="text/javascript" src="https://icon.cat/wordertorn/js/general.js"></script>
-    <script type="text/javascript" src="https://icon.cat/wordertorn/js/bits.js"></script>
-    <script type="text/javascript" src="https://icon.cat/wordertorn/dicc/disc-2.17.24.js"></script>
+    <script type="text/javascript" src="wdtjs/jquery.js"></script>
+    <script type="text/javascript" src="wdtjs/general.js"></script>
+    <script type="text/javascript" src="wdtjs/bits.js"></script>
+    <script type="text/javascript" src="dicc/disc.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/nosleep/0.12.0/NoSleep.min.js"></script>
 
     <title>Rellotge Scrabble</title>
@@ -59,9 +59,9 @@
                         id="penalització" value="5">
                     <!-- <li><button class="sch" type="button" id="toggle">Manté la pantalla activa</button></li> -->
                     <br><br>
-                    <span class="blanc-text">Jugador 1: </span><input type="text" id="nomjug1" value="">
+                    <span class="blanc-text">Jugador 1: </span><input type="search" id="nomjug1" value="">
                     <br><br>
-                    <span class="blanc-text">Jugador 2: </span><input type="text" id="nomjug2" value="">
+                    <span class="blanc-text">Jugador 2: </span><input type="search" id="nomjug2" value="">
                     <br><br>
                     <input type="checkbox" value="Activa el so" id="checkSo" checked><span class="blanc-text"> Activa el
                         so</span>
@@ -126,7 +126,7 @@
                     <form id="wdtform" name="wdtform" action="wordertorn">
                         <div id="input">
                             <input class="qry" name="q" placeholder="Escriviu un o més mots" autocomplete="off"
-                                autofocus="autofocus" value="">
+                                autofocus="autofocus" value="" id="jugvalidacio" oninput="actualitzarInput(this.value)">
                         </div>
                         <div id="buttons">
                             <input class="sch  btn" name="sch" type="button" value="valida" />
@@ -149,10 +149,10 @@
         </div>
 
     </main>
+ <iframe name='estadistica' id="estadistica" src="" style="display:none"></iframe>
 
 
-
-    <script src="js/script.js"></script>
+    <script src="js/scriptLive.js"></script>
 
 </body>
 
