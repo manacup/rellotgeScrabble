@@ -89,7 +89,9 @@ function sincronitzarMarcador(jugador, min, sec, penal, nom) {
       canvijug1()
     }else{
       canvijug2()
+    }
   });
+
   penalRef.on("value", (snapshot) => {
     penalDiv.textContent = snapshot.val() || 0;
   });
