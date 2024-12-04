@@ -73,9 +73,9 @@ function sincronitzarMarcador(jugador, min, sec, penal, nom) {
   secRef.on("value", (snapshot) => {
     secDiv.textContent = snapshot.val() || 0;
     if(jugador=="jugador1"){
-      canvijug1()
+      colors1()
     }else{
-      canvijug2()
+      colors2()
     }
   });
 
