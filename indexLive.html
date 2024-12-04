@@ -61,9 +61,9 @@
                         id="penalització" value="5">
                     <!-- <li><button class="sch" type="button" id="toggle">Manté la pantalla activa</button></li> -->
                     <br><br>
-                    <span class="blanc-text">Jugador 1: </span><input type="search" id="nomjug1" value="">
+                    <span class="blanc-text">Jugador 1: </span><input type="search" id="nomjug1" value="" oninput="actualitzarInput('marcadors/jugador1/nom',this.value)">
                     <br><br>
-                    <span class="blanc-text">Jugador 2: </span><input type="search" id="nomjug2" value="">
+                    <span class="blanc-text">Jugador 2: </span><input type="search" id="nomjug2" value="" oninput="actualitzarInput('marcadors/jugador2/nom',this.value)">
                     <br><br>
                     <input type="checkbox" value="Comptador esclau" id="esclau" ><span class="blanc-text"> Comptador esclau</span>
                     <br><br>
@@ -130,7 +130,7 @@
                     <form id="wdtform" name="wdtform" action="wordertorn">
                         <div id="input">
                             <input class="qry" name="q" placeholder="Escriviu un o més mots" autocomplete="off"
-                                autofocus="autofocus" value="" id="jugvalidacio" oninput="actualitzarInput(this.value)">
+                                autofocus="autofocus" value="" id="jugvalidacio" oninput="actualitzarInput('valida',this.value)">
                         </div>
                         <div id="buttons">
                             <input class="sch  btn" name="sch" type="button" value="valida" />
