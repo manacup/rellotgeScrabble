@@ -182,7 +182,7 @@ var qryDelete = function(force) {
 	// Esborra la consulta i el resultat
 	if (force || qryStrCache == jQuery('.qry').val())
 		jQuery('.qry').val('')
-		actualitzarInput('')
+		actualitzarInput('valida','')
 	
 	jQuery('#res').slideUp(200, function() {
 		jQuery('#res_info').html('');
