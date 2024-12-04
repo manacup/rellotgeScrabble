@@ -102,6 +102,8 @@ function sincronitzarInput(inputId) {
     });
 }
 sincronitzarInput("jugvalidacio")
+sincronitzarInput("nomjug1")
+sincronitzarInput("nomjug2")
 
 
 //Funció per incrementar valors
