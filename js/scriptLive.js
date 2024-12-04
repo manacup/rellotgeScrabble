@@ -54,20 +54,7 @@ function actualitzarVariable(variable,valor) {
     
   });  
   }
-// Funció per executar funcions
-function executaCanvi(funcio) {
-    const funcRef = db.ref("funcio");
-    funcRef.set(funcio);}
-function escoltacanvi(){
-   const funcRef = db.ref("funcio");
-    funcRef.on("value",(snapshot)=>{
-      if(snapshot.val=="canvijug1"){
-        colors1()
-      }else{
-        colors2()}
-    })    
-  }
-escoltacanvi()
+
 // Funció per sincronitzar el marcador 
 function sincronitzarMarcador(jugador, min, sec, penal, nom) {
   const minRef = db.ref(`marcadors/${jugador}/min`);
