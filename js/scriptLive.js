@@ -5,8 +5,7 @@
 const firebaseConfig = {
   apiKey: "AIzaSyCuiHcIayor6a31_oi8g3UhZHKjp513yic",
   authDomain: "liverellotge.firebaseapp.com",
-  databaseURL:
-    "https://liverellotge-default-rtdb.europe-west1.firebasedatabase.app",
+  databaseURL: "https://liverellotge-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "liverellotge",
   storageBucket: "liverellotge.firebasestorage.app",
   messagingSenderId: "778450817091",
@@ -634,6 +633,7 @@ for (let i = 0; i < buttons.length; i++) {
   });
 }
 document.getElementById("input").addEventListener("click", () => {
+  if(!esclau){
   setTimeout(() => {
     window.scrollTo(0, 1000);
     document.querySelectorAll(".player__digits").forEach((e) => {
@@ -644,6 +644,7 @@ document.getElementById("input").addEventListener("click", () => {
     });
   }, 00);
   console.log("funciona");
+  }
 });
 var fullScreen = document.getElementById("checkFullScreen");
 fullScreen.addEventListener("change", () => {
