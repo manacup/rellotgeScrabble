@@ -85,6 +85,10 @@ function sincronitzarMarcador(jugador, min, sec, penal, nom) {
   });
   secRef.on("value", (snapshot) => {
     secDiv.textContent = snapshot.val() || 0;
+    if(jugador=="jugador1"{
+      canvijug1()
+    }else{
+      canvijug2()
   });
   penalRef.on("value", (snapshot) => {
     penalDiv.textContent = snapshot.val() || 0;
@@ -409,12 +413,12 @@ function colors2() {
 }
 
 function canvijug1() {
-  executaCanvi("canvijug1")
+  
   canvitorn(2);
   colors2();
 }
 function canvijug2() {
-  executaCanvi("canvijug2")
+  
   canvitorn(1);
   colors1();
 }
