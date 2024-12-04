@@ -53,7 +53,7 @@ function actualitzarVariable(variable,valor) {
   }
 // Funció per executar funcions
 function executaCanvi(funcio) {
-    const funcRef = db.ref(funcio);
+    const funcRef = db.ref("funcio");
     funcRef.set(funcio);
     funcRef.on("value",funcio)
     
