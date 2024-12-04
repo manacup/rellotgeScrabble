@@ -49,21 +49,25 @@ var versio = document.querySelectorAll(".verdicc");
 function actualitzarVariable(variable,valor) {
     const inputRef = db.ref(variable);
     inputRef.set(valor);
-    variable = valor
+  inputRef.on("value",(val)=>{
+    variable = val.val
+    
+  });  
   }
 // Funció per executar funcions
 function executaCanvi(funcio) {
-    const funcRef = db.ref("funcio");
-    funcRef.set(funcio);
+    const playingRef = db.ref("playing");
+    funcRef.set(funcio);}
+function escoltacanvi(){
+   const playingRef = db.ref("playing");
     funcRef.on("value",(snapshot)=>{
       if(snapshot.val=="canvijug1"){
         canvijug1()
       }else{
         canvijug2}
-    })
-    
+    })    
   }
-
+escoltacanvi()
 // Funció per sincronitzar el marcador 
 function sincronitzarMarcador(jugador, min, sec, penal, nom) {
   const minRef = db.ref(`marcadors/${jugador}/min`);
@@ -420,6 +424,7 @@ function canvitorn(jug) {
     currentPlayer = jug;
     localStorage.setItem("jugactiu", jug);
     playing = true;
+    actualitzarVariable("playing",true)
     document.querySelectorAll(".petit").forEach((e) => {
       e.classList.remove("petit");
     });
@@ -507,6 +512,8 @@ tempsBtn.addEventListener("click", () => {
   document.getElementById("sec1").textContent = padZero(0);
   document.getElementById("sec2").textContent = padZero(0);
   playing = false;
+  actualitzarVariable("playing",false)
+  
 
   clearInterval(timerId);
   p1sec = 60;
@@ -567,6 +574,7 @@ for (let i = 0; i < buttons.length; i++) {
     } else if (buttons[i].textContent === "PAUSA / VALIDA") {
       console.log("pausa");
       playing = false;
+      actualitzarVariable("playing",false)
       buttons[i].style.color = "#FFFFFF";
       buttons[i].style.backgroundColor = "#0071D5";
       buttons[i].textContent = "CONTINUA";
@@ -589,6 +597,7 @@ for (let i = 0; i < buttons.length; i++) {
     } else if (buttons[i].textContent === "CONTINUA") {
       console.log("continua");
       playing = true;
+      actualitzarVariable("playing",true)
       document.querySelectorAll(".petit").forEach((e) => {
         e.classList.remove("petit");
       });
