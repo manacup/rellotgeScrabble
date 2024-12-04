@@ -220,7 +220,7 @@ const startTimer = () => {
         incrementar("jugador1","min",p1time.minutes)
         incrementar("jugador1","sec",p1time.seconds)
         incrementar("jugador1","penal",p1time.penal)
-        incrementar("jugador1","nom",p1time.nom)
+        incrementar("jugador1","nom",p1time.jugador)
       }
     } else {
       // Player 2.
@@ -274,7 +274,7 @@ const startTimer = () => {
         incrementar("jugador2","min",p2time.minutes)
         incrementar("jugador2","sec",p2time.seconds)
         incrementar("jugador2","penal",p2time.penal)
-        incrementar("jugador2","nom",p2time.nom)
+        incrementar("jugador2","nom",p2time.jugador)
       }
     }
   }, velocitat);
