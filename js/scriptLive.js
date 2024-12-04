@@ -62,9 +62,9 @@ function escoltacanvi(){
    const funcRef = db.ref("funcio");
     funcRef.on("value",(snapshot)=>{
       if(snapshot.val=="canvijug1"){
-        canvijug1()
+        colors1()
       }else{
-        canvijug2}
+        colors2()}
     })    
   }
 escoltacanvi()
