@@ -1,3 +1,22 @@
+//firebase
+
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCuiHcIayor6a31_oi8g3UhZHKjp513yic",
+  authDomain: "liverellotge.firebaseapp.com",
+  databaseURL:
+    "https://liverellotge-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "liverellotge",
+  storageBucket: "liverellotge.firebasestorage.app",
+  messagingSenderId: "778450817091",
+  appId: "1:778450817091:web:54a6ed6ee3740b204104f6",
+};
+
+// Inicialitza Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
 const swver = "1.3.8";
 let playing = false;
 
@@ -22,24 +41,6 @@ var nomjugador1;
 var nomjugador2;
 var versio = document.querySelectorAll(".verdicc");
 
-//firebase
-
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCuiHcIayor6a31_oi8g3UhZHKjp513yic",
-  authDomain: "liverellotge.firebaseapp.com",
-  databaseURL:
-    "https://liverellotge-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "liverellotge",
-  storageBucket: "liverellotge.firebasestorage.app",
-  messagingSenderId: "778450817091",
-  appId: "1:778450817091:web:54a6ed6ee3740b204104f6",
-};
-
-// Inicialitza Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
 
 // Funció per sincronitzar el marcador i l'input
 function sincronitzarMarcador(jugador, min, sec, penal, nom) {
@@ -186,7 +187,7 @@ const startTimer = () => {
         incrementar("jugador1","min",p1time.minutes)
         incrementar("jugador1","sec",p1time.seconds)
         incrementar("jugador1","penal",p1time.penal)
-        incrementar("jugador1","nom",p1time.nom)
+        incrementar("jugador1","nom",p1time.jugador)
       }
     } else {
       // Player 2.
@@ -233,10 +234,10 @@ const startTimer = () => {
         p2time.jugador = document.getElementById("nomjug2").value;
 
         localStorage.setItem("tempsjug2", JSON.stringify(p2time));
-        incrementar("jugador2","min",p1time.minutes)
-        incrementar("jugador2","sec",p1time.seconds)
-        incrementar("jugador2","penal",p1time.penal)
-        incrementar("jugador2","nom",p1time.nom)
+        incrementar("jugador2","min",p2time.minutes)
+        incrementar("jugador2","sec",p2time.seconds)
+        incrementar("jugador2","penal",p2time.penal)
+        incrementar("jugador2","nom",p2time.jugador)
       }
     }
   }, velocitat);
@@ -285,6 +286,10 @@ function tempsDescompte() {
         p1time.jugador = document.getElementById("nomjug1").value;
 
         localStorage.setItem("tempsjug1", JSON.stringify(p1time));
+        incrementar("jugador1","min",p1time.minutes)
+        incrementar("jugador1","sec",p1time.seconds)
+        incrementar("jugador1","penal",p1time.penal)
+        incrementar("jugador1","nom",p1time.jugador)
       }
     } else {
       // Player 2.
@@ -321,6 +326,10 @@ function tempsDescompte() {
         p2time.jugador = document.getElementById("nomjug2").value;
 
         localStorage.setItem("tempsjug2", JSON.stringify(p2time));
+        incrementar("jugador2","min",p2time.minutes)
+        incrementar("jugador2","sec",p2time.seconds)
+        incrementar("jugador2","penal",p2time.penal)
+        incrementar("jugador2","nom",p2time.jugador)
       }
     }
   }, velocitat);
