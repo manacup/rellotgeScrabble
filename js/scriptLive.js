@@ -263,7 +263,7 @@ const startTimer = () => {
         localStorage.setItem("tempsjug2", JSON.stringify(p2time));
         incrementar("jugador2","min",p2time.minutes)
         incrementar("jugador2","sec",p2time.seconds)
-        //incrementar("jugador2","penal",p2time.penal)
+        
         incrementar("jugador2","nom",p2time.jugador)
       }
     }
@@ -516,6 +516,8 @@ tempsBtn.addEventListener("click", () => {
   incrementar("jugador2","sec",0)
   playing = false;
   actualitzarVariable("playing",false)
+  incrementar("jugador1","penal", "")
+  incrementar("jugador2","penal", "")
   
 
   clearInterval(timerId);
@@ -801,6 +803,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .classList.add("penalty_inactiu");
     document.getElementById("penal1").textContent =
       "Penalització: -" + (temps1.minutes + 1) * 10 + " punts";
+    incrementar("jugador1","penal", "Penalització: -" + (temps1.minutes + 1) * 10 + " punts")
   }
 
   temps2 === null
@@ -822,6 +825,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .classList.add("penalty_inactiu");
     document.getElementById("penal2").textContent =
       "Penalització: -" + (temps2.minutes + 1) * 10 + " punts";
+    incrementar("jugador2","penal", "Penalització: -" + (temps2.minutes + 1) * 10 + " punts")
   }
 });
 
