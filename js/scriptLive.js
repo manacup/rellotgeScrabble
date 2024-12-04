@@ -16,7 +16,7 @@ const firebaseConfig = {
 // Inicialitza Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-
+const esclau = document.getelementById("esclau").checked
 const swver = "1.3.8";
 let playing = false;
 actualitzarVariable("playing",false)
@@ -50,8 +50,7 @@ function actualitzarVariable(variable,valor) {
     const inputRef = db.ref(variable);
     inputRef.set(valor);
   inputRef.on("value",(val)=>{
-    variable = val.val
-    
+    variable = val.val    
   });  
   }
 
@@ -78,16 +77,12 @@ function sincronitzarMarcador(jugador, min, sec, penal, nom) {
       colors2()
     }
   });
-
    penalRef.on("value", (snapshot) => {
     penalDiv.textContent = snapshot.val();
   });
   nomRef.on("value", (snapshot) => {
    nomDiv.textContent = snapshot.val();
   });
-
-  
-
 }
 
 // Sincronitza jugador 1 i jugador 2
@@ -409,14 +404,16 @@ function colors2() {
 }
 
 function canvijug1() {
-  
+  if(!esclau){
   canvitorn(2);
   colors2();
+  }
 }
 function canvijug2() {
-  
+  if(!esclau){
   canvitorn(1);
   colors1();
+  }
 }
 function canvitorn(jug) {
   console.log(jug);
