@@ -371,6 +371,7 @@ function tempsDescompte() {
 
 function colors1() {
   jugador1.classList.add("actiu");
+  jugador2.classList.remove("actiu");
   if (!jug1) {
     document
       .querySelectorAll(".player__digits")[0]
@@ -387,6 +388,7 @@ function colors1() {
 
 function colors2() {
   jugador2.classList.add("actiu");
+  jugador1.classList.remove("actiu");
   if (!jug2) {
     document
       .querySelectorAll(".player__digits")[1]
