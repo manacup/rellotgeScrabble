@@ -511,10 +511,10 @@ tempsBtn.addEventListener("click", () => {
   document.getElementById("min2").textContent = padZero(temps);
   document.getElementById("sec1").textContent = padZero(0);
   document.getElementById("sec2").textContent = padZero(0);  
-  incrementar("jugador1","min",padZero(temps))
-  incrementar("jugador1","sec",padZero(0))
-  incrementar("jugador2","min",padZero(temps))
-  incrementar("jugador2","sec",padZero(0))
+  incrementar("jugador1","min",temps)
+  incrementar("jugador1","sec",0)
+  incrementar("jugador2","min",temps)
+  incrementar("jugador2","sec",0)
   playing = false;
   actualitzarVariable("playing",false)
   
