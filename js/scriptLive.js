@@ -567,8 +567,7 @@ for (let i = 0; i < buttons.length; i++) {
         startTimer();
       }else{
         buttons[i].style.display="none"
-        document.getElementById("cont").style.display = ""
-      }
+        document.getElementById("cont").style.display = ""      
       }
 
       if (descompte && !jug1) {
