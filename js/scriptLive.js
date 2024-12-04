@@ -296,8 +296,8 @@ function tempsDescompte() {
         timeWarning(currentPlayer, p1time.minutes, p1secpenal);
         document.getElementById("sec1").textContent = padZero(p1secpenal);
         document.getElementById("min1").textContent = padZero(p1time.minutes);
-        incrementar("jugador1","min",padZero(p1time.minutes))
-        incrementar("jugador1","sec",padZero(p1secpenal))
+        incrementar("jugador1","min",p1time.minutes)
+        incrementar("jugador1","sec",p1secpenal)
 
         if (p1secpenal === 0 && p1time.minutes == penalització.value) {
           // Play a sound effect.
@@ -318,7 +318,7 @@ function tempsDescompte() {
         localStorage.setItem("tempsjug1", JSON.stringify(p1time));
         incrementar("jugador1","min",p1time.minutes)
         incrementar("jugador1","sec",p1time.seconds)
-        incrementar("jugador1","penal",p1time.penal)
+        
         incrementar("jugador1","nom",p1time.jugador)
       }
     } else {
@@ -362,7 +362,7 @@ function tempsDescompte() {
         localStorage.setItem("tempsjug2", JSON.stringify(p2time));
         incrementar("jugador2","min",p2time.minutes)
         incrementar("jugador2","sec",p2time.seconds)
-        incrementar("jugador2","penal",p2time.penal)
+        
         incrementar("jugador2","nom",p2time.jugador)
       }
     }
@@ -561,8 +561,15 @@ for (let i = 0; i < buttons.length; i++) {
       buttons[i].style.color = "#EEEEEE";
       buttons[i].style.backgroundColor = "#606060";
       buttons[i].textContent = "PAUSA / VALIDA";
+       db.ref(`boto`).set("PAUSA / VALIDA")
       document.querySelector(".player-" + currentPlayer).classList.add("actiu");
-      startTimer();
+      if (!esclau){
+        startTimer();
+      }else{
+        buttons[i].style.display="none"
+        document.getElementById("cont").style.display = ""
+      }
+      }
 
       if (descompte && !jug1) {
         tempsDescompte();
@@ -578,7 +585,7 @@ for (let i = 0; i < buttons.length; i++) {
       actualitzarVariable("playing",false)
       buttons[i].style.color = "#FFFFFF";
       buttons[i].style.backgroundColor = "#0071D5";
-      buttons[i].textContent = "CONTINUA";
+      buttons[i].textContent = "CONTINUA";    
       jugador1.classList.remove("actiu");
       jugador2.classList.remove("actiu");
       document.querySelectorAll(".player_digits").forEach((a) => {
@@ -604,7 +611,7 @@ for (let i = 0; i < buttons.length; i++) {
       });
       buttons[i].style.color = "#EEEEEE";
       buttons[i].style.backgroundColor = "#606060";
-      buttons[i].textContent = "PAUSA / VALIDA";
+      buttons[i].textContent = "PAUSA / VALIDA";    
       document.querySelector(".player-" + currentPlayer).classList.add("actiu");
       if (currentPlayer === 1 && !jug1) {
         document
@@ -623,11 +630,15 @@ for (let i = 0; i < buttons.length; i++) {
           .classList.add("penalty");
       }
 
-      document.getElementById("cont").style.display = "none";
+      if(!esclau){document.getElementById("cont").style.display = "none";}
     }
   });
 }
-
+const escoltaBoto = ()=>{
+  db.ref(`boto`).on("value",(tbot)=>{
+    
+  }
+}
 document.getElementById("input").addEventListener("click", () => {
   setTimeout(() => {
     window.scrollTo(0, 1000);
