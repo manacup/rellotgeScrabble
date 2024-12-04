@@ -15,7 +15,7 @@ const firebaseConfig = {
 // Inicialitza Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-let esclau = document.getElementById("esclau").checked
+let esclau = false
 const swver = "1.3.8";
 let playing = false;
 actualitzarVariable("playing",false)
@@ -670,6 +670,15 @@ botoVibr.addEventListener("change", () => {
   if (vibracio) {
     window.navigator.vibrate(50);
   }
+});
+
+var botoEsclau = document.getElementById("esclau");
+botoEsclau.addEventListener("change", () => {
+  botoEsclau.checked ? (esclau = true) : (esclau = false);
+  botoEsclau.checked
+    ? localStorage.setItem("botoEsclau", true)
+    : localStorage.setItem("botoEsclau", false);
+ 
 });
 
 var elem = document.documentElement;
