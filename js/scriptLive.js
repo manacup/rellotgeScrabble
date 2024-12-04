@@ -79,7 +79,7 @@ function sincronitzarMarcador(jugador, min, sec, penal, nom) {
     }
   });
 
-  penalRef.on("value", (snapshot) => {
+   penalRef.on("value", (snapshot) => {
     penalDiv.textContent = snapshot.val() || 0;
   });
   nomRef.on("value", (snapshot) => {
@@ -212,7 +212,7 @@ const startTimer = () => {
         localStorage.setItem("tempsjug1", JSON.stringify(p1time));
         incrementar("jugador1","min",p1time.minutes)
         incrementar("jugador1","sec",p1time.seconds)
-        incrementar("jugador1","penal",p1time.penal)
+        
         incrementar("jugador1","nom",p1time.jugador)
       }
     } else {
@@ -266,7 +266,7 @@ const startTimer = () => {
         localStorage.setItem("tempsjug2", JSON.stringify(p2time));
         incrementar("jugador2","min",p2time.minutes)
         incrementar("jugador2","sec",p2time.seconds)
-        incrementar("jugador2","penal",p2time.penal)
+        //incrementar("jugador2","penal",p2time.penal)
         incrementar("jugador2","nom",p2time.jugador)
       }
     }
@@ -291,8 +291,11 @@ function tempsDescompte() {
           p1secpenal = 0;
         } else {
           p1secpenal = p1secpenal + 1;
-          document.getElementById("penal1").textContent =
-            "Penalització: -" + (p1time.minutes + 1) * 10 + " punts";
+          var mispenal1 = "Penalització: -" + (p1time.minutes + 1) * 10 + " punts";
+          document.getElementById("penal1").textContent = mispenal1
+            
+          incrementar("jugador1","penal",mispenal1)
+         
         }
 
         timeWarning(currentPlayer, p1time.minutes, p1secpenal);
@@ -333,8 +336,10 @@ function tempsDescompte() {
           p2secpenal = 0;
         } else {
           p2secpenal = p2secpenal + 1;
-          document.getElementById("penal2").textContent =
-            "Penalització: -" + (p2time.minutes + 1) * 10 + " punts";
+          var mispenal2 = "Penalització: -" + (p2time.minutes + 1) * 10 + " punts";
+          document.getElementById("penal2").textContent = mispenal2
+            
+          incrementar("jugador2","penal",mispenal2)          
         }
 
         timeWarning(currentPlayer, p2time.minutes, p2secpenal);
