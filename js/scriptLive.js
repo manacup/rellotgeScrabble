@@ -94,16 +94,16 @@ function actualitzarInput(inpdiv,valor) {
   inputRef.set(valor);
 }
 // Sincronitza l'input
-function sincronitzarInput(inputId) {
-  const inputRef = db.ref(`valida`);
+function sincronitzarInput(key,inputId) {
+  const inputRef = db.ref(key);
   const input = document.getElementById(inputId);
    inputRef.on('value', (snapshot) => {
       input.value = snapshot.val() || '';
     });
 }
-sincronitzarInput("jugvalidacio")
-sincronitzarInput("nomjug1")
-sincronitzarInput("nomjug2")
+sincronitzarInput('valida','jugvalidacio')
+sincronitzarInput('marcadors/jugador1/nom','nomjug1')
+sincronitzarInput('marcadors/jugador2/nom','nomjug2')
 
 
 //Funció per incrementar valors
