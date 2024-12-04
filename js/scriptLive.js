@@ -19,12 +19,16 @@ const db = firebase.database();
 
 const swver = "1.3.8";
 let playing = false;
+actualitzarVariable("playing",false)
 
 let currentPlayer = 1;
+actualitzarVariable("currentPlayer",1)
 let descompte = true;
-
+actualitzarVariable("descompte",true)
 let jug1 = true;
 let jug2 = true;
+actualitzarVariable("jug1",true)
+actualitzarVariable("jug2",true)
 let so = true;
 let vibracio = true;
 let penalització = document.getElementById("penalització");
@@ -41,6 +45,19 @@ var nomjugador1;
 var nomjugador2;
 var versio = document.querySelectorAll(".verdicc");
 
+// Funció per actualitzar el valor de variable
+function actualitzarVariable(variable,valor) {
+    const inputRef = db.ref(variable);
+    inputRef.set(valor);
+    variable = valor
+  }
+// Funció per executar funcions
+function executaCanvi(funcio) {
+    const funcRef = db.ref(funcio);
+    funcRef.set(funcio);
+    funcRef.on("value",funcio)
+    
+  }
 
 // Funció per sincronitzar el marcador 
 function sincronitzarMarcador(jugador, min, sec, penal, nom) {
@@ -139,6 +156,7 @@ let p1sec = 60;
 let p2sec = 60;
 const startTimer = () => {
   playing = true;
+  actualitzarVariable("playing",true)
 
   timerId = setInterval(function () {
     // Player 1.
@@ -155,6 +173,8 @@ const startTimer = () => {
         //timeWarning(currentPlayer, p1time.minutes, p1sec);
         document.getElementById("sec1").textContent = padZero(p1sec);
         document.getElementById("min1").textContent = padZero(p1time.minutes);
+        incrementar("jugador1","min",p1time.minutes)
+        incrementar("jugador1","sec",p1sec)
         if (p1sec === 0) {
           // If minutes and seconds are zero stop timer with the clearInterval method.
           if (p1sec === 0 && p1time.minutes === 0) {
@@ -169,6 +189,7 @@ const startTimer = () => {
             //clearInterval(timerId);
             //playing = false;
             jug1 = false;
+            actualitzarVariable("jug1",false)
             if (descompte) {
               tempsDescompte();
             }
@@ -190,7 +211,7 @@ const startTimer = () => {
         incrementar("jugador1","min",p1time.minutes)
         incrementar("jugador1","sec",p1time.seconds)
         incrementar("jugador1","penal",p1time.penal)
-        incrementar("jugador1","nom",p1time.jugador)
+        incrementar("jugador1","nom",p1time.nom)
       }
     } else {
       // Player 2.
@@ -204,6 +225,9 @@ const startTimer = () => {
         //timeWarning(currentPlayer, p2time.minutes, p2sec);
         document.getElementById("sec2").textContent = padZero(p2sec);
         document.getElementById("min2").textContent = padZero(p2time.minutes);
+        incrementar("jugador2","min",p2time.minutes)
+        incrementar("jugador2","sec",p2sec)
+
         if (p2sec === 0) {
           // If minutes and seconds are zero stop timer with the clearInterval method.
           if (p2sec === 0 && p2time.minutes === 0) {
@@ -218,6 +242,7 @@ const startTimer = () => {
             //clearInterval(timerId);
             //playing = false;
             jug2 = false;
+            actualitzarVariable("jug2",false)
             if (descompte) {
               tempsDescompte();
             }
@@ -240,7 +265,7 @@ const startTimer = () => {
         incrementar("jugador2","min",p2time.minutes)
         incrementar("jugador2","sec",p2time.seconds)
         incrementar("jugador2","penal",p2time.penal)
-        incrementar("jugador2","nom",p2time.jugador)
+        incrementar("jugador2","nom",p2time.nom)
       }
     }
   }, velocitat);
@@ -271,6 +296,8 @@ function tempsDescompte() {
         timeWarning(currentPlayer, p1time.minutes, p1secpenal);
         document.getElementById("sec1").textContent = padZero(p1secpenal);
         document.getElementById("min1").textContent = padZero(p1time.minutes);
+        incrementar("jugador1","min",p1time.minutes)
+        incrementar("jugador1","sec",p1secpenal)
 
         if (p1secpenal === 0 && p1time.minutes == penalització.value) {
           // Play a sound effect.
@@ -311,6 +338,8 @@ function tempsDescompte() {
         timeWarning(currentPlayer, p2time.minutes, p2secpenal);
         document.getElementById("sec2").textContent = padZero(p2secpenal);
         document.getElementById("min2").textContent = padZero(p2time.minutes);
+        incrementar("jugador2","min",p2time.minutes)
+        incrementar("jugador2","sec",p2secpenal)
 
         if (p2secpenal === 0 && p2time.minutes == penalització.value) {
           // Play a sound effect.
@@ -371,10 +400,12 @@ function colors2() {
 }
 
 function canvijug1() {
+  executaCanvi("canvijug1()")
   canvitorn(2);
   colors2();
 }
 function canvijug2() {
+  executaCanvi("canvijug2()")
   canvitorn(1);
   colors1();
 }
