@@ -42,7 +42,7 @@ var nomjugador2;
 var versio = document.querySelectorAll(".verdicc");
 
 
-// Funció per sincronitzar el marcador i l'input
+// Funció per sincronitzar el marcador 
 function sincronitzarMarcador(jugador, min, sec, penal, nom) {
   const minRef = db.ref(`marcadors/${jugador}/min`);
   const secRef = db.ref(`marcadors/${jugador}/sec`);
@@ -84,6 +84,9 @@ function actualitzarInput(valor) {
 function sincronitzarInput(inputId) {
   const inputRef = db.ref(`valida`);
   const input = document.getElementById(inputId);
+   inputRef.on('value', (snapshot) => {
+      input.value = snapshot.val() || '';
+    });
 }
 sincronitzarInput("jugvalidacio")
 
