@@ -16,7 +16,7 @@ const firebaseConfig = {
 // Inicialitza Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const esclau = document.getelementById("esclau").checked
+const esclau = document.getElementById("esclau").checked
 const swver = "1.3.8";
 let playing = false;
 actualitzarVariable("playing",false)
