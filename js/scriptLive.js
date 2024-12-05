@@ -64,7 +64,7 @@ function clickbotons(botoID){
   })  
 }
 clickbotons("btnStart")
-clickbotons("buttons")
+clickbotons("btnValida")
 
 // Funció per sincronitzar el marcador 
 function sincronitzarMarcador(jugador, min, sec, penal, nom) {
