@@ -265,7 +265,7 @@ footer p {
     flex-flow: wrap row;
   }
   .player__tile {
-    height: 400px;
+    height: 200px;
   }
   .player-1 {
     transform: rotate(0deg);
