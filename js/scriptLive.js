@@ -54,7 +54,7 @@ function actualitzarVariable(variable,valor) {
   }
 //funcio per escolatar clics als botons
 function clickbotons(botoID){
-  const btnRef = db.(botoId)
+  const btnRef = db.ref(botoId)
   btnRef.on("value",(btn)=>{
     if(btn.val){
     document.getElementById(botoID).click
