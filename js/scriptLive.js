@@ -52,11 +52,12 @@ function actualitzarVariable(variable,valor) {
     variable = val.val    
   });  
   }
-//funcio per escolatar clics als botons
+//funcio per escoltar clics als botons
 function clickbotons(botoID){
   const btnRef = db.ref(botoID)
   btnRef.on("value",(btn)=>{
     if(btn.val){
+      console.log(botoID)
     document.getElementById(botoID).click
     actualitzarVariable(botoID,false) 
   }
