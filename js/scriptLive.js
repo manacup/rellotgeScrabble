@@ -52,6 +52,18 @@ function actualitzarVariable(variable,valor) {
     variable = val.val    
   });  
   }
+//funcio per escolatar clics als botons
+function clickbotons(botoID){
+  const btnRef = db.(botoId)
+  btnRef.on("value",(btn)=>{
+    if(btn.val){
+    document.getElementById(botoID).click
+    actualitzarVariable(botoID,false) 
+  }
+  })  
+}
+clickbotons("btnStart")
+clickbotons("buttons")
 
 // Funció per sincronitzar el marcador 
 function sincronitzarMarcador(jugador, min, sec, penal, nom) {
@@ -72,8 +84,11 @@ function sincronitzarMarcador(jugador, min, sec, penal, nom) {
     secDiv.textContent = padZero(snapshot.val()) || 00;
     if(jugador=="jugador1"){
       colors1()
-    }else{
+    }else if(jugador=="jugador2"){
       colors2()
+    }else if(!playing){
+      jugador1.classList.remove("actiu");
+      jugador2.classList.remove("actiu");
     }
   });
    penalRef.on("value", (snapshot) => {
@@ -446,6 +461,7 @@ function canvitorn(jug) {
   } else if (!playing && botoStart.textContent === "COMENÇA") {
     currentPlayer = jug;
     localStorage.setItem("jugactiu", jug);
+    actualitzarVariable(botoStart.id,true)
     startTimer();
     if (descompte) {
       if (!jug1) {
@@ -569,7 +585,8 @@ for (let i = 0; i < buttons.length; i++) {
       buttons[i].style.color = "#EEEEEE";
       buttons[i].style.backgroundColor = "#606060";
       buttons[i].textContent = "PAUSA / VALIDA";
-       db.ref(`boto`).set("PAUSA / VALIDA")
+      actualitzarVariable(buttons[i].id,true)
+      
       document.querySelector(".player-" + currentPlayer).classList.add("actiu");
       if (!esclau){
         startTimer();
