@@ -71,11 +71,11 @@ function sincronitzarMarcador(jugador, min, sec, penal, nom) {
   const minRef = db.ref(`marcadors/${jugador}/min`);
   const secRef = db.ref(`marcadors/${jugador}/sec`);
   const penalRef = db.ref(`marcadors/${jugador}/penal`);
-  const nomRef = db.ref(`marcadors/${jugador}/nom`);
+  //const nomRef = db.ref(`marcadors/${jugador}/nom`);
   const minDiv = document.getElementById(min);
   const secDiv = document.getElementById(sec);
   const penalDiv = document.getElementById(penal);
-  const nomDiv = document.getElementById(nom);
+  //const nomDiv = document.getElementById(nom);
 
   // Sincronitza el marcador
   minRef.on("value", (snapshot) => {
@@ -87,19 +87,24 @@ function sincronitzarMarcador(jugador, min, sec, penal, nom) {
       colors1()
     }else if(jugador=="jugador2"){
       colors2()
-    }else if(!playing){
-      jugador1.classList.remove("actiu");
-      jugador2.classList.remove("actiu");
     }
   });
    penalRef.on("value", (snapshot) => {
     penalDiv.textContent = snapshot.val();
   });
-  nomRef.on("value", (snapshot) => {
+ /*  nomRef.on("value", (snapshot) => {
    nomDiv.textContent = snapshot.val();
-  });
+  }); */
 }
-
+const blancOnPause=()=>{
+  const playingRef = db.ref("playing")
+  playinRef.on("value",(valp)=>{
+    if(!valp.val){
+      jugador1.classList.remove("actiu");
+      jugador2.classList.remove("actiu");
+    }
+  })
+}
 // Sincronitza jugador 1 i jugador 2
 sincronitzarMarcador("jugador1", "min1", "sec1", "penal1", "nom1");
 sincronitzarMarcador("jugador2", "min2", "sec2", "penal2", "nom2");
