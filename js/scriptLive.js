@@ -58,7 +58,7 @@ function clickbotons(botoID){
   btnRef.on("value",(btn)=>{
     if(btn.val){
       console.log(botoID)
-    document.getElementById(botoID).click
+    document.getElementById(botoID).click()
     actualitzarVariable(botoID,false) 
   }
   })  
