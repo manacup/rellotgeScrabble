@@ -92,19 +92,17 @@
     <script>
         // Configuració de Firebase
         const firebaseConfig = {
-            apiKey: "AIzaSyCuiHcIayor6a31_oi8g3UhZHKjp513yic",
-            authDomain: "liverellotge.firebaseapp.com",
-            databaseURL: "https://liverellotge-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "liverellotge",
-            storageBucket: "liverellotge.firebasestorage.app",
-            messagingSenderId: "778450817091",
-            appId: "1:778450817091:web:54a6ed6ee3740b204104f6"
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
 
         // Inicialitza Firebase
-        //const app = firebase.initializeApp(firebaseConfig);
-        firebase.initializeApp(firebaseConfig);
-
+        const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
         const movesRef = db.ref("scrabble_moves");
@@ -138,6 +136,10 @@
                 scrabble
             });
 
+            // Alternar jugador
+            const nextPlayer = player === "Jugador 1" ? "Jugador 2" : "Jugador 1";
+            document.getElementById("player").value = nextPlayer;
+
             moveForm.reset();
         });
 
@@ -163,8 +165,8 @@
                     <td>${data.score}</td>
                     <td>${data.scrabble ? "✔️" : "❌"}</td>
                     <td class="actions">
-                        <button onclick="strikeMove('${id}')">Tatxa</button>
-                        <button onclick="deleteMove('${id}')">Esborra</button>
+                        <button onclick="strikeMove('${id}')">✖️</button>
+                        <button onclick="deleteMove('${id}')">🗑️</button>
                     </td>
                 `;
                 movesTable.appendChild(row);
@@ -177,9 +179,16 @@
 
         // Funció per tatxar una jugada
         function strikeMove(id) {
-            const row = document.querySelector(`tr[data-id='${id}'] .word-cell`);
-            if (row) {
-                row.classList.toggle('strikethrough');
+            const row = document.querySelector(`tr[data-id='${id}']`);
+            const wordCell = row.querySelector(".word-cell");
+            const scoreCell = row.querySelector("td:nth-child(4)");
+
+            if (wordCell) {
+                const isStruck = wordCell.classList.toggle("strikethrough");
+                const newScore = isStruck ? 0 : parseInt(scoreCell.textContent, 10);
+
+                // Actualitzar puntuació a la base de dades
+                movesRef.child(id).update({ score: newScore });
             }
         }
 
