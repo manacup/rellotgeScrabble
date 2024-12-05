@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campionat de Scrabble</title>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        input, button, select {
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        .actions button {
+            margin: 0 5px;
+        }
+        .strikethrough {
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Campionat de Scrabble</h1>
+        <form id="move-form">
+            <label for="player">Jugador:</label>
+            <select id="player" required>
+                <option value="">Selecciona un jugador</option>
+                <option value="Jugador 1">Jugador 1</option>
+                <option value="Jugador 2">Jugador 2</option>
+                <!-- Afegir més opcions si cal -->
+            </select>
+
+            <label for="word">Paraula posada:</label>
+            <input type="text" id="word" placeholder="Paraula jugada" required>
+
+            <label for="score">Puntuació de la jugada:</label>
+            <input type="number" id="score" placeholder="Punts de la jugada" required>
+
+            <label for="scrabble">És un Scrabble?</label>
+            <input type="checkbox" id="scrabble">
+
+            <button type="submit">Afegir jugada</button>
+        </form>
+
+        <h2>Historial de jugades</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ronda</th>
+                    <th>Jugador</th>
+                    <th>Paraula</th>
+                    <th>Puntuació</th>
+                    <th>Scrabble</th>
+                    <th>Accions</th>
+                </tr>
+            </thead>
+            <tbody id="moves-table">
+                <!-- Les dades es mostraran aquí -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Configuració de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCuiHcIayor6a31_oi8g3UhZHKjp513yic",
+            authDomain: "liverellotge.firebaseapp.com",
+            databaseURL: "https://liverellotge-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "liverellotge",
+            storageBucket: "liverellotge.firebasestorage.app",
+            messagingSenderId: "778450817091",
+            appId: "1:778450817091:web:54a6ed6ee3740b204104f6"
+        };
+
+        // Inicialitza Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Referència a la col·lecció
+        const movesRef = db.collection("scrabble_moves");
+
+        // Formulari
+        const moveForm = document.getElementById("move-form");
+        const movesTable = document.getElementById("moves-table");
+
+        moveForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const player = document.getElementById("player").value;
+            const word = document.getElementById("word").value;
+            const score = parseInt(document.getElementById("score").value, 10);
+            const scrabble = document.getElementById("scrabble").checked;
+
+            // Afegir jugada a Firestore
+            try {
+                await movesRef.add({
+                    player,
+                    word,
+                    score,
+                    scrabble,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                moveForm.reset();
+            } catch (error) {
+                console.error("Error afegint la jugada: ", error);
+            }
+        });
+
+        // Escoltar canvis en temps real
+        movesRef.orderBy("timestamp").onSnapshot((snapshot) => {
+            movesTable.innerHTML = "";
+            let round = 1;
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const row = document.createElement("tr");
+                row.dataset.id = doc.id;
+                row.innerHTML = `
+                    <td>${round++}</td>
+                    <td>${data.player}</td>
+                    <td class="word-cell">${data.word}</td>
+                    <td>${data.score}</td>
+                    <td>${data.scrabble ? "✔️" : "❌"}</td>
+                    <td class="actions">
+                        <button onclick="strikeMove('${doc.id}')">Tatxa</button>
+                        <button onclick="editMove('${doc.id}')">Edita</button>
+                        <button onclick="deleteMove('${doc.id}')">Esborra</button>
+                    </td>
+                `;
+                movesTable.appendChild(row);
+            });
+        });
+
+        // Funció per tatxar una jugada
+        function strikeMove(id) {
+            const row = document.querySelector(`tr[data-id='${id}'] .word-cell`);
+            if (row) {
+                row.classList.toggle('strikethrough');
+            }
+        }
+
+        // Funció per esborrar una jugada
+        async function deleteMove(id) {
+            if (confirm("Segur que vols esborrar aquesta jugada?")) {
+                try {
+                    await movesRef.doc(id).delete();
+                } catch (error) {
+                    console.error("Error esborrant la jugada: ", error);
+                }
+            }
+        }
+
+        // Funció per editar una jugada (bàsica, només alert per ara)
+        function editMove(id) {
+            alert("Funció d'edició no implementada encara.");
+        }
+    </script>
+</body>
+</html>
