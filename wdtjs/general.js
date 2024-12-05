@@ -232,7 +232,7 @@ jQuery(function ($) {
 	$('form').submit(function (e) { 
 		e.preventDefault(); 
 		qryShow();
-		actualitzarVariable("btnValida",true)
+		
 		return false; 
 	});
 	$('.dictsel').change(function () {
