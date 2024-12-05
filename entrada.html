@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Campionat de Scrabble</title>
-    <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -64,6 +64,12 @@
             <button type="submit">Afegir jugada</button>
         </form>
 
+        <h2>Puntuacions totals</h2>
+        <ul id="totals">
+            <li>Jugador 1: <span id="total-player-1">0</span> punts</li>
+            <li>Jugador 2: <span id="total-player-2">0</span> punts</li>
+        </ul>
+
         <h2>Historial de jugades</h2>
         <table>
             <thead>
@@ -98,14 +104,21 @@
         const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Referència a la col·lecció
-        const movesRef = db.collection("scrabble_moves");
+        const movesRef = db.ref("scrabble_moves");
 
-        // Formulari
+        // Formulari i elements
         const moveForm = document.getElementById("move-form");
         const movesTable = document.getElementById("moves-table");
+        const totalPlayer1 = document.getElementById("total-player-1");
+        const totalPlayer2 = document.getElementById("total-player-2");
 
-        moveForm.addEventListener("submit", async (e) => {
+        let totals = {
+            "Jugador 1": 0,
+            "Jugador 2": 0
+        };
+
+        // Afegir jugada
+        moveForm.addEventListener("submit", (e) => {
             e.preventDefault();
 
             const player = document.getElementById("player").value;
@@ -113,29 +126,33 @@
             const score = parseInt(document.getElementById("score").value, 10);
             const scrabble = document.getElementById("scrabble").checked;
 
-            // Afegir jugada a Firestore
-            try {
-                await movesRef.add({
-                    player,
-                    word,
-                    score,
-                    scrabble,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                moveForm.reset();
-            } catch (error) {
-                console.error("Error afegint la jugada: ", error);
-            }
+            // Afegir a la base de dades
+            const newMove = movesRef.push();
+            newMove.set({
+                player,
+                word,
+                score,
+                scrabble
+            });
+
+            moveForm.reset();
         });
 
-        // Escoltar canvis en temps real
-        movesRef.orderBy("timestamp").onSnapshot((snapshot) => {
+        // Actualitzar taula i puntuacions en temps real
+        movesRef.on("value", (snapshot) => {
             movesTable.innerHTML = "";
+            totals = { "Jugador 1": 0, "Jugador 2": 0 };
+
             let round = 1;
-            snapshot.forEach((doc) => {
-                const data = doc.data();
+            snapshot.forEach((childSnapshot) => {
+                const data = childSnapshot.val();
+                const id = childSnapshot.key;
+
+                // Actualitzar puntuacions totals
+                totals[data.player] += data.score;
+
                 const row = document.createElement("tr");
-                row.dataset.id = doc.id;
+                row.dataset.id = id;
                 row.innerHTML = `
                     <td>${round++}</td>
                     <td>${data.player}</td>
@@ -143,13 +160,16 @@
                     <td>${data.score}</td>
                     <td>${data.scrabble ? "✔️" : "❌"}</td>
                     <td class="actions">
-                        <button onclick="strikeMove('${doc.id}')">Tatxa</button>
-                        <button onclick="editMove('${doc.id}')">Edita</button>
-                        <button onclick="deleteMove('${doc.id}')">Esborra</button>
+                        <button onclick="strikeMove('${id}')">Tatxa</button>
+                        <button onclick="deleteMove('${id}')">Esborra</button>
                     </td>
                 `;
                 movesTable.appendChild(row);
             });
+
+            // Actualitzar visuals totals
+            totalPlayer1.textContent = totals["Jugador 1"];
+            totalPlayer2.textContent = totals["Jugador 2"];
         });
 
         // Funció per tatxar una jugada
@@ -161,19 +181,10 @@
         }
 
         // Funció per esborrar una jugada
-        async function deleteMove(id) {
+        function deleteMove(id) {
             if (confirm("Segur que vols esborrar aquesta jugada?")) {
-                try {
-                    await movesRef.doc(id).delete();
-                } catch (error) {
-                    console.error("Error esborrant la jugada: ", error);
-                }
+                movesRef.child(id).remove();
             }
-        }
-
-        // Funció per editar una jugada (bàsica, només alert per ara)
-        function editMove(id) {
-            alert("Funció d'edició no implementada encara.");
         }
     </script>
 </body>
