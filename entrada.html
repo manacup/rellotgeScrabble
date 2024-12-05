@@ -96,10 +96,10 @@
 
         // Inicialitza Firebase
         const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        const db = firebase.database();
 
         // Referència a la col·lecció
-        const movesRef = db.collection("scrabble_moves");
+        const movesRef = db.ref("scrabble_moves");
 
         // Formulari
         const moveForm = document.getElementById("move-form");
