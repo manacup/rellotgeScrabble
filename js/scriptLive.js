@@ -409,12 +409,16 @@ function canvijug1() {
   if(!esclau){
   canvitorn(2);
   colors2();
+  }else{
+    clearInterval(timerId)
   }
 }
 function canvijug2() {
   if(!esclau){
   canvitorn(1);
   colors1();
+  }else{
+    clearInterval(timerId)
   }
 }
 function canvitorn(jug) {
