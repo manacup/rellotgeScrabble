@@ -232,6 +232,7 @@ jQuery(function ($) {
 	$('form').submit(function (e) { 
 		e.preventDefault(); 
 		qryShow();
+		actualitzarVariable("buttons",true)
 		return false; 
 	});
 	$('.dictsel').change(function () {
