@@ -79,10 +79,10 @@ function sincronitzarMarcador(jugador, min, sec, penal, nom) {
 
   // Sincronitza el marcador
   minRef.on("value", (snapshot) => {
-    minDiv.textContent = padZero(snapshot.val()) || 00;
+    minDiv.textContent = padZero(snapshot.val()) || 0;
   });
   secRef.on("value", (snapshot) => {
-    secDiv.textContent = padZero(snapshot.val()) || 00;
+    secDiv.textContent = padZero(snapshot.val()) || 0;
     if(jugador=="jugador1"){
       colors1()
     }else if(jugador=="jugador2"){
@@ -446,6 +446,7 @@ function canvitorn(jug) {
   console.log(jug);
   if (!playing && botoStart.textContent === "CONTINUA") {
     currentPlayer = jug;
+    actualitzarVariable("currentPlayer",jug)
     localStorage.setItem("jugactiu", jug);
     playing = true;
     actualitzarVariable("playing",true)
@@ -466,6 +467,7 @@ function canvitorn(jug) {
     }
   } else if (!playing && botoStart.textContent === "COMENÇA") {
     currentPlayer = jug;
+    actualitzarVariable("currentPlayer",jug)
     localStorage.setItem("jugactiu", jug);
     actualitzarVariable(botoStart.id,true)
     startTimer();
@@ -493,6 +495,7 @@ function canvitorn(jug) {
     }
   } else if (currentPlayer != jug) {
     currentPlayer = jug;
+    actualitzarVariable("currentPlayer",jug)
     localStorage.setItem("jugactiu", jug);
     jug == 2
       ? jugador1.classList.remove("actiu")
