@@ -156,7 +156,7 @@ var qryShow = function() {
 	jQuery('#res').slideDown(200);
 	
 	// Inicia el timer per esborrar i el compte enrere, amb qryDelete
-	var esbCDwn = 5; 
+	var esbCDwn = 10; 
 	jQuery('#res_timer').html('S\'amagarà en <span>'+esbCDwn+'</span> segons.');
 	
 	if (timer) clearInterval(timer);
@@ -182,7 +182,7 @@ var qryDelete = function(force) {
 	// Esborra la consulta i el resultat
 	if (force || qryStrCache == jQuery('.qry').val())
 		jQuery('.qry').val('')
-		
+		actualitzarInput('valida','')
 	
 	jQuery('#res').slideUp(200, function() {
 		jQuery('#res_info').html('');
