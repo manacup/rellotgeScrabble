@@ -63,42 +63,39 @@
         }
 
         #player-selection {
-    display: flex;
-    justify-content: space-between; /* Espaiar els botons */
-    margin-bottom: 15px;
-}
+            display: flex;
+            justify-content: space-between;
+            /* Espaiar els botons */
+            margin-bottom: 15px;
+        }
 
-#player-selection label {
-    display: block;
-    width: 48%; /* Cada botó ocupa aproximadament la meitat de l'amplada */
-}
+        #player-selection label {
+            display: block;
+            width: 48%;
+            /* Cada botó ocupa aproximadament la meitat de l'amplada */
+        }
 
-#player-selection span {
-    padding: 10px 0;
-    display: block;
-    text-align: center;
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: #f4f4f4;
-    color: #333;
-    transition: background-color 0.3s, color 0.3s;
-}
+        #player-selection span {
+            padding: 10px 0;
+            display: block;
+            text-align: center;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #f4f4f4;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+        }
 
-#player-selection input[type="radio"]:checked + span {
-    background-color: #007bff;
-    color: #fff;
-    border-color: #007bff;
-}
+        #player-selection input[type="radio"]:checked+span {
+            background-color: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
 
-input[type="radio"] {
-    display: none; /* Amaga els botons radio */
-}
-
-
-
-        #player-selection {
-            padding: 30px;
+        input[type="radio"] {
+            display: none;
+            /* Amaga els botons radio */
         }
 
         .scrabble {
@@ -204,32 +201,33 @@ input[type="radio"] {
             const data = snapshot.val();
             for (const playerKey in data) {
                 const playerName = data[playerKey].nom;
-                totals[playerName] = 0;
+                const playerId = playerKey+1
+                totals[playerId] = 0;
 
                 // Crear botons de selecció de jugador
                 const label = document.createElement("label");
                 label.innerHTML = `
-                    <input type="radio" name="player" value="${playerName}" required >
+                    <input type="radio" name="player" value="${playerName}" required id="${playerId}">
                     <span>${playerName}</span>
                 `;
                 playerSelection.appendChild(label);
 
                 // Afegir entrada a la llista de puntuacions
                 const totalItem = document.createElement("li");
-                totalItem.id = `total-${playerKey}`;
+                totalItem.id = `total-${playerId}`;
                 totalItem.innerHTML = `${playerName}: <span>0</span> punts`;
                 totalsList.appendChild(totalItem);
             }
         });
 
-        const togglePlayerTurn = (currentPlayerName) => {
-    const allPlayers = document.querySelectorAll("#player-selection input[type='radio']");
-
-    // Alternar el torn marcant com a 'checked' l'input que no coincideixi amb el jugador actual
-    allPlayers.forEach((input) => {
-        input.checked = input.value !== currentPlayerName;
-    });
-};
+        const togglePlayerTurn = (currentPlayerId) => {
+            const allPlayers = document.querySelectorAll("#player-selection input[type='radio']");
+            if(currentPlayerId==1){
+                allPlayers[currentPlayerId].checked = true
+            }else{
+                allPlayers[currentPlayerId-1].checked = true
+            }
+        };
 
         // Event submit amb la nova funció
         moveForm.addEventListener("submit", (e) => {
@@ -326,7 +324,7 @@ input[type="radio"] {
 
                 scoreCell.dataset.originalScore = originalScore;
                 scoreCell.textContent = newScore;
-                
+
 
                 // Actualitzar puntuació a la base de dades
                 movesRef.child(id).update({ score: newScore });
