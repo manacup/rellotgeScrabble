@@ -62,33 +62,43 @@
             text-decoration: line-through;
         }
 
-        #player-selection label {
-            display: inline-block;
-            margin: 5px;
-        }
+        #player-selection {
+    display: flex;
+    justify-content: space-between; /* Espaiar els botons */
+    margin-bottom: 15px;
+}
 
-        #player-selection input[type="radio"] {
-            display: none;
-        }
+#player-selection label {
+    display: block;
+    width: 48%; /* Cada botó ocupa aproximadament la meitat de l'amplada */
+}
 
-        #player-selection span {
-            padding: 10px 20px;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-            cursor: pointer;
-            background-color: #f4f4f4;
-            color: #333;
-            transition: background-color 0.3s, color 0.3s;
-        }
+#player-selection span {
+    padding: 10px 0;
+    display: block;
+    text-align: center;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #f4f4f4;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s;
+}
 
-        #player-selection input[type="radio"]:checked+span {
-            background-color: #007bff;
-            color: #fff;
-            border-color: #007bff;
-        }
+#player-selection input[type="radio"]:checked + span {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+input[type="radio"] {
+    display: none; /* Amaga els botons radio */
+}
+
+
 
         #player-selection {
-            padding: auto;
+            padding: 30px;
         }
 
         .scrabble {
@@ -310,12 +320,13 @@
             const scoreCell = row.querySelector(".score-cell");
 
             if (wordCell) {
-                const isStruck = wordCell.classList.toggle("strikethrough");
+                const isStruck = wordCell.classList.add("strikethrough");
                 const originalScore = parseInt(scoreCell.dataset.originalScore || scoreCell.textContent, 10);
                 const newScore = isStruck ? 0 : originalScore;
 
                 scoreCell.dataset.originalScore = originalScore;
                 scoreCell.textContent = newScore;
+                
 
                 // Actualitzar puntuació a la base de dades
                 movesRef.child(id).update({ score: newScore });
