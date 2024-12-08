@@ -308,7 +308,7 @@
                 if (totalItem) {
                     totalItem.querySelector("span").textContent = totals[playerKey];
                     const playerRef = db.ref(`marcadors/${playerKey}/punts/`)
-                    playerRef.set(totals["Jugador 2"])
+                    playerRef.set(totals[playerKey])
                 }
             }
         });
