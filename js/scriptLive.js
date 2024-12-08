@@ -547,6 +547,9 @@ tempsBtn.addEventListener("click", () => {
   actualitzarVariable("playing",false)
   incrementar("jugador1","penal", "")
   incrementar("jugador2","penal", "")
+  actualitzarVariable("jug1",true)
+  actualitzarVariable("jug2",true)
+  actualitzarVariable("currentPlayer","")
   
 
   clearInterval(timerId);
@@ -677,7 +680,7 @@ document.getElementById("input").addEventListener("click", () => {
     document.querySelectorAll(".player__tile").forEach((e) => {
       e.classList.add("petit");
     });
-  }, 00);
+  }, 0);
   console.log("funciona");
   }
 });
