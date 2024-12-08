@@ -280,7 +280,7 @@
                 row.innerHTML = `
            
             <td>${move.player}</td>
-            <td class="word-cell ${move.scrabble ? 'scrabble' : ''}">${move.word}</td>
+            <td class="word-cell ${move.scrabble ? 'scrabble' : ''}">${move.word.toUpperCase()}</td>
             <td class="score-cell ${move.scrabble ? 'scrabble' : ''}">${move.score}</td>
            
             <td class="actions">
