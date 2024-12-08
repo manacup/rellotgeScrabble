@@ -212,13 +212,14 @@
             }
         });
 
-        const togglePlayerTurn = (currentPlayerInput) => {
-            // Alterna el valor de checked entre els dos inputs
-            const allPlayers = document.querySelectorAll("#player-selection input[type='radio']");
-            allPlayers.forEach((input) => {
-                input.checked = input !== currentPlayerInput; // Marca l'altre input
-            });
-        };
+        const togglePlayerTurn = (currentPlayerName) => {
+    const allPlayers = document.querySelectorAll("#player-selection input[type='radio']");
+
+    // Alternar el torn marcant com a 'checked' l'input que no coincideixi amb el jugador actual
+    allPlayers.forEach((input) => {
+        input.checked = input.value !== currentPlayerName;
+    });
+};
 
         // Event submit amb la nova funció
         moveForm.addEventListener("submit", (e) => {
@@ -246,7 +247,7 @@
             });
 
             // Alternar el torn
-            togglePlayerTurn(playerInput);
+            togglePlayerTurn(player);
 
             // Reset del formulari
             moveForm.reset();
