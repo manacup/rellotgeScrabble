@@ -307,6 +307,7 @@
                 const totalItem = document.getElementById(`total-${playerKey}`);
                 if (totalItem) {
                     totalItem.querySelector("span").textContent = totals[playerKey];
+                    marcadorsRef.set(`/${playerKey}/punts/${totals["Jugador 2"]}`)
                 }
             }
         });
