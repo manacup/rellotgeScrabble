@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ca">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,49 +12,65 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
+
         .container {
             max-width: 600px;
             margin: auto;
         }
-        input, button {
+
+        input,
+        button {
             padding: 10px;
             margin: 5px 0;
             width: 100%;
         }
+
         .player-buttons {
             display: flex;
             justify-content: space-between;
         }
+
         .player-buttons button {
             width: 48%;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
-        table, th, td {
+
+        table,
+        th,
+        td {
             border: 1px solid #ccc;
         }
-        th, td {
+
+        th,
+        td {
             padding: 10px;
             text-align: center;
         }
+
         .actions button {
             margin: 0 2px;
             padding: 5px;
             font-size: 12px;
         }
+
         .strikethrough {
             text-decoration: line-through;
         }
+
         #player-selection label {
             display: inline-block;
             margin: 5px;
         }
+
         #player-selection input[type="radio"] {
             display: none;
         }
+
         #player-selection span {
             padding: 10px 20px;
             border: 2px solid #ccc;
@@ -63,35 +80,47 @@
             color: #333;
             transition: background-color 0.3s, color 0.3s;
         }
-        #player-selection input[type="radio"]:checked + span {
+
+        #player-selection input[type="radio"]:checked+span {
             background-color: #007bff;
             color: #fff;
             border-color: #007bff;
         }
+
         #player-selection span.active {
-    border-color: #28a745;
-    background-color: #d4edda;
-    color: #155724;
-    font-weight: bold;
-}
-/* Contenidor amb desplaçament per taules */
-table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-}
+            border-color: #28a745;
+            background-color: #d4edda;
+            color: #155724;
+            font-weight: bold;
+        }
 
-/* Amagar columnes no essencials en pantalles petites */
-@media (max-width: 600px) {
-    th:nth-child(4), td:nth-child(4), 
-    th:nth-child(5), td:nth-child(5),
-    th:nth-child(6), td:nth-child(6) {
-        display: none;
-    }
-}
+        .scrabble {
+            font-weight: bold;
+            text-decoration: underline;
+        }
 
+        /* Contenidor amb desplaçament per taules */
+        table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        /* Amagar columnes no essencials en pantalles petites */
+        /* @media (max-width: 600px) {
+
+            th:nth-child(4),
+            td:nth-child(4),
+            th:nth-child(5),
+            td:nth-child(5),
+            th:nth-child(6),
+            td:nth-child(6) {
+                display: none;
+            }
+        } */
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>Campionat de Scrabble</h1>
@@ -121,11 +150,11 @@ table {
         <table>
             <thead>
                 <tr>
-                    <th>Ronda</th>
+
                     <th>Jugador</th>
                     <th>Paraula</th>
                     <th>Puntuació</th>
-                    <th>Scrabble</th>
+                    <!-- <th>Scrabble</th> -->
                     <th>Accions</th>
                 </tr>
             </thead>
@@ -187,92 +216,92 @@ table {
         });
 
         const togglePlayerTurn = (currentPlayerInput) => {
-    // Alterna el valor de checked entre els dos inputs
-    const allPlayers = document.querySelectorAll("#player-selection input[type='radio']");
-    allPlayers.forEach((input) => {
-        input.checked = input !== currentPlayerInput; // Marca l'altre input
-    });
-};
+            // Alterna el valor de checked entre els dos inputs
+            const allPlayers = document.querySelectorAll("#player-selection input[type='radio']");
+            allPlayers.forEach((input) => {
+                input.checked = input !== currentPlayerInput; // Marca l'altre input
+            });
+        };
 
-// Event submit amb la nova funció
-moveForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+        // Event submit amb la nova funció
+        moveForm.addEventListener("submit", (e) => {
+            e.preventDefault();
 
-    const playerInput = document.querySelector('input[name="player"]:checked');
-    if (!playerInput) {
-        alert("Selecciona un jugador abans d'afegir una jugada.");
-        return;
-    }
+            const playerInput = document.querySelector('input[name="player"]:checked');
+            if (!playerInput) {
+                alert("Selecciona un jugador abans d'afegir una jugada.");
+                return;
+            }
 
-    const player = playerInput.value;
-    const word = document.getElementById("word").value;
-    const score = parseInt(document.getElementById("score").value, 10);
-    const scrabble = document.getElementById("scrabble").checked;
+            const player = playerInput.value;
+            const word = document.getElementById("word").value;
+            const score = parseInt(document.getElementById("score").value, 10);
+            const scrabble = document.getElementById("scrabble").checked;
 
-    // Afegir la jugada a Firebase
-    const newMove = movesRef.push();
-    newMove.set({
-        player,
-        word,
-        score,
-        scrabble,
-        timestamp: Date.now(),
-    });
+            // Afegir la jugada a Firebase
+            const newMove = movesRef.push();
+            newMove.set({
+                player,
+                word,
+                score,
+                scrabble,
+                timestamp: Date.now(),
+            });
 
-    // Alternar el torn
-    togglePlayerTurn(playerInput);
+            // Alternar el torn
+            togglePlayerTurn(playerInput);
 
-    // Reset del formulari
-    moveForm.reset();
-});
+            // Reset del formulari
+            moveForm.reset();
+        });
 
 
 
-movesRef.on("value", (snapshot) => {
-    movesTable.innerHTML = "";
-    for (const key in totals) {
-        totals[key] = 0; // Reinicia els totals
-    }
+        movesRef.on("value", (snapshot) => {
+            movesTable.innerHTML = "";
+            for (const key in totals) {
+                totals[key] = 0; // Reinicia els totals
+            }
 
-    // Recollir les jugades en un array i ordenar-les per timestamp
-    const moves = [];
-    snapshot.forEach((childSnapshot) => {
-        const data = childSnapshot.val();
-        const id = childSnapshot.key;
-        totals[data.player] += data.score;
-        moves.push({ ...data, id }); // Afegir jugada a l'array
-    });
+            // Recollir les jugades en un array i ordenar-les per timestamp
+            const moves = [];
+            snapshot.forEach((childSnapshot) => {
+                const data = childSnapshot.val();
+                const id = childSnapshot.key;
+                totals[data.player] += data.score;
+                moves.push({ ...data, id }); // Afegir jugada a l'array
+            });
 
-    // Ordenar per timestamp (descendent: més recent primer)
-    moves.sort((a, b) => b.timestamp - a.timestamp);
+            // Ordenar per timestamp (descendent: més recent primer)
+            moves.sort((a, b) => b.timestamp - a.timestamp);
 
-    // Renderitzar les jugades ordenades
-    let round = moves.length;
-    moves.forEach((move) => {
-        const row = document.createElement("tr");
-        row.dataset.id = move.id;
-        row.innerHTML = `
+            // Renderitzar les jugades ordenades
+            let round = moves.length;
+            moves.forEach((move) => {
+                const row = document.createElement("tr");
+                row.dataset.id = move.id;
+                row.innerHTML = `
             <td>${round--}</td>
             <td>${move.player}</td>
-            <td class="word-cell">${move.word}</td>
-            <td class="score-cell">${move.score}</td>
+            <td class="word-cell ${move.scrabble ? 'scrabble' : ''}">${move.word}</td>
+            <td class="score-cell ${move.scrabble ? 'scrabble' : ''}">${move.score}</td>
             <td>${move.scrabble ? "✔️" : "❌"}</td>
             <td class="actions">
                 <button onclick="strikeMove('${move.id}')">✖️</button>
                 <button onclick="deleteMove('${move.id}')">🗑️</button>
             </td>
         `;
-        movesTable.appendChild(row);
-    });
+                movesTable.appendChild(row);
+            });
 
-    // Actualitzar visuals totals
-    for (const playerKey in totals) {
-        const totalItem = document.getElementById(`total-${playerKey}`);
-        if (totalItem) {
-            totalItem.querySelector("span").textContent = totals[playerKey];
-        }
-    }
-});
+            // Actualitzar visuals totals
+            for (const playerKey in totals) {
+                const totalItem = document.getElementById(`total-${playerKey}`);
+                if (totalItem) {
+                    totalItem.querySelector("span").textContent = totals[playerKey];
+                }
+            }
+        });
 
 
 
@@ -308,4 +337,5 @@ movesRef.on("value", (snapshot) => {
         });
     </script>
 </body>
+
 </html>
