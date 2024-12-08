@@ -77,7 +77,7 @@
         <!-- Player 1 Box -->
         <div class="player-box">
             <div class="player-info">
-                <img id="player1-image" src="player1.jpg" alt="Player 1" class="player-image">
+                <img id="player1-image" src="/images/Xisco Truyols.jpg" alt="Player 1" class="player-image">
                 <span id="player1-name" class="player-name">Nom Llinatge</span>
             </div>
             <div class="score-clock">
@@ -94,7 +94,7 @@
             </div>
             <div class="player-info">
                 <span id="player2-name" class="player-name">Nom Llinatge</span>
-                <img id="player2-image" src="player2.jpg" alt="Player 2" class="player-image">
+                <img id="player2-image" src="/images/Aina Garcia.jpg" alt="Player 2" class="player-image">
             </div>
         </div>
     </div>
@@ -125,13 +125,13 @@
                 document.getElementById('player1-name').textContent = data.marcadors.jugador1.nom;
                 document.getElementById('player1-score').textContent = data.marcadors.jugador1.punts;
                 document.getElementById('player1-clock').textContent = `${data.marcadors.jugador1.min}:${padZero(data.marcadors.jugador1.sec)}`;
-                document.getElementById('player1-image').src = "images/" + data.marcadors.jugador1.nom + ".jpg"
+                document.getElementById('player1-image').src = "/images/" + data.marcadors.jugador1.nom + ".jpg"
 
                 // Update Player 2
                 document.getElementById('player2-name').textContent = data.marcadors.jugador2.nom;
                 document.getElementById('player2-score').textContent = data.marcadors.jugador2.punts;
                 document.getElementById('player2-clock').textContent = `${data.marcadors.jugador2.min}:${padZero(data.marcadors.jugador2.sec)}`;
-                document.getElementById('player2-image').src = "images/" + data.marcadors.jugador2.nom + ".jpg"
+                document.getElementById('player2-image').src = "/images/" + data.marcadors.jugador2.nom + ".jpg"
 
                 // Highlight clocks based on playing and discount state
                 const player1Clock = document.getElementById('player1-clock');
