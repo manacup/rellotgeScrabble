@@ -309,10 +309,11 @@ function tempsDescompte() {
           p1secpenal = 0;
         } else {
           p1secpenal = p1secpenal + 1;
-          var mispenal1 = "Penalització: -" + (p1time.minutes + 1) * 10 + " punts";
+          let ptsPenal ="-"+ (p1time.minutes + 1) * 10
+          var mispenal1 = "Penalització: " + ptsPenal + " punts";
           document.getElementById("penal1").textContent = mispenal1
             
-          incrementar("jugador1","penal",mispenal1)
+          incrementar("jugador1","penal",ptsPenal)
          
         }
 
