@@ -125,13 +125,13 @@
                 document.getElementById('player1-name').textContent = data.marcadors.jugador1.nom;
                 document.getElementById('player1-score').textContent = data.marcadors.jugador1.punts;
                 document.getElementById('player1-clock').textContent = `${data.marcadors.jugador1.min}:${padZero(data.marcadors.jugador1.sec)}`;
-                document.getElementById('player1-image').src = "/images/" + data.marcadors.jugador1.nom.replace(" ","_") + ".jpg"
+                document.getElementById('player1-image').src = "/rellotgeScrabble/images/" + data.marcadors.jugador1.nom + ".jpg"
 
                 // Update Player 2
                 document.getElementById('player2-name').textContent = data.marcadors.jugador2.nom;
                 document.getElementById('player2-score').textContent = data.marcadors.jugador2.punts;
                 document.getElementById('player2-clock').textContent = `${data.marcadors.jugador2.min}:${padZero(data.marcadors.jugador2.sec)}`;
-                document.getElementById('player2-image').src = "/images/" + data.marcadors.jugador2.nom.replace(" ","_") + ".jpg"
+                document.getElementById('player2-image').src = "/rellotgeScrabble/images/" + data.marcadors.jugador2.nom + ".jpg"
 
                 // Highlight clocks based on playing and discount state
                 const player1Clock = document.getElementById('player1-clock');
