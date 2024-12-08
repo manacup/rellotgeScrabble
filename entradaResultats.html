@@ -87,11 +87,8 @@
             border-color: #007bff;
         }
 
-        #player-selection span.active {
-            border-color: #28a745;
-            background-color: #d4edda;
-            color: #155724;
-            font-weight: bold;
+        #player-selection {
+            padding: auto;
         }
 
         .scrabble {
@@ -281,11 +278,11 @@
                 const row = document.createElement("tr");
                 row.dataset.id = move.id;
                 row.innerHTML = `
-            <td>${round--}</td>
+           
             <td>${move.player}</td>
             <td class="word-cell ${move.scrabble ? 'scrabble' : ''}">${move.word}</td>
             <td class="score-cell ${move.scrabble ? 'scrabble' : ''}">${move.score}</td>
-            <td>${move.scrabble ? "✔️" : "❌"}</td>
+           
             <td class="actions">
                 <button onclick="strikeMove('${move.id}')">✖️</button>
                 <button onclick="deleteMove('${move.id}')">🗑️</button>
