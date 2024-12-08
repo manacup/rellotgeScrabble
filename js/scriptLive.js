@@ -63,7 +63,7 @@ function clickbotons(botoID){
   }
   })  
 }
-clickbotons("btnStart")
+//clickbotons("btnStart")
 clickbotons("btnValida")
 
 // Funció per sincronitzar el marcador 
@@ -106,8 +106,8 @@ const blancOnPause=()=>{
   })
 }
 // Sincronitza jugador 1 i jugador 2
-sincronitzarMarcador("jugador1", "min1", "sec1", "penal1", "nom1");
-sincronitzarMarcador("jugador2", "min2", "sec2", "penal2", "nom2");
+/* sincronitzarMarcador("jugador1", "min1", "sec1", "penal1", "nom1");
+sincronitzarMarcador("jugador2", "min2", "sec2", "penal2", "nom2"); */
 
 // Funció per actualitzar el valor de l'input
 function actualitzarInput(inpdiv,valor) {
