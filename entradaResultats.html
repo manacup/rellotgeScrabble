@@ -75,14 +75,7 @@
         <h1>Campionat de Scrabble</h1>
         <form id="move-form">
             <div id="player-selection">
-                <label>
-                    <input type="radio" name="player" value="Jugador 1" required>
-                    <span>Jugador 1</span>
-                </label>
-                <label>
-                    <input type="radio" name="player" value="Jugador 2">
-                    <span>Jugador 2</span>
-                </label>
+                <!-- Els botons dels jugadors es generaran dinàmicament aquí -->
             </div>
 
             <label for="word">Paraula posada:</label>
@@ -99,8 +92,7 @@
 
         <h2>Puntuacions totals</h2>
         <ul id="totals">
-            <li>Jugador 1: <span id="total-player-1">0</span> punts</li>
-            <li>Jugador 2: <span id="total-player-2">0</span> punts</li>
+            <!-- Les puntuacions es generaran dinàmicament aquí -->
         </ul>
 
         <h2>Historial de jugades</h2>
@@ -140,19 +132,37 @@
         const db = firebase.database();
 
         const movesRef = db.ref("scrabble_moves");
-        const marcador1Ref = db.ref("marcadors/jugador1/punts");
-        const marcador2Ref = db.ref("marcadors/jugador2/punts");
+        const marcadorsRef = db.ref("marcadors");
 
-        // Formulari i elements
         const moveForm = document.getElementById("move-form");
         const movesTable = document.getElementById("moves-table");
-        const totalPlayer1 = document.getElementById("total-player-1");
-        const totalPlayer2 = document.getElementById("total-player-2");
+        const playerSelection = document.getElementById("player-selection");
+        const totalsList = document.getElementById("totals");
 
-        let totals = {
-            "Jugador 1": 0,
-            "Jugador 2": 0
-        };
+        let totals = {};
+
+        // Carregar noms dels jugadors i inicialitzar totals
+        marcadorsRef.once("value", (snapshot) => {
+            const data = snapshot.val();
+            for (const playerKey in data) {
+                const playerName = data[playerKey].nom;
+                totals[playerName] = 0;
+
+                // Crear botons de selecció de jugador
+                const label = document.createElement("label");
+                label.innerHTML = `
+                    <input type="radio" name="player" value="${playerName}" required>
+                    <span>${playerName}</span>
+                `;
+                playerSelection.appendChild(label);
+
+                // Afegir entrada a la llista de puntuacions
+                const totalItem = document.createElement("li");
+                totalItem.id = `total-${playerKey}`;
+                totalItem.innerHTML = `${playerName}: <span>0</span> punts`;
+                totalsList.appendChild(totalItem);
+            }
+        });
 
         // Afegir jugada
         moveForm.addEventListener("submit", (e) => {
@@ -179,8 +189,12 @@
             });
 
             // Alternar jugador automàticament
-            const nextPlayer = player === "Jugador 1" ? "Jugador 2" : "Jugador 1";
-            document.querySelector(`input[value="${nextPlayer}"]`).checked = true;
+            const nextPlayer = playerInput.nextElementSibling.nextElementSibling;
+            if (nextPlayer) {
+                nextPlayer.previousElementSibling.checked = true;
+            } else {
+                playerSelection.querySelector("input").checked = true;
+            }
 
             moveForm.reset();
         });
@@ -188,14 +202,15 @@
         // Actualitzar taula i puntuacions en temps real
         movesRef.on("value", (snapshot) => {
             movesTable.innerHTML = "";
-            totals = { "Jugador 1": 0, "Jugador 2": 0 };
+            for (const key in totals) {
+                totals[key] = 0;
+            }
 
             let round = 1;
             snapshot.forEach((childSnapshot) => {
                 const data = childSnapshot.val();
                 const id = childSnapshot.key;
 
-                // Actualitzar puntuacions totals
                 totals[data.player] += data.score;
 
                 const row = document.createElement("tr");
@@ -215,10 +230,12 @@
             });
 
             // Actualitzar visuals totals
-            totalPlayer1.textContent = totals["Jugador 1"];
-            totalPlayer2.textContent = totals["Jugador 2"];
-            marcador1Ref.set(totals["Jugador 1"]);
-            marcador2Ref.set(totals["Jugador 2"]);
+            for (const playerKey in totals) {
+                const totalItem = document.getElementById(`total-${playerKey}`);
+                if (totalItem) {
+                    totalItem.querySelector("span").textContent = totals[playerKey];
+                }
+            }
         });
 
         // Funció per tatxar una jugada
@@ -237,19 +254,6 @@
 
                 // Actualitzar puntuació a la base de dades
                 movesRef.child(id).update({ score: newScore });
-
-                // Recalcular totals
-                movesRef.once("value", (snapshot) => {
-                    totals = { "Jugador 1": 0, "Jugador 2": 0 };
-                    snapshot.forEach((childSnapshot) => {
-                        const data = childSnapshot.val();
-                        totals[data.player] += data.score;
-                    });
-                    totalPlayer1.textContent = totals["Jugador 1"];
-                    totalPlayer2.textContent = totals["Jugador 2"];
-                    marcador1Ref.set(totals["Jugador 1"]);
-                    marcador2Ref.set(totals["Jugador 2"]);
-                });
             }
         }
 
