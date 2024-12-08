@@ -209,7 +209,6 @@ const togglePlayerTurn = (currentPlayerInput) => {
     });
 };
 
-// Modificar l'esdeveniment submit
 moveForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -224,13 +223,14 @@ moveForm.addEventListener("submit", (e) => {
     const score = parseInt(document.getElementById("score").value, 10);
     const scrabble = document.getElementById("scrabble").checked;
 
-    // Afegir a la base de dades
+    // Afegir a la base de dades amb el temps actual
     const newMove = movesRef.push();
     newMove.set({
         player,
         word,
         score,
-        scrabble
+        scrabble,
+        timestamp: Date.now() // Temps actual en mil·lisegons
     });
 
     // Alternar torn
@@ -246,7 +246,7 @@ movesRef.on("value", (snapshot) => {
         totals[key] = 0; // Reinicia els totals
     }
 
-    // Utilitzar un array per guardar les jugades en ordre
+    // Recollir les jugades en un array i ordenar-les per timestamp
     const moves = [];
     snapshot.forEach((childSnapshot) => {
         const data = childSnapshot.val();
@@ -255,10 +255,10 @@ movesRef.on("value", (snapshot) => {
         moves.push({ ...data, id }); // Afegir jugada a l'array
     });
 
-    // Invertir l'ordre de les jugades
-    moves.reverse();
+    // Ordenar per timestamp (descendent: més recent primer)
+    moves.sort((a, b) => b.timestamp - a.timestamp);
 
-    // Renderitzar les jugades en sentit invers
+    // Renderitzar les jugades ordenades
     let round = moves.length;
     moves.forEach((move) => {
         const row = document.createElement("tr");
@@ -285,6 +285,7 @@ movesRef.on("value", (snapshot) => {
         }
     }
 });
+
 
 
         // Funció per tatxar una jugada
