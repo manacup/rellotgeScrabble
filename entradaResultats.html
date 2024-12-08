@@ -186,26 +186,15 @@ table {
             }
         });
 
-// Alternar jugador automàticament
-const togglePlayerTurn = (currentPlayerInput) => {
-    const allPlayers = document.querySelectorAll("#player-selection input");
-    let nextPlayerIndex = 0;
-
-    // Trobar l'índex del jugador actual
-    for (let i = 0; i < allPlayers.length; i++) {
-        if (allPlayers[i] === currentPlayerInput) {
-            nextPlayerIndex = (i + 1) % allPlayers.length; // Següent jugador o tornar al primer
-            break;
-        }
-    }
-
-    // Marcar el següent jugador com a seleccionat
-    allPlayers.forEach((input, index) => {
-        input.checked = index === nextPlayerIndex;
+        const togglePlayerTurn = (currentPlayerInput) => {
+    // Alterna el valor de checked entre els dos inputs
+    const allPlayers = document.querySelectorAll("#player-selection input[type='radio']");
+    allPlayers.forEach((input) => {
+        input.checked = input !== currentPlayerInput; // Marca l'altre input
     });
 };
 
-// Modificar l'esdeveniment `submit`
+// Event submit amb la nova funció
 moveForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -220,21 +209,23 @@ moveForm.addEventListener("submit", (e) => {
     const score = parseInt(document.getElementById("score").value, 10);
     const scrabble = document.getElementById("scrabble").checked;
 
-    // Afegir a la base de dades
+    // Afegir la jugada a Firebase
     const newMove = movesRef.push();
     newMove.set({
         player,
         word,
         score,
         scrabble,
-        timestamp: Date.now() // Afegim el temps per ordenar si cal
+        timestamp: Date.now(),
     });
 
-    // Alternar torn
+    // Alternar el torn
     togglePlayerTurn(playerInput);
 
+    // Reset del formulari
     moveForm.reset();
 });
+
 
 
 movesRef.on("value", (snapshot) => {
