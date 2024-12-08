@@ -47,16 +47,48 @@
         .strikethrough {
             text-decoration: line-through;
         }
+        #player-selection label {
+    display: inline-block;
+    margin: 5px;
+}
+
+#player-selection input[type="radio"] {
+    display: none;
+}
+
+#player-selection span {
+    padding: 10px 20px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #f4f4f4;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#player-selection input[type="radio"]:checked + span {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Campionat de Scrabble</h1>
         <form id="move-form">
-            <div class="player-buttons">
-                <button type="button" id="player1-button">Jugador 1</button>
-                <button type="button" id="player2-button">Jugador 2</button>
+            <div id="player-selection">
+                <label>
+                    <input type="radio" name="player" value="Jugador 1" required>
+                    <span>Jugador 1</span>
+                </label>
+                <label>
+                    <input type="radio" name="player" value="Jugador 2">
+                    <span>Jugador 2</span>
+                </label>
             </div>
+            
 
             <input type="hidden" id="player" required>
 
@@ -246,6 +278,36 @@ document.getElementById("delete-all-moves").addEventListener("click", deleteAllM
                 movesRef.child(id).remove();
             }
         }
+        // Captura el jugador seleccionat
+moveForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const player = document.querySelector('input[name="player"]:checked');
+    if (!player) {
+        alert("Selecciona un jugador!");
+        return;
+    }
+
+    const word = document.getElementById("word").value;
+    const score = parseInt(document.getElementById("score").value, 10);
+    const scrabble = document.getElementById("scrabble").checked;
+
+    // Afegir a la base de dades
+    const newMove = movesRef.push();
+    newMove.set({
+        player: player.value,
+        word,
+        score,
+        scrabble
+    });
+
+    // Alternar jugador automàticament
+    const nextPlayer = player.value === "Jugador 1" ? "Jugador 2" : "Jugador 1";
+    document.querySelector(`input[value="${nextPlayer}"]`).checked = true;
+
+    moveForm.reset();
+});
+
     </script>
 </body>
 </html>
