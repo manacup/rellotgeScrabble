@@ -48,30 +48,26 @@
             text-decoration: line-through;
         }
         #player-selection label {
-    display: inline-block;
-    margin: 5px;
-}
-
-#player-selection input[type="radio"] {
-    display: none;
-}
-
-#player-selection span {
-    padding: 10px 20px;
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: #f4f4f4;
-    color: #333;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-#player-selection input[type="radio"]:checked + span {
-    background-color: #007bff;
-    color: #fff;
-    border-color: #007bff;
-}
-
+            display: inline-block;
+            margin: 5px;
+        }
+        #player-selection input[type="radio"] {
+            display: none;
+        }
+        #player-selection span {
+            padding: 10px 20px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #f4f4f4;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        #player-selection input[type="radio"]:checked + span {
+            background-color: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
     </style>
 </head>
 <body>
@@ -88,9 +84,6 @@
                     <span>Jugador 2</span>
                 </label>
             </div>
-            
-
-            <input type="hidden" id="player" required>
 
             <label for="word">Paraula posada:</label>
             <input type="text" id="word" placeholder="Paraula jugada" required>
@@ -147,43 +140,31 @@
         const db = firebase.database();
 
         const movesRef = db.ref("scrabble_moves");
-        const marcador1Ref = db.ref("marcadors/jugador1/punts")
-        const marcador2Ref = db.ref("marcadors/jugador2/punts")
+        const marcador1Ref = db.ref("marcadors/jugador1/punts");
+        const marcador2Ref = db.ref("marcadors/jugador2/punts");
 
         // Formulari i elements
         const moveForm = document.getElementById("move-form");
         const movesTable = document.getElementById("moves-table");
         const totalPlayer1 = document.getElementById("total-player-1");
         const totalPlayer2 = document.getElementById("total-player-2");
-        const playerInput = document.getElementById("player");
 
-        let selectedPlayer = null;
         let totals = {
             "Jugador 1": 0,
             "Jugador 2": 0
         };
 
-        // Selecció de jugador
-        document.getElementById("player1-button").addEventListener("click", () => {
-            selectedPlayer = "Jugador 1";
-            playerInput.value = selectedPlayer;
-        });
-
-        document.getElementById("player2-button").addEventListener("click", () => {
-            selectedPlayer = "Jugador 2";
-            playerInput.value = selectedPlayer;
-        });
-
         // Afegir jugada
         moveForm.addEventListener("submit", (e) => {
             e.preventDefault();
 
-            const player = selectedPlayer;
-            if (!player) {
+            const playerInput = document.querySelector('input[name="player"]:checked');
+            if (!playerInput) {
                 alert("Selecciona un jugador abans d'afegir una jugada.");
                 return;
             }
 
+            const player = playerInput.value;
             const word = document.getElementById("word").value;
             const score = parseInt(document.getElementById("score").value, 10);
             const scrabble = document.getElementById("scrabble").checked;
@@ -196,6 +177,10 @@
                 score,
                 scrabble
             });
+
+            // Alternar jugador automàticament
+            const nextPlayer = player === "Jugador 1" ? "Jugador 2" : "Jugador 1";
+            document.querySelector(`input[value="${nextPlayer}"]`).checked = true;
 
             moveForm.reset();
         });
@@ -232,8 +217,8 @@
             // Actualitzar visuals totals
             totalPlayer1.textContent = totals["Jugador 1"];
             totalPlayer2.textContent = totals["Jugador 2"];
-            marcador1Ref.set(totals["Jugador 1"])
-            marcador2Ref.set(totals["Jugador 2"])
+            marcador1Ref.set(totals["Jugador 1"]);
+            marcador2Ref.set(totals["Jugador 2"]);
         });
 
         // Funció per tatxar una jugada
@@ -244,70 +229,41 @@
 
             if (wordCell) {
                 const isStruck = wordCell.classList.toggle("strikethrough");
-                const newScore = isStruck ? 0 : parseInt(scoreCell.textContent, 10);
+                const originalScore = parseInt(scoreCell.dataset.originalScore || scoreCell.textContent, 10);
+                const newScore = isStruck ? 0 : originalScore;
+
+                scoreCell.dataset.originalScore = originalScore;
+                scoreCell.textContent = newScore;
 
                 // Actualitzar puntuació a la base de dades
                 movesRef.child(id).update({ score: newScore });
 
                 // Recalcular totals
-                const player = row.querySelector("td:nth-child(2)").textContent;
-                totals[player] = isStruck ? totals[player] - parseInt(scoreCell.textContent, 10) : totals[player] + newScore;
-                document.getElementById(`total-player-${player.split(' ')[1]}`).textContent = totals[player];
+                movesRef.once("value", (snapshot) => {
+                    totals = { "Jugador 1": 0, "Jugador 2": 0 };
+                    snapshot.forEach((childSnapshot) => {
+                        const data = childSnapshot.val();
+                        totals[data.player] += data.score;
+                    });
+                    totalPlayer1.textContent = totals["Jugador 1"];
+                    totalPlayer2.textContent = totals["Jugador 2"];
+                    marcador1Ref.set(totals["Jugador 1"]);
+                    marcador2Ref.set(totals["Jugador 2"]);
+                });
             }
         }
-        // Funció per esborrar totes les jugades
-function deleteAllMoves() {
-    if (confirm("Segur que vols esborrar totes les jugades?")) {
-        movesRef.remove()
-            .then(() => {
-                alert("Totes les jugades han estat esborrades.");
-            })
-            .catch((error) => {
-                console.error("Error en esborrar les jugades: ", error);
-                alert("No s'han pogut esborrar les jugades. Consulta la consola per més informació.");
-            });
-    }
-}
-
-// Assignar l'esdeveniment al botó
-document.getElementById("delete-all-moves").addEventListener("click", deleteAllMoves);
 
         // Funció per esborrar una jugada
         function deleteMove(id) {
-            if (confirm("Segur que vols esborrar aquesta jugada?")) {
-                movesRef.child(id).remove();
-            }
+            movesRef.child(id).remove();
         }
-        // Captura el jugador seleccionat
-moveForm.addEventListener("submit", (e) => {
-    e.preventDefault();
 
-    const player = document.querySelector('input[name="player"]:checked');
-    if (!player) {
-        alert("Selecciona un jugador!");
-        return;
-    }
-
-    const word = document.getElementById("word").value;
-    const score = parseInt(document.getElementById("score").value, 10);
-    const scrabble = document.getElementById("scrabble").checked;
-
-    // Afegir a la base de dades
-    const newMove = movesRef.push();
-    newMove.set({
-        player: player.value,
-        word,
-        score,
-        scrabble
-    });
-
-    // Alternar jugador automàticament
-    const nextPlayer = player.value === "Jugador 1" ? "Jugador 2" : "Jugador 1";
-    document.querySelector(`input[value="${nextPlayer}"]`).checked = true;
-
-    moveForm.reset();
-});
-
+        // Funció per esborrar totes les jugades
+        document.getElementById("delete-all-moves").addEventListener("click", () => {
+            if (confirm("Segur que vols esborrar totes les jugades?")) {
+                movesRef.remove();
+            }
+        });
     </script>
 </body>
 </html>
