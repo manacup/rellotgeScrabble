@@ -201,7 +201,7 @@
             const data = snapshot.val();
             for (const playerKey in data) {
                 const playerName = data[playerKey].nom;
-                const playerId = playerKey+1
+                const playerId = playerKey
                 totals[playerId] = 0;
 
                 // Crear botons de selecció de jugador
@@ -222,10 +222,10 @@
 
         const togglePlayerTurn = (currentPlayerId) => {
             const allPlayers = document.querySelectorAll("#player-selection input[type='radio']");
-            if(currentPlayerId==1){
-                allPlayers[currentPlayerId].checked = true
+            if(currentPlayerId=="jugador1"){
+                allPlayers[1].checked = true
             }else{
-                allPlayers[currentPlayerId-1].checked = true
+                allPlayers[0].checked = true
             }
         };
 
@@ -238,7 +238,7 @@
                 alert("Selecciona un jugador abans d'afegir una jugada.");
                 return;
             }
-
+            const playerId = playerInput.id;
             const player = playerInput.value;
             const word = document.getElementById("word").value;
             const score = parseInt(document.getElementById("score").value, 10);
@@ -255,7 +255,7 @@
             });
 
             // Alternar el torn
-            togglePlayerTurn(player);
+            togglePlayerTurn(playerId);
 
             // Reset del formulari
             moveForm.reset();
