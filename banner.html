@@ -56,20 +56,19 @@
             font-size: 50px;
             font-weight: bold;
         }
-        .clock.active {
-            color: green;
-            font-weight: bold;
-        }
         .clock {
             font-size: 20px;
             color: gray;
         }
-        .clock.active-discount {
-            color: red;
+        .clock.active {
+            color: green;
             font-weight: bold;
         }
-        .clock.inactive-discount {
+        .clock.discount {
             color: rgb(255, 125, 125);
+        }
+        .clock.active.discount {
+            color: red;
         }
     </style>
 </head>
@@ -135,36 +134,22 @@
                 // Highlight clocks based on playing and discount state
                 const player1Clock = document.getElementById('player1-clock');
                 const player2Clock = document.getElementById('player2-clock');
-                player1Clock.classList.remove('active', 'active-discount', 'inactive-discount');
-                player2Clock.classList.remove('active', 'active-discount', 'inactive-discount');
+                player1Clock.className = 'clock';
+                player2Clock.className = 'clock';
 
-                if (!data.playing) {
-                    if (!data.jug1) {
-                        player1Clock.classList.add('inactive-discount');
-                    }
-                    if (!data.jug2) {
-                        player2Clock.classList.add('inactive-discount');
-                    }
-                } else {
-                    if (data.currentPlayer === 1) {
-                        if (data.jug1) {
-                            player1Clock.classList.add('active');
-                        } else {
-                            player1Clock.classList.add('active-discount');
-                        }
-                    } else if (data.currentPlayer === 2) {
-                        if (data.jug2) {
-                            player2Clock.classList.add('active');
-                        } else {
-                            player2Clock.classList.add('active-discount');
-                        }
-                    }
+                if (!data.jug1) player1Clock.classList.add('discount');
+                if (!data.jug2) player2Clock.classList.add('discount');
+
+                if (data.playing) {
+                    if (data.currentPlayer === 1) player1Clock.classList.add('active');
+                    if (data.currentPlayer === 2) player2Clock.classList.add('active');
                 }
             });
         };
 
         // Call syncData on page load
         syncData();
+
         // Add a leading zero to numbers less than 10.
         const padZero = (number) => {
             if (number < 10) {
