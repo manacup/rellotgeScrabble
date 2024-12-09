@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Full Supercopa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <style>
+            .scrabble {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        </style>
+</head>
+
+<body>
+    <table>
+        <thead>
+            <tr>
+
+                <th>Jugador</th>
+                <th>Paraula</th>
+                <th>Puntuació</th>
+                <!-- <th>Scrabble</th> -->
+                
+            </tr>
+        </thead>
+        <tbody id="moves-table" class="table table-dark table-striped">
+            <!-- Les dades es mostraran aquí -->
+        </tbody>
+    </table>
+    <script>
+        // Configuració de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCuiHcIayor6a31_oi8g3UhZHKjp513yic",
+            authDomain: "liverellotge.firebaseapp.com",
+            databaseURL: "https://liverellotge-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "liverellotge",
+            storageBucket: "liverellotge.firebasestorage.app",
+            messagingSenderId: "778450817091",
+            appId: "1:778450817091:web:54a6ed6ee3740b204104f6"
+        };
+
+        // Inicialitza Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const movesRef = db.ref("scrabble_moves");
+        movesRef.on("value", (snapshot) => {
+            movesTable.innerHTML = "";
+            
+
+            // Recollir les jugades en un array i ordenar-les per timestamp
+            const moves = [];
+            snapshot.forEach((childSnapshot) => {
+                const data = childSnapshot.val();
+                const id = childSnapshot.key;
+                
+                moves.push({ ...data, id }); // Afegir jugada a l'array
+            });
+
+            // Ordenar per timestamp (descendent: més recent primer)
+            moves.sort((a, b) => b.timestamp - a.timestamp);
+
+            // Renderitzar les jugades ordenades
+            let round = moves.length;
+            moves.forEach((move) => {
+                const row = document.createElement("tr");
+                row.dataset.id = move.id;
+                row.innerHTML = `
+           
+            <td>${move.player}</td>
+            <td class="word-cell ${move.scrabble ? 'scrabble' : ''}">${move.word.toUpperCase()}</td>
+            <td class="score-cell ${move.scrabble ? 'scrabble' : ''}">${move.score}</td>
+           
+            
+        `;
+                movesTable.appendChild(row);
+            });
+
+            
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
