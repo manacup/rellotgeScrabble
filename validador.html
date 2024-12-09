@@ -34,10 +34,23 @@
     <script type="text/javascript" src="wdtjs/bits.js"></script>
     <script type="text/javascript" src="dicc/disc.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/nosleep/0.12.0/NoSleep.min.js"></script>
-     <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-database-compat.js"></script>
 
     <title>Rellotge Scrabble</title>
+    <style>
+        #wdtform .qry {
+            padding: 5px;
+        }
+
+        #wdtform .sch {
+            padding: 5px;
+        }
+
+        #req {
+            max-width: 600px;
+        }
+    </style>
 
 </head>
 
@@ -61,11 +74,14 @@
                         id="penalització" value="5">
                     <!-- <li><button class="sch" type="button" id="toggle">Manté la pantalla activa</button></li> -->
                     <br><br>
-                    <span class="blanc-text">Jugador 1: </span><input type="search" id="nomjug1" value="" oninput="actualitzarInput('marcadors/jugador1/nom',this.value)">
+                    <span class="blanc-text">Jugador 1: </span><input type="search" id="nomjug1" value=""
+                        oninput="actualitzarInput('marcadors/jugador1/nom',this.value)">
                     <br><br>
-                    <span class="blanc-text">Jugador 2: </span><input type="search" id="nomjug2" value="" oninput="actualitzarInput('marcadors/jugador2/nom',this.value)">
+                    <span class="blanc-text">Jugador 2: </span><input type="search" id="nomjug2" value=""
+                        oninput="actualitzarInput('marcadors/jugador2/nom',this.value)">
                     <br><br>
-                    <input type="checkbox" value="Comptador esclau" id="esclau" checked><span class="blanc-text"> Comptador esclau</span>
+                    <input type="checkbox" value="Comptador esclau" id="esclau" checked><span class="blanc-text">
+                        Comptador esclau</span>
                     <br><br>
                     <input type="checkbox" value="Activa el so" id="checkSo" checked><span class="blanc-text"> Activa el
                         so</span>
@@ -91,7 +107,7 @@
                     <div><small>Codi font: <a
                                 href="https://github.com/manacup/manacup.github.io/tree/main/rellotgeScrabble"
                                 target="_blank">Github</a></small></div>
-                                <div><small><span id="swver"></span></small></div>
+                    <div><small><span id="swver"></span></small></div>
 
 
                 </footer>
@@ -100,7 +116,7 @@
 
         </nav>
 
-        <div class="player" >
+        <div class="player">
 
             <div class="player__tile player-1" style="display: none;">
                 <div class="player__digits">
@@ -131,10 +147,12 @@
                     <form id="wdtform" name="wdtform" action="wordertorn">
                         <div id="input">
                             <input class="qry" name="q" placeholder="Escriviu un o més mots" autocomplete="off"
-                                autofocus="autofocus" value="" id="jugvalidacio" oninput="actualitzarInput('valida',this.value)">
+                                autofocus="autofocus" value="" id="jugvalidacio"
+                                oninput="actualitzarInput('valida',this.value)">
                         </div>
                         <div id="buttons">
-                            <input class="sch  btn" name="sch" type="button" value="valida" id="btnValida" onclick="actualitzarVariable(this.id,true)"/>
+                            <input class="sch  btn" name="sch" type="button" value="valida" id="btnValida"
+                                onclick="actualitzarVariable(this.id,true)" />
                         </div>
                     </form>
                 </div>
@@ -143,18 +161,18 @@
                     <div id="res_timer"></div>
                 </div>
                 <div id="copy">
-                    
-                <p><small>El motor del VISC està desenvolupat per <a href="mailto:iroca@icon.cat">Isaac
-                            Roca</a> i empra el DISC <a href="http://diccionari.totescrable.cat/que-es/"
-                            target="_blank"><span class="verdicc"></span></a></small></p>
-                            <br> <br> <br> <br>
-            </div>
 
-        </div>
+                    <p><small>El motor del VISC està desenvolupat per <a href="mailto:iroca@icon.cat">Isaac
+                                Roca</a> i empra el DISC <a href="http://diccionari.totescrable.cat/que-es/"
+                                target="_blank"><span class="verdicc"></span></a></small></p>
+                    <br> <br> <br> <br>
+                </div>
+
+            </div>
         </div>
 
     </main>
- <iframe name='estadistica' id="estadistica" src="" style="display:none"></iframe>
+    <iframe name='estadistica' id="estadistica" src="" style="display:none"></iframe>
 
 
     <script src="js/scriptLive.js"></script>
