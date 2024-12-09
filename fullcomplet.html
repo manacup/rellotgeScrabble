@@ -19,48 +19,54 @@
             color: indianred;
         }
 
- 
+        .table-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 1px;
+        }
     </style>
 </head>
 
 <body>
     <div class="table-container">
-        <table class="table table-dark table-striped">
+        <table class="table table-sm table-dark table-striped">
             <thead>
                 <tr>
                     <th>Paraula</th>
                     <th class="text-end">Punts</th>
-                    <th class="text-end">Subtotal</th>                 
-                </tr>
-            </thead>
-            <tbody id="moves-table-left">
-                <!-- Dades per a la primera taula -->
-            </tbody>
-        </table>
-        <table class="table table-dark table-striped">
-            <thead>
-                <tr>
-                    <th>#</th>
-                </tr>
-            </thead>
-            <tbody id="moves-num">
-                <!-- Dades per a la primera taula -->
-            </tbody>
-        </table>
-        <table class="table table-dark table-striped">
-            <thead>
-                <tr>
-                   <!--  <th>#</th> -->
-                    <!-- <th>Jugador</th> -->
+                    <th class="text-end">Subtotal</th>
+                    <th class="text-center">#</th>
                     <th>Paraula</th>
                     <th class="text-end">Punts</th>
                     <th class="text-end">Subtotal</th>
                 </tr>
             </thead>
-            <tbody id="moves-table-right">
-                <!-- Dades per a la segona taula -->
-            </tbody>
+            <tr>
+                <td colspan="3">
+                    <table class="table  table-sm table-dark table-striped">
+                        <tbody id="moves-table-left">
+                            <!-- Dades per a la primera taula -->
+                        </tbody>
+                    </table>
+                </td>
+                <td >
+                    <table class="table  table-sm  text-center" >
+                        <tbody id="moves-num">
+                            <!-- Dades per a la primera taula -->
+                        </tbody>
+                    </table>
+                </td>
+                <td colspan="3">
+                    <table class="table  table-sm table-dark table-striped">
+                        <tbody id="moves-table-right">
+                            <!-- Dades per a la primera taula -->
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+
         </table>
+
     </div>
 
     <script>
@@ -86,6 +92,7 @@
         movesRef.on("value", (snapshot) => {
             movesTableLeft.innerHTML = "";
             movesTableRight.innerHTML = "";
+            movesTableCenter.innerHTML = "";
 
             // Recollir les jugades en un array i ordenar-les per timestamp
             const moves = [];
@@ -99,36 +106,43 @@
 
             // Ordenar per timestamp (descendent: més recent primer)
             //moves.sort((a, b) => b.timestamp - a.timestamp);
-            const movesJug1 = moves.filter(j => j.playerId == "jugador1")
-            const movesJug2 = moves.filter(j => j.playerId == "jugador2")
+            const movesJug1 = moves.filter(j => j.playerId == "jugador1");
+            const movesJug2 = moves.filter(j => j.playerId == "jugador2");
+
+            // Generar l'array de números per movesJug1
+            const movesNum = Array.from({ length: movesJug1.length }, (_, i) => i + 1);
+
+            movesNum.forEach((num) => {
+                const rownum = document.createElement("tr");
+                rownum.innerHTML = `
+                     <td>${num}</td>
+                `;
+                movesTableCenter.appendChild(rownum);
+            });
 
             // Dividir les jugades segons el jugador
-             let Subtotal1 = 0
-             let Subtotal2 = 0
+            let Subtotal1 = 0;
+            let Subtotal2 = 0;
+            
             movesJug1.forEach((move) => {
-                Subtotal1 += move.score
+                Subtotal1 += move.score;
                 const row = document.createElement("tr");
                 row.dataset.id = move.id;
                 row.innerHTML = `
                     
-                   
+                    
                     <td class="word-cell ${move.scrabble ? 'scrabble' : ''} ${move.score == 0 ? 'strikethrough' : ''}">${move.word.toUpperCase()}</td>
                     <td class="score-cell text-end ${move.scrabble ? 'scrabble' : ''}">${move.score}</td>
-                     <td>${Subtotal1}</td>
+                     <td class="text-end">${Subtotal1}</td>
                      
                 `;
                 movesTableLeft.appendChild(row);
 
-                const rownum = document.createElement("tr");
-                row.innerHTML = `
-                     <td>${move.index}</td>
-                `;
-                movesTableCenter.appendChild(row);
-               
+
 
             });
             movesJug2.forEach((move) => {
-                Subtotal2 += move.score
+                Subtotal2 += move.score;
                 const row = document.createElement("tr");
                 row.dataset.id = move.id;
                 row.innerHTML = `
@@ -136,10 +150,10 @@
                    
                     <td class="word-cell ${move.scrabble ? 'scrabble' : ''} ${move.score == 0 ? 'strikethrough' : ''}">${move.word.toUpperCase()}</td>
                     <td class="score-cell text-end ${move.scrabble ? 'scrabble' : ''}">${move.score}</td>
-                     <td>${Subtotal2}</td>
+                     <td class="text-end">${Subtotal2}</td>
                 `;
                 movesTableRight.appendChild(row);
-                
+
 
             });
         });
