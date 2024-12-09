@@ -671,7 +671,7 @@ for (let i = 0; i < buttons.length; i++) {
           .classList.add("penalty");
       }
 
-      if(!esclau){document.getElementById("cont").style.display = "none";}
+      if(esclau){document.getElementById("cont").style.display = "";}
     }
   });
 }
@@ -828,6 +828,10 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("sec1").textContent = padZero(temps1.seconds);
   document.getElementById("nomjug1").value = temps1.jugador;
   document.getElementById("nom1").textContent = temps1.jugador;
+
+  localStorage.getItem("esclau") === "false"
+    ? (botoEsclau.checked = false)
+    : (botoEsclau.checked = true);
 
   document.getElementById("resetBtn").style.display = "";
   p1sec = temps1.seconds;
