@@ -292,7 +292,7 @@
                 row.innerHTML = `
            
             <td>${move.player}</td>
-            <td class="word-cell ${move.scrabble ? 'scrabble' : ''}">${move.word.toUpperCase()}</td>
+            <td class="word-cell ${move.scrabble ? 'scrabble' : ''} ${move.score==0 ? 'strikethrough' : ''}">${move.word.toUpperCase()}</td>
             <td class="score-cell ${move.scrabble ? 'scrabble' : ''}">${move.score}</td>
            
             <td class="actions">
@@ -322,18 +322,18 @@
             const wordCell = row.querySelector(".word-cell");
             const scoreCell = row.querySelector(".score-cell");
 
-            if (wordCell) {
+           
                 const isStruck = wordCell.classList.add("strikethrough");
-                const originalScore = parseInt(scoreCell.dataset.originalScore || scoreCell.textContent, 10);
-                const newScore = isStruck ? 0 : originalScore;
+               
+                const newScore = 0
 
-                scoreCell.dataset.originalScore = originalScore;
+                
                 scoreCell.textContent = newScore;
 
 
                 // Actualitzar puntuació a la base de dades
                 movesRef.child(id).update({ score: newScore });
-            }
+            
         }
 
         // Funció per esborrar una jugada
