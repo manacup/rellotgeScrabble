@@ -671,7 +671,7 @@ for (let i = 0; i < buttons.length; i++) {
           .classList.add("penalty");
       }
 
-      if(esclau){document.getElementById("cont").style.display = "";}
+      if(!esclau){document.getElementById("cont").style.display = "none";}
     }
   });
 }
