@@ -15,7 +15,7 @@ const firebaseConfig = {
 // Inicialitza Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-let esclau = false
+let esclau = true
 const swver = "1.3.8";
 let playing = false;
 actualitzarVariable("playing",false)
@@ -46,11 +46,14 @@ var versio = document.querySelectorAll(".verdicc");
 
 // Funció per actualitzar el valor de variable
 function actualitzarVariable(variable,valor) {
+  if(!esclau){
     const inputRef = db.ref(variable);
     inputRef.set(valor);
   inputRef.on("value",(val)=>{
     variable = val.val    
   });  
+  }
+    
   }
 //funcio per escoltar clics als botons
 function clickbotons(botoID){
