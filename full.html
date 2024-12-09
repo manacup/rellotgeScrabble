@@ -14,6 +14,10 @@
             /* font-weight: bold; */
             text-decoration: underline;
         }
+        .strikethrough {
+            text-decoration: line-through !important;
+            color: indianred;
+        }
     </style>
 </head>
 
@@ -78,7 +82,7 @@
                 row.innerHTML = `
            <td>${move.index}</td>
             <td>${move.player}</td>
-            <td class="word-cell ${move.scrabble ? 'scrabble' : ''}">${move.word.toUpperCase()}</td>
+            <td class="word-cell ${move.scrabble ? 'scrabble' : ''} ${move.score==0 ? 'strikethrough' : ''}">${move.word.toUpperCase()}</td>
             <td class="score-cell text-end ${move.scrabble ? 'scrabble' : ''}">${move.score}</td>
            
             
