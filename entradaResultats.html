@@ -197,7 +197,7 @@
         let totals = {};
 
         // Carregar noms dels jugadors i inicialitzar totals
-        marcadorsRef.once("value", (snapshot) => {
+        marcadorsRef.on("value", (snapshot) => {
             const data = snapshot.val();
             for (const playerKey in data) {
                 const playerName = data[playerKey].nom;
