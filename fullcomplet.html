@@ -28,15 +28,22 @@
         <table class="table table-dark table-striped">
             <thead>
                 <tr>
-                    
-                    <!-- <th>Jugador</th> -->
                     <th>Paraula</th>
                     <th class="text-end">Punts</th>
-                    <th class="text-end">Subtotal</th>
-                    <th>#</th>
+                    <th class="text-end">Subtotal</th>                 
                 </tr>
             </thead>
             <tbody id="moves-table-left">
+                <!-- Dades per a la primera taula -->
+            </tbody>
+        </table>
+        <table class="table table-dark table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                </tr>
+            </thead>
+            <tbody id="moves-num">
                 <!-- Dades per a la primera taula -->
             </tbody>
         </table>
@@ -73,6 +80,7 @@
         const db = firebase.database();
         const movesTableLeft = document.getElementById("moves-table-left");
         const movesTableRight = document.getElementById("moves-table-right");
+        const movesTableCenter = document.getElementById("moves-num");
 
         const movesRef = db.ref("scrabble_moves");
         movesRef.on("value", (snapshot) => {
@@ -95,8 +103,10 @@
             const movesJug2 = moves.filter(j => j.playerId == "jugador2")
 
             // Dividir les jugades segons el jugador
+             let Subtotal1 = 0
+             let Subtotal2 = 0
             movesJug1.forEach((move) => {
-                let Subtotal = 0
+                Subtotal1 += move.score
                 const row = document.createElement("tr");
                 row.dataset.id = move.id;
                 row.innerHTML = `
@@ -104,15 +114,21 @@
                    
                     <td class="word-cell ${move.scrabble ? 'scrabble' : ''} ${move.score == 0 ? 'strikethrough' : ''}">${move.word.toUpperCase()}</td>
                     <td class="score-cell text-end ${move.scrabble ? 'scrabble' : ''}">${move.score}</td>
-                     <td>${Subtotal}</td>
-                     <td>${move.index}</td>
+                     <td>${Subtotal1}</td>
+                     
                 `;
                 movesTableLeft.appendChild(row);
-                Subtotal += move.score
+
+                const rownum = document.createElement("tr");
+                row.innerHTML = `
+                     <td>${move.index}</td>
+                `;
+                movesTableCenter.appendChild(row);
+               
 
             });
             movesJug2.forEach((move) => {
-                let Subtotal = 0
+                Subtotal2 += move.score
                 const row = document.createElement("tr");
                 row.dataset.id = move.id;
                 row.innerHTML = `
@@ -120,10 +136,10 @@
                    
                     <td class="word-cell ${move.scrabble ? 'scrabble' : ''} ${move.score == 0 ? 'strikethrough' : ''}">${move.word.toUpperCase()}</td>
                     <td class="score-cell text-end ${move.scrabble ? 'scrabble' : ''}">${move.score}</td>
-                     <td>${Subtotal}</td>
+                     <td>${Subtotal2}</td>
                 `;
                 movesTableRight.appendChild(row);
-                Subtotal += move.score
+                
 
             });
         });
