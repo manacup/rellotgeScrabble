@@ -309,11 +309,11 @@ function tempsDescompte() {
           p1secpenal = 0;
         } else {
           p1secpenal = p1secpenal + 1;
-          let ptsPenal ="-"+ (p1time.minutes + 1) * 10
-          var mispenal1 = "Penalització: " + ptsPenal + " punts";
+          let ptsPenal1 ="-"+ (p1time.minutes + 1) * 10
+          var mispenal1 = "Penalització: " + ptsPenal1 + " punts";
           document.getElementById("penal1").textContent = mispenal1
             
-          incrementar("jugador1","penal",ptsPenal)
+          incrementar("jugador1","penal",ptsPenal1)
          
         }
 
@@ -355,10 +355,11 @@ function tempsDescompte() {
           p2secpenal = 0;
         } else {
           p2secpenal = p2secpenal + 1;
-          var mispenal2 = "Penalització: -" + (p2time.minutes + 1) * 10 + " punts";
+          let ptsPenal2 ="-"+ (p1time.minutes + 1) * 10
+          var mispenal2 = "Penalització: -" + ptsPenal2 + " punts";
           document.getElementById("penal2").textContent = mispenal2
             
-          incrementar("jugador2","penal",mispenal2)          
+          incrementar("jugador2","penal",ptsPenal2)          
         }
 
         timeWarning(currentPlayer, p2time.minutes, p2secpenal);
