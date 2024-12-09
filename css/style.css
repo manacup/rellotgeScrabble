@@ -535,7 +535,7 @@ input[type=search]{
 select {
   width: 100%;
 }
-#parametres input{
+#parametres input, select{
     font-size: 1.2rem;
 }
 #copy{
