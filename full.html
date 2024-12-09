@@ -24,7 +24,7 @@
                 <th>#</th>
                 <th>Jugador</th>
                 <th>Paraula</th>
-                <th>Punts</th>
+                <th class="right">Punts</th>
                 <!-- <th>Scrabble</th> -->
 
             </tr>
@@ -79,7 +79,7 @@
            <td>${move.index}</td>
             <td>${move.player}</td>
             <td class="word-cell ${move.scrabble ? 'scrabble' : ''}">${move.word.toUpperCase()}</td>
-            <td class="score-cell ${move.scrabble ? 'scrabble' : ''}">${move.score}</td>
+            <td class="score-cell right ${move.scrabble ? 'scrabble' : ''}">${move.score}</td>
            
             
         `;
