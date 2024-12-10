@@ -473,8 +473,8 @@ function canvitorn(jug) {
   } else if (!playing && botoStart.textContent === "COMENÇA") {
     currentPlayer = jug;
     actualitzarVariable("currentPlayer",jug)
-    localStorage.setItem("jugactiu", jug);
-    actualitzarVariable(botoStart.id,true)
+    localStorage.setItem("jugactiu", jug);    
+    
     startTimer();
     if (descompte) {
       if (!jug1) {
