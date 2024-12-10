@@ -37,7 +37,7 @@
     <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-database-compat.js"></script>
 
-    <title>Rellotge Scrabble</title>
+    <title>Només validador</title>
     <style>
         #wdtform .qry {
             padding: 5px;
@@ -54,7 +54,9 @@
         #res {
             max-width: 600px;
         }
-        html,body {
+
+        html,
+        body {
             background-color: #2c3034;
         }
     </style>
@@ -147,37 +149,38 @@
                 <button class="timer__start-bttn bttn" type="button" id="btnStart">COMENÇA</button>
                 <!-- <button class="timer__reset-bttn bttn" type="button">RESET</button> -->
             </div>
-
-            <div id="cont">
-                <img src="/rellotgeScrabble/images/capçalera-disc.png">
-                <br><br>
-                <div id="req">
-                    <form id="wdtform" name="wdtform" action="wordertorn">
-                        <div id="input">
-                            <input class="qry" name="q" placeholder="Escriviu un o més mots" autocomplete="off"
-                                autofocus="autofocus" value="" id="jugvalidacio"
-                                oninput="actualitzarInput('valida',this.value)">
-                        </div>
-                        <div id="buttons">
-                            <input class="sch  btn" name="sch" type="button" value="valida" id="btnValida"
-                                onclick="actualitzarVariable(this.id,true)" />
-                        </div>
-                    </form>
-                </div>
-                <div id="res">
-                    <div id="res_info"></div>
-                    <div id="res_timer"></div>
-                </div>
-                <div id="copy">
-
-                    <p><small>El motor del VISC està desenvolupat per <a href="mailto:iroca@icon.cat">Isaac
-                                Roca</a> i empra el DISC <a href="http://diccionari.totescrable.cat/que-es/"
-                                target="_blank"><span class="verdicc"></span></a></small></p>
-                    <br> <br> <br> <br>
-                </div>
-
-            </div>
         </div>
+
+        <div id="cont">
+            <img src="/rellotgeScrabble/images/capçalera-disc.png">
+            <br><br>
+            <div id="req">
+                <form id="wdtform" name="wdtform" action="wordertorn">
+                    <div id="input">
+                        <input class="qry" name="q" placeholder="Escriviu un o més mots" autocomplete="off"
+                            autofocus="autofocus" value="" id="jugvalidacio"
+                            oninput="actualitzarInput('valida',this.value)">
+                    </div>
+                    <div id="buttons">
+                        <input class="sch  btn" name="sch" type="button" value="valida" id="btnValida"
+                            onclick="actualitzarVariable(this.id,true)" />
+                    </div>
+                </form>
+            </div>
+            <div id="res">
+                <div id="res_info"></div>
+                <div id="res_timer"></div>
+            </div>
+            <div id="copy">
+
+                <p><small>El motor del VISC està desenvolupat per <a href="mailto:iroca@icon.cat">Isaac
+                            Roca</a> i empra el DISC <a href="http://diccionari.totescrable.cat/que-es/"
+                            target="_blank"><span class="verdicc"></span></a></small></p>
+                <br> <br> <br> <br>
+            </div>
+
+        </div>
+
 
     </main>
     <iframe name='estadistica' id="estadistica" src="" style="display:none"></iframe>
