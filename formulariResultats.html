@@ -114,7 +114,7 @@
                  totalItem.innerHTML = `${playerName}: <span>0</span> punts`;
                  totalsList.appendChild(totalItem); */
                 // Inicialitzar estadístiques del jugador
-                playerStats[player.id] = {
+                playerStats[playerId] = {
                     totalScore: 0,
                     scrabbleCount: 0,
                     bestMove: { word: null, score: 0 }
@@ -122,10 +122,10 @@
 
                 // Afegir al llistat de puntuacions
                 const totalItem = document.createElement("li");
-                totalItem.id = `total-${player.id}`;
+                totalItem.id = `total-${playerId}`;
                 totalItem.className = "list-group-item d-flex justify-content-between align-items-center";
                 totalItem.innerHTML = `
-                ${player.name}: 
+                ${playerName}: 
                 <span>Total: <span class="total-score">0</span> punts, 
                 Scrabbles: <span class="scrabble-count">0</span>, 
                 Millor jugada: <span class="best-move">Cap</span></span>
