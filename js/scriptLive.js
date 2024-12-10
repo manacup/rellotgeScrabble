@@ -47,7 +47,7 @@ var versio = document.querySelectorAll(".verdicc");
 // Funció per actualitzar el valor de variable
 function actualitzarVariable(variable,valor) {
   if(!esclau){
-    const inputRef = db.ref(variable);
+    const inputRef = db.ref("parametres/" + variable);
     inputRef.set(valor);
   inputRef.on("value",(val)=>{
     variable = val.val    

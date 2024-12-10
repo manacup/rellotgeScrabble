@@ -189,6 +189,8 @@
 
         const movesRef = db.ref("scrabble_moves");
         const marcadorsRef = db.ref("marcadors");
+        const parametresRef = db.ref("parametres");
+        
 
         const moveForm = document.getElementById("move-form");
         const movesTable = document.getElementById("moves-table");
@@ -311,6 +313,7 @@
                     totalItem.querySelector("span").textContent = totals[playerKey];
                     const playerRef = db.ref(`marcadors/${playerKey}/punts/`)
                     playerRef.set(totals[playerKey])
+                    
                 }
             }
         });
@@ -344,8 +347,9 @@
 
         // Funció per esborrar totes les jugades
         document.getElementById("delete-all-moves").addEventListener("click", () => {
-            if (confirm("Segur que vols esborrar totes les jugades?")) {
+            if (confirm("Segur que vols esborrar totes les jugades i paràmetres del rellotge?")) {
                 movesRef.remove();
+                parametresRef.remove()
             }
         });
     </script>

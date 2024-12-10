@@ -49,6 +49,16 @@
             font-size: 30px;
             font-weight: bold;
         }
+        .nomInfo {
+            position: relative;
+            text-align: center;
+            
+        }
+        .player-malnom {
+            font-size: 20px;
+            color: gray;
+            
+        }
         .score-clock {
             position: relative;
             text-align: center;
@@ -96,7 +106,10 @@
         <div class="player-box">
             <div class="player-info">
                 <img id="player1-image" src="/rellotgeScrabble/images/Imatge-default.jpg" alt="Player 1" class="player-image">
-                <span id="player1-name" class="player-name">Nom Llinatge</span>
+                <div class="nomInfo" id="nomInfo">
+                    <span id="player1-name" class="player-name">Nom Llinatge</span>
+                    <span id="player1-malnom" class="player-malnom">Malnom</span>
+                </div>
             </div>
             <div class="score-clock">
                 <div id="player1-score" class="score">100</div>
@@ -113,7 +126,10 @@
                 <div id="player2-clock" class="clock">00:30</div>
             </div>
             <div class="player-info">
-                <span id="player2-name" class="player-name">Nom Llinatge</span>
+                <div class="nomInfo" id="nomInfo">
+                    <span id="player2-name" class="player-name">Nom Llinatge</span>
+                    <span id="player2-malnom" class="player-malnom">Malnom</span>
+                </div>
                 <img id="player2-image" src="/rellotgeScrabble/images/Imatge-default.jpg" alt="Player 2" class="player-image">
             </div>
         </div>
@@ -143,6 +159,7 @@
 
                 // Update Player 1
                 document.getElementById('player1-name').textContent = data.marcadors.jugador1.nom;
+                document.getElementById('player1-malnom').textContent = data.jugadors[data.marcadors.jugador1.nom];
                 document.getElementById('player1-score').textContent = data.marcadors.jugador1.punts;
                 document.getElementById('player1-penalty').textContent = data.marcadors.jugador1.penal;
                 document.getElementById('player1-clock').textContent = `${data.marcadors.jugador1.min}:${padZero(data.marcadors.jugador1.sec)}`;
@@ -150,6 +167,7 @@
 
                 // Update Player 2
                 document.getElementById('player2-name').textContent = data.marcadors.jugador2.nom;
+                document.getElementById('player2-malnom').textContent = data.jugadors[data.marcadors.jugador2.nom];
                 document.getElementById('player2-score').textContent = data.marcadors.jugador2.punts;
                 document.getElementById('player2-penalty').textContent = data.marcadors.jugador2.penal;
                 document.getElementById('player2-clock').textContent = `${data.marcadors.jugador2.min}:${padZero(data.marcadors.jugador2.sec)}`;
@@ -161,12 +179,12 @@
                 player1Clock.className = 'clock';
                 player2Clock.className = 'clock';
 
-                if (!data.jug1) player1Clock.classList.add('discount');
-                if (!data.jug2) player2Clock.classList.add('discount');
+                if (!data.parametres.jug1) player1Clock.classList.add('discount');
+                if (!data.parametres.jug2) player2Clock.classList.add('discount');
 
-                if (data.playing) {
-                    if (data.currentPlayer === 1) player1Clock.classList.add('active');
-                    if (data.currentPlayer === 2) player2Clock.classList.add('active');
+                if (data.parametres.playing) {
+                    if (data.parametres.currentPlayer === 1) player1Clock.classList.add('active');
+                    if (data.parametres.currentPlayer === 2) player2Clock.classList.add('active');
                 }
             });
         };
