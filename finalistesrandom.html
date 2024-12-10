@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ca">
 
@@ -26,7 +27,7 @@
             max-width: 800px;
             align-items: center;
         }
-        
+
 
         .player {
             display: inline-block;
@@ -37,12 +38,12 @@
 
 
         .player.animate-left {
-            animation: slideFromTop 0.5s ease-out;
+            animation: slideFromTop 0.5s ease-out, moveLeft 0.5s ease-in 2s;
             animation-fill-mode: forwards;
         }
 
         .player.animate-right {
-            animation: slideFromBottom 0.5s ease-out;
+            animation: slideFromBottom 0.5s ease-out, moveRight 0.5s ease-in 2s;
             animation-fill-mode: forwards;
         }
 
@@ -67,6 +68,30 @@
             100% {
                 transform: translateY(0);
                 opacity: 1;
+            }
+        }
+
+        @keyframes moveLeft {
+            0% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes moveRight {
+            0% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(100%);
+                opacity: 0;
             }
         }
 
@@ -138,14 +163,14 @@
         const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const dataRef = db.ref();
-        
+
         const jugadorDiv1 = document.getElementById("jugador1")
         const malnomDiv1 = document.getElementById("malnom1")
         const imatgeDiv1 = document.getElementById("imatge1")
         const jugadorDiv2 = document.getElementById("jugador2")
         const malnomDiv2 = document.getElementById("malnom2")
         const imatgeDiv2 = document.getElementById("imatge2")
-        
+
         function sincronitzaDades() {
             dataRef.on("value", (snapshot) => {
                 const jug = snapshot.val();
@@ -153,17 +178,68 @@
                 const jug1 = jug.marcadors.jugador1.nom
                 jugadorDiv1.textContent = jug1
                 malnomDiv1.textContent = jug.jugadors[jug1]
-                imatgeDiv1.src = "/rellotgeScrabble/images/" + jug1.replace(" ","_") + ".jpg" || null
-                
+                //imatgeDiv1.src = "/rellotgeScrabble/images/" + jug1.replace(" ","_") + ".jpg" || null
+
                 const jug2 = jug.marcadors.jugador2.nom
                 jugadorDiv2.textContent = jug2
                 malnomDiv2.textContent = jug.jugadors[jug2]
-                imatgeDiv2.src = "/rellotgeScrabble/images/" + jug2.replace(" ","_") + ".jpg" || null
+                //imatgeDiv2.src = "/rellotgeScrabble/images/" + jug2.replace(" ","_") + ".jpg" || null
 
 
             })
         }
-        sincronitzaDades()
+        //sincronitzaDades()
+
+        function resetAnimation() {
+            const players = document.querySelectorAll(".player")
+            const player1 = players[0]
+            const player2 = players[1]
+
+            // Reinicia les classes d'animació
+            player1.classList.remove("animate-left");
+            player2.classList.remove("animate-right");
+
+            // Força el recompte de classes per reiniciar animacions
+            void player1.offsetWidth;
+            void player2.offsetWidth;
+
+            // Torna a aplicar les classes d'animació
+            player1.classList.add("animate-left");
+            player2.classList.add("animate-right");
+        }
+
+        // Llista de jugadors
+        const players = ["Antoni Riera", "Aina Garcia", "Joan Llodrà", "Xisco Truyols"]
+
+        function getRandomPlayers() {
+            let shuffled = players.sort(() => 0.5 - Math.random());
+            // Evita que un jugador competeixi contra si mateix
+            while (shuffled[0] === shuffled[1]) {
+                shuffled = players.sort(() => 0.5 - Math.random());
+            }
+            return [shuffled[0], shuffled[1]];
+        }
+
+        function updatePlayers() {
+            const [jug1, jug2] = getRandomPlayers();
+            dataRef.on("value", (snapshot) => {
+                const jug = snapshot.val();
+                jugadorDiv1.textContent = jug1
+                malnomDiv1.textContent = jug.jugadors[jug1]
+                //imatgeDiv1.src = "/rellotgeScrabble/images/" + jug1.replace(" ","_") + ".jpg" || null                
+
+                jugadorDiv2.textContent = jug2
+                malnomDiv2.textContent = jug.jugadors[jug2]
+                //imatgeDiv2.src = "/rellotgeScrabble/images/" + jug2.replace(" ","_") + ".jpg" || null
+            })
+            resetAnimation()
+        }
+
+        // Actualitza els jugadors en cada cicle (cada 4 segons)
+        setInterval(updatePlayers, 3000);
+
+        // Assigna noms inicials
+        updatePlayers();
 
 
     </script>
