@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ca">
 
@@ -36,6 +35,16 @@
             position: relative;
         }
 
+        /* 
+        .player:first-child {
+            animation: slideFromTopWithBounce 1s ease-in-out, moveLeft 0.5s ease-in 2s;
+            animation-fill-mode: forwards;
+        }
+
+        .player:last-child {
+            animation: slideFromBottomWithBounce 1s ease-out, moveRight 0.5s ease-in 2s;
+            animation-fill-mode: forwards;
+        } */
 
         .player.animate-left {
             animation: slideFromTop 0.5s ease-out, moveLeft 0.5s ease-in 2s;
@@ -210,6 +219,28 @@
 
         // Llista de jugadors
         const players = ["Antoni Riera", "Aina Garcia", "Joan Llodrà", "Xisco Truyols"]
+        let combinations = [];
+
+        // Genera totes les combinacions possibles de parells únics
+        function generateCombinations() {
+            combinations = [];
+            for (let i = 0; i < players.length; i++) {
+                for (let j = i + 1; j < players.length; j++) {
+                    combinations.push([players[i], players[j]]);
+                    combinations.push([players[j], players[i]]);
+                }
+            }
+        }
+
+        // Agafa el següent aparellament
+        let currentIndex = 0;
+        function getNextPair() {
+            if (currentIndex >= combinations.length) {
+                currentIndex = 0; // Reinicia el cicle
+                combinations = combinations.sort(() => 0.5 - Math.random()); // Barreja les combinacions
+            }
+            return combinations[currentIndex++];
+        }
 
         function getRandomPlayers() {
             let shuffled = players.sort(() => 0.5 - Math.random());
@@ -221,19 +252,22 @@
         }
 
         function updatePlayers() {
-            const [jug1, jug2] = getRandomPlayers();
+            const [jug1, jug2] = getNextPair();
             dataRef.on("value", (snapshot) => {
                 const jug = snapshot.val();
                 jugadorDiv1.textContent = jug1
                 malnomDiv1.textContent = jug.jugadors[jug1]
-                imatgeDiv1.src = "/rellotgeScrabble/images/" + jug1.replace(" ","_") + ".jpg" || null                
+                //imatgeDiv1.src = "/rellotgeScrabble/images/" + jug1.replace(" ","_") + ".jpg" || null                
 
                 jugadorDiv2.textContent = jug2
                 malnomDiv2.textContent = jug.jugadors[jug2]
-                imatgeDiv2.src = "/rellotgeScrabble/images/" + jug2.replace(" ","_") + ".jpg" || null
+                //imatgeDiv2.src = "/rellotgeScrabble/images/" + jug2.replace(" ","_") + ".jpg" || null
             })
             resetAnimation()
         }
+
+        // Genera combinacions inicials
+        generateCombinations();
 
         // Actualitza els jugadors en cada cicle (cada 4 segons)
         setInterval(updatePlayers, 3000);
