@@ -26,11 +26,47 @@
             max-width: 800px;
             align-items: center;
         }
+        
 
         .player {
             display: inline-block;
             width: 40%;
             margin: 0 5%;
+        }
+        .player {
+           
+            position: relative;
+            animation-duration: 1.5s;
+            animation-timing-function: ease-out;
+        }
+        .player:first-child {
+            animation-name: slideFromTop;
+        }
+
+        .player:last-child {
+            animation-name: slideFromBottom;
+        }
+
+        @keyframes slideFromTop {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideFromBottom {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .player img {
