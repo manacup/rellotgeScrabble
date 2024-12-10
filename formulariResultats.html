@@ -81,7 +81,7 @@
         const movesRef = db.ref("scrabble_moves");
         const marcadorsRef = db.ref("marcadors");
         const parametresRef = db.ref("parametres");
-        
+
 
         const moveForm = document.getElementById("move-form");
         const movesTable = document.getElementById("moves-table");
@@ -89,6 +89,7 @@
         const totalsList = document.getElementById("totals");
 
         let totals = {};
+        let playerStats = {};
 
         // Carregar noms dels jugadors i inicialitzar totals
         marcadorsRef.once("value", (snapshot) => {
@@ -106,20 +107,58 @@
                 `;
                 playerSelection.appendChild(label);
 
-                // Afegir entrada a la llista de puntuacions
+                /*  // Afegir entrada a la llista de puntuacions
+                 const totalItem = document.createElement("li");
+                 totalItem.id = `total-${playerId}`;
+                 totalItem.classList.add("list-group-item");
+                 totalItem.innerHTML = `${playerName}: <span>0</span> punts`;
+                 totalsList.appendChild(totalItem); */
+                // Inicialitzar estadístiques del jugador
+                playerStats[player.id] = {
+                    totalScore: 0,
+                    scrabbleCount: 0,
+                    bestMove: { word: null, score: 0 }
+                };
+
+                // Afegir al llistat de puntuacions
                 const totalItem = document.createElement("li");
-                totalItem.id = `total-${playerId}`;
-                totalItem.classList.add("list-group-item");
-                totalItem.innerHTML = `${playerName}: <span>0</span> punts`;
+                totalItem.id = `total-${player.id}`;
+                totalItem.className = "list-group-item d-flex justify-content-between align-items-center";
+                totalItem.innerHTML = `
+                ${player.name}: 
+                <span>Total: <span class="total-score">0</span> punts, 
+                Scrabbles: <span class="scrabble-count">0</span>, 
+                Millor jugada: <span class="best-move">Cap</span></span>
+            `;
                 totalsList.appendChild(totalItem);
             }
         });
 
+        // Funció per afegir jugades
+        const addMove = (playerId, word, score, scrabble) => {
+            const stats = playerStats[playerId];
+            stats.totalScore += score;
+            if (scrabble) stats.scrabbleCount++;
+            if (score > stats.bestMove.score) stats.bestMove = { word, score };
+
+            updateTotalsUI(playerId);
+        };
+
+        // Actualitzar la interfície de puntuacions
+        const updateTotalsUI = (playerId) => {
+            const stats = playerStats[playerId];
+            const totalItem = document.getElementById(`total-${playerId}`);
+            totalItem.querySelector(".total-score").textContent = stats.totalScore;
+            totalItem.querySelector(".scrabble-count").textContent = stats.scrabbleCount;
+            totalItem.querySelector(".best-move").textContent =
+                stats.bestMove.word ? `${stats.bestMove.word} (${stats.bestMove.score})` : "Cap";
+        };
+
         const togglePlayerTurn = (currentPlayerId) => {
             const allPlayers = document.querySelectorAll("#player-selection input[type='radio']");
-            if(currentPlayerId=="jugador1"){
+            if (currentPlayerId == "jugador1") {
                 allPlayers[1].checked = true
-            }else{
+            } else {
                 allPlayers[0].checked = true
             }
         };
@@ -151,12 +190,12 @@
                 timestamp: Date.now(),
             });
 
-           
+            addMove = (playerId, word, score, scrabble)
 
             // Reset del formulari
             moveForm.reset();
-             // Alternar el torn
-             togglePlayerTurn(playerId);
+            // Alternar el torn
+            togglePlayerTurn(playerId);
         });
 
 
@@ -187,12 +226,12 @@
                 row.innerHTML = `
            
             <td>${move.player}</td>
-            <td class="word-cell ${move.scrabble ? 'scrabble' : ''} ${move.score==0 ? 'strikethrough' : ''}">${move.word.toUpperCase()}</td>
+            <td class="word-cell ${move.scrabble ? 'scrabble' : ''} ${move.score == 0 ? 'strikethrough' : ''}">${move.word.toUpperCase()}</td>
             <td class="score-cell ${move.scrabble ? 'scrabble' : ''}">${move.score}</td>
            
             <td class="actions">
-                <button onclick="strikeMove('${move.id}')">✖️</button>
-                <button onclick="deleteMove('${move.id}')">🗑️</button>
+                <span onclick="strikeMove('${move.id}')">✖️</span>
+                <span onclick="deleteMove('${move.id}')">🗑️</span>
             </td>
         `;
                 movesTable.appendChild(row);
@@ -205,7 +244,7 @@
                     totalItem.querySelector("span").textContent = totals[playerKey];
                     const playerRef = db.ref(`marcadors/${playerKey}/punts/`)
                     playerRef.set(totals[playerKey])
-                    
+
                 }
             }
         });
@@ -217,19 +256,12 @@
             const row = document.querySelector(`tr[data-id='${id}']`);
             const wordCell = row.querySelector(".word-cell");
             const scoreCell = row.querySelector(".score-cell");
+            const isStruck = wordCell.classList.add("strikethrough");
+            const newScore = 0
+            scoreCell.textContent = newScore;
 
-           
-                const isStruck = wordCell.classList.add("strikethrough");
-               
-                const newScore = 0
-
-                
-                scoreCell.textContent = newScore;
-
-
-                // Actualitzar puntuació a la base de dades
-                movesRef.child(id).update({ score: newScore });
-            
+            // Actualitzar puntuació a la base de dades
+            movesRef.child(id).update({ score: newScore });
         }
 
         // Funció per esborrar una jugada
