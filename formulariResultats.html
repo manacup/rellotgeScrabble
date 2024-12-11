@@ -114,12 +114,7 @@
                 `;
                 playerSelection.appendChild(label);
 
-                /*  // Afegir entrada a la llista de puntuacions
-                 const totalItem = document.createElement("li");
-                 totalItem.id = `total-${playerId}`;
-                 totalItem.classList.add("list-group-item");
-                 totalItem.innerHTML = `${playerName}: <span>0</span> punts`;
-                 totalsList.appendChild(totalItem); */
+       
                 // Inicialitzar estadístiques del jugador
                 playerStats[playerId] = {
                     totalScore: 0,
@@ -198,7 +193,7 @@
                 timestamp: Date.now(),
             });
 
-            addMove(playerId, word, score, scrabble)
+            //addMove(playerId, word, score, scrabble)
 
             // Reset del formulari
             moveForm.reset();
@@ -251,7 +246,7 @@
             </td>
         `;
                 movesTable.appendChild(row);
-                updateTotalsUI(move.playerId)
+                addMove(move.playerId, move.word, move.score, move.scrabble)
                 
             });
             
