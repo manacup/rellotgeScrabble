@@ -200,9 +200,11 @@
             // Alternar el torn
             togglePlayerTurn(playerId);
         });
+  
+  
 
 
-
+       function actualitzaTaula(){
         movesRef.on("value", (snapshot) => {
             movesTable.innerHTML = "";
             for (const key in totals) {
@@ -257,6 +259,7 @@
 
 
             });
+       
 
             // Actualitzar visuals totals
             for (const playerKey in totals) {
@@ -267,8 +270,9 @@
                     playerRef.set(totals[playerKey])
                 }
             }
-        });
-
+       });
+} 
+actualitzaTaula()
         // Funció per editar una jugada
         function editMove(id) {
             const row = document.querySelector(`tr[data-id='${id}']`);
