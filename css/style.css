@@ -542,3 +542,18 @@ select {
     flex: 1 1 auto;
     bottom: 0;
   }
+  #wdtform .qry {
+    padding: 5px;
+}
+
+#wdtform .sch {
+    padding: 5px;
+}
+
+#req {
+    max-width: 600px;
+}
+
+#res {
+    max-width: 600px;
+}
