@@ -186,17 +186,27 @@
                             <span class="best-move">${jug.marcadors.jugador1.jugada.word.toUpperCase()} (${jug.marcadors.jugador1.jugada.score})</span>
                         </div>`
                     }
+                }else{
+                    statsDiv1.style.display='none'
                 }
 
                 const jug2 = jug.marcadors.jugador2.nom
                 jugadorDiv2.textContent = jug2
                 malnomDiv2.textContent = jug.jugadors[jug2]
                 imatgeDiv2.src = "/rellotgeScrabble/images/" + jug2.replace(" ", "_") + ".jpg" || null
-                statsDiv2.innerHTML = `
+                
+                if (jug.marcadors.jugador2.punts > 0) {
+                    statsDiv2.innerHTML = `
                 <div class="list-group-item">Total: <span class="total-score">${jug.marcadors.jugador2.punts}</span> punts</div> 
-                <div class="list-group-item">Scrabbles: <span class="scrabble-count">${jug.marcadors.jugador2.scrabbles}</span></div> 
-                <div class="list-group-item">Millor jugada: <span class="best-move">${jug.marcadors.jugador2.jugada.word.toUpperCase()} (${jug.marcadors.jugador2.jugada.score})</span></div>
-                `
+                <div class="list-group-item">Scrabbles: <span class="scrabble-count">${jug.marcadors.jugador2.scrabbles}</span></div> `
+                    if (jug.marcadors.jugador2.jugada.score > 0) {
+                        `<div class="list-group-item">Millor jugada: 
+                            <span class="best-move">${jug.marcadors.jugador2.jugada.word.toUpperCase()} (${jug.marcadors.jugador2.jugada.score})</span>
+                        </div>`
+                    }
+                }else{
+                    statsDiv2.style.display='none'
+                }
 
 
             })
