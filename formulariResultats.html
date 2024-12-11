@@ -55,7 +55,7 @@
                     <tr>
                         <th>Jugador</th>
                         <th>Paraula</th>
-                        <th>Puntuació</th>
+                        <th>Punts</th>
                         <th>Accions</th>
                     </tr>
                 </thead>
@@ -244,7 +244,7 @@
         `;
                 movesTable.appendChild(row);
             });
-
+            updateTotalsUI(move.playerId)
             // Actualitzar visuals totals
            /*  for (const playerKey in totals) {
                 const totalItem = document.getElementById(`total-${playerKey}`);
