@@ -59,10 +59,10 @@
                     <br><br>
                     <span class="blanc-text">Minuts extra amb penalització: </span><input type="number"
                         id="penalització" value="5">
-                    <!-- <li><button class="sch" type="button" id="toggle">Manté la pantalla activa</button></li> -->
+                    
                     <br><br>
                     <span class="blanc-text">Jugador 1: </span>
-                    <select id="nomjug1" onchange="actualitzarInput('marcadors/jugador1/nom', this.value)">
+                    <select id="nomjug1" onchange="actualitzarVariable('marcadors/jugador1/nom', this.value)">
                         <option value="">Selecciona un jugador</option>
                         <option value="Aina Garcia">Aina Garcia</option>
                         <option value="Antoni Riera">Antoni Riera</option>
@@ -71,7 +71,7 @@
                     </select>
                     <br><br>
                     <span class="blanc-text">Jugador 2: </span>
-                    <select id="nomjug2" onchange="actualitzarInput('marcadors/jugador2/nom', this.value)">
+                    <select id="nomjug2" onchange="actualitzarVariable('marcadors/jugador2/nom', this.value)">
                         <option value="">Selecciona un jugador</option>
                         <option value="Aina Garcia">Aina Garcia</option>
                         <option value="Antoni Riera">Antoni Riera</option>
@@ -146,11 +146,11 @@
                         <div id="input">
                             <input class="qry" name="q" placeholder="Escriviu un o més mots" autocomplete="off"
                                 autofocus="autofocus" value="" id="jugvalidacio"
-                                oninput="actualitzarInput('valida',this.value)">
+                                oninput="actualitzarVariable('valida',this.value)">
                         </div>
                         <div id="buttons">
                             <input class="sch  btn" name="sch" type="button" value="valida" id="btnValida"
-                                onclick="actualitzarVariable(this.id,true)" />
+                                onclick="actualitzarVariable('parametres/'+ this.id , true)" />
                         </div>
                     </form>
                 </div>
@@ -170,10 +170,10 @@
         </div>
 
     </main>
-    <iframe name='estadistica' id="estadistica" src="" style="display:none"></iframe>
+    
 
 
-    <script src="js/scriptLive.js"></script>
+    <script src="js/scriptLive2.js"></script>
 
 </body>
 
