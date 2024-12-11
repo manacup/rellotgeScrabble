@@ -132,10 +132,10 @@
                 totalItem.id = `total-${playerId}`;
                 totalItem.className = "list-group-item";
                 totalItem.innerHTML = `
-                ${playerName}: 
-                <li>Total: <span class="total-score">0</span> punts</li> 
-                <li>Scrabbles: <span class="scrabble-count">0</span></li> 
-                <li>Millor jugada: <span class="best-move">Cap</span></li>
+                <li class="fw-bold list-group-item  list-group-item-secondary">${playerName}:</li>
+                <li class="ms-2 list-group-item">Total: <span class="total-score">0</span> punts</li> 
+                <li class="ms-2 list-group-item">Scrabbles: <span class="scrabble-count">0</span></li> 
+                <li class="ms-2 list-group-item">Millor jugada: <span class="best-move">Cap</span></li>
             `;
                 totalsList.appendChild(totalItem);
             }
