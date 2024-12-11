@@ -50,7 +50,7 @@
 
         <h2 class="mb-3">Historial de jugades</h2>
         <div class="table-responsive">
-            <table class="table table-bordered table-hover">
+            <table class="table table-striped table-sm table-hover">
                 <thead class="table-light">
                     <tr>
                         <th>Jugador</th>
@@ -246,9 +246,9 @@
             <td class="score-cell ${move.scrabble ? 'scrabble' : ''}">${move.score}</td>
            
             <td class="actions">
-                <span onclick="editMove('${move.id}')">✏️</span>
-                <span onclick="strikeMove('${move.id}')">✖️</span>
-                <span onclick="deleteMove('${move.id}')">🗑️</span>
+                <span onclick="editMove('${move.id}')"><i class="bi bi-pencil-square"></i></span>
+                <span onclick="strikeMove('${move.id}')"><i class="bi bi-type-strikethrough"></i></span>
+                <!-- <span onclick="deleteMove('${move.id}')">🗑️</span> -->
             </td>
         `;
                 movesTable.appendChild(row);
@@ -279,12 +279,12 @@
             const currentWord = wordCell.textContent;
             const currentScore = scoreCell.textContent;
 
-            wordCell.innerHTML = `<input type='text' value='${currentWord}' class='edit-word'>`;
-            scoreCell.innerHTML = `<input type='number' value='${currentScore}' class='edit-score'>`;
+            wordCell.innerHTML = `<input type='text' value='${currentWord}' class='edit-word form-control'>`;
+            scoreCell.innerHTML = `<input type='number' value='${currentScore}' class='edit-score form-control'>`;
 
             actionsCell.innerHTML = `
-                <span onclick="saveEdit('${id}')">💾</span>
-                <span onclick="cancelEdit('${id}', '${currentWord}', '${currentScore}')">❌</span>
+                <span onclick="saveEdit('${id}')"><i class="bi bi-floppy"></i></span>
+                <span onclick="cancelEdit('${id}', '${currentWord}', '${currentScore}')"><i class="bi bi-x-square"></i></span>
             `;
         }
         // Funció per cancel·lar l'edició
@@ -298,9 +298,9 @@
             scoreCell.textContent = originalScore;
 
             actionsCell.innerHTML = `
-                <span onclick="editMove('${id}')">✏️</span>
-                <span onclick="strikeMove('${id}')">✖️</span>
-                <span onclick="deleteMove('${id}')">🗑️</span>
+                <span onclick="editMove('${id}')"><i class="bi bi-pencil-square"></i></span>
+                <span onclick="strikeMove('${id}')"><i class="bi bi-type-strikethrough"></i></span>
+                <!-- <span onclick="deleteMove('${id}')">🗑️</span> -->
             `;
         }
 
