@@ -261,7 +261,7 @@
             for (const playerKey in totals) {
                 const totalItem = document.getElementById(`total-${playerKey}`);
                 if (totalItem) {
-                    updateTotalsUI = (playerKey)
+                    updateTotalsUI(playerKey)
                     //totalItem.querySelector("span").textContent = totals[playerKey];
                     const playerRef = db.ref(`marcadors/${playerKey}/punts/`)
                     playerRef.set(totals[playerKey])
