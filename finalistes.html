@@ -26,7 +26,7 @@
             max-width: 800px;
             align-items: center;
         }
-        
+
 
         .player {
             display: inline-block;
@@ -103,13 +103,18 @@
             margin: 0 5%;
             vertical-align: middle;
         }
-.player-stats{
-    text-align: start;
-    margin-top: 2em;
-    border: #333;
-}
+
+        .player-stats {
+            text-align: start;
+            margin-top: 2em;
+            border-radius: 20px;
+            background-color: #292929;
+            padding: 10px;
+            width: max-content;
+        }
+
         .list-group-item {
-            margin-top: 10px;
+            margin: 10px;
             font-size: 1.5em;
             color: #ffffff;
         }
@@ -154,7 +159,7 @@
         const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const dataRef = db.ref();
-        
+
         const jugadorDiv1 = document.getElementById("jugador1")
         const malnomDiv1 = document.getElementById("malnom1")
         const imatgeDiv1 = document.getElementById("imatge1")
@@ -163,7 +168,7 @@
         const malnomDiv2 = document.getElementById("malnom2")
         const imatgeDiv2 = document.getElementById("imatge2")
         const statsDiv2 = document.getElementById("stats2")
-        
+
         function sincronitzaDades() {
             dataRef.on("value", (snapshot) => {
                 const jug = snapshot.val();
@@ -171,17 +176,22 @@
                 const jug1 = jug.marcadors.jugador1.nom
                 jugadorDiv1.textContent = jug1
                 malnomDiv1.textContent = jug.jugadors[jug1]
-                imatgeDiv1.src = "/rellotgeScrabble/images/" + jug1.replace(" ","_") + ".jpg" || null
-                statsDiv1.innerHTML = `
+                imatgeDiv1.src = "/rellotgeScrabble/images/" + jug1.replace(" ", "_") + ".jpg" || null
+                if (jug.marcadors.jugador1.punts > 0) {
+                    statsDiv1.innerHTML = `
                 <div class="list-group-item">Total: <span class="total-score">${jug.marcadors.jugador1.punts}</span> punts</div> 
-                <div class="list-group-item">Scrabbles: <span class="scrabble-count">${jug.marcadors.jugador1.scrabbles}</span></div> 
-                <div class="list-group-item">Millor jugada: <span class="best-move">${jug.marcadors.jugador1.jugada.word.toUpperCase()} (${jug.marcadors.jugador1.jugada.score})</span></div>
-                `
-                
+                <div class="list-group-item">Scrabbles: <span class="scrabble-count">${jug.marcadors.jugador1.scrabbles}</span></div> `
+                    if (jug.marcadors.jugador1.jugada.score > 0) {
+                        `<div class="list-group-item">Millor jugada: 
+                            <span class="best-move">${jug.marcadors.jugador1.jugada.word.toUpperCase()} (${jug.marcadors.jugador1.jugada.score})</span>
+                        </div>`
+                    }
+                }
+
                 const jug2 = jug.marcadors.jugador2.nom
                 jugadorDiv2.textContent = jug2
                 malnomDiv2.textContent = jug.jugadors[jug2]
-                imatgeDiv2.src = "/rellotgeScrabble/images/" + jug2.replace(" ","_") + ".jpg" || null
+                imatgeDiv2.src = "/rellotgeScrabble/images/" + jug2.replace(" ", "_") + ".jpg" || null
                 statsDiv2.innerHTML = `
                 <div class="list-group-item">Total: <span class="total-score">${jug.marcadors.jugador2.punts}</span> punts</div> 
                 <div class="list-group-item">Scrabbles: <span class="scrabble-count">${jug.marcadors.jugador2.scrabbles}</span></div> 
