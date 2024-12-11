@@ -120,8 +120,17 @@
                 }
             })
         }
-       
         clickbotons("parametres/btnValida")
+
+        // Sincronitza l'input
+        function sincronitzarInput(key, inputId) {
+            const inputRef = db.ref(key);
+            const input = document.getElementById(inputId);
+            inputRef.on('value', (snapshot) => {
+                input.value = snapshot.val() || '';
+            });
+        }
+        sincronitzarInput('valida', 'jugvalidacio')
     </script>
 </body>
 
