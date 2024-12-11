@@ -455,12 +455,12 @@ tempsBtn.addEventListener("click", () => {
   incrementar("jugador2","min",temps)
   incrementar("jugador2","sec",0)
   playing = false;
-  actualitzarVariable("playing",false)
+  actualitzarVariable("parametres/playing",false)
   incrementar("jugador1","penal", "")
   incrementar("jugador2","penal", "")
-  actualitzarVariable("jug1",true)
-  actualitzarVariable("jug2",true)
-  actualitzarVariable("currentPlayer","")
+  actualitzarVariable("parametres/jug1",true)
+  actualitzarVariable("parametres/jug2",true)
+  actualitzarVariable("parametres/currentPlayer","")
 
 
   clearInterval(timerId);
@@ -587,7 +587,7 @@ document.getElementById("input").addEventListener("click", () => {
     document.querySelectorAll(".player__tile").forEach((e) => {
       e.classList.add("petit");
     });
-  }, 00);
+  },0);
   console.log("funciona");
 });
 var fullScreen = document.getElementById("checkFullScreen");
