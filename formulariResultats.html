@@ -237,6 +237,7 @@
             <td class="score-cell ${move.scrabble ? 'scrabble' : ''}">${move.score}</td>
            
             <td class="actions">
+                <span onclick="editMove('${move.id}')">✏️</span>
                 <span onclick="strikeMove('${move.id}')">✖️</span>
                 <span onclick="deleteMove('${move.id}')">🗑️</span>
             </td>
@@ -255,6 +256,50 @@
                 }
             } */
         });
+
+                // Funció per editar una jugada
+                function editMove(id) {
+            const row = document.querySelector(`tr[data-id='${id}']`);
+            const wordCell = row.querySelector(".word-cell");
+            const scoreCell = row.querySelector(".score-cell");
+            const actionsCell = row.querySelector(".actions");
+
+            const currentWord = wordCell.textContent;
+            const currentScore = scoreCell.textContent;
+
+            wordCell.innerHTML = `<input type='text' value='${currentWord}' class='edit-word'>`;
+            scoreCell.innerHTML = `<input type='number' value='${currentScore}' class='edit-score'>`;
+
+            actionsCell.innerHTML = `
+                <span onclick="saveEdit('${id}')">💾</span>
+                <span onclick="cancelEdit('${id}', '${currentWord}', '${currentScore}')">❌</span>
+            `;
+        }
+                // Funció per cancel·lar l'edició
+                function cancelEdit(id, originalWord, originalScore) {
+            const row = document.querySelector(`tr[data-id='${id}']`);
+            const wordCell = row.querySelector(".word-cell");
+            const scoreCell = row.querySelector(".score-cell");
+            const actionsCell = row.querySelector(".actions");
+
+            wordCell.textContent = originalWord;
+            scoreCell.textContent = originalScore;
+
+            actionsCell.innerHTML = `
+                <span onclick="editMove('${id}')">✏️</span>
+                <span onclick="strikeMove('${id}')">✖️</span>
+                <span onclick="deleteMove('${id}')">🗑️</span>
+            `;
+        }
+
+        // Funció per guardar els canvis
+        function saveEdit(id) {
+            const row = document.querySelector(`tr[data-id='${id}']`);
+            const newWord = row.querySelector(".edit-word").value;
+            const newScore = parseInt(row.querySelector(".edit-score").value, 10);
+
+            movesRef.child(id).update({ word: newWord, score: newScore });
+        }
 
 
 
