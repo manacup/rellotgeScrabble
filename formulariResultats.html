@@ -138,7 +138,7 @@
                 <li class="list-group-item">Millor jugada: <span class="best-move">-</span></li>
             `;
                 totalsList.appendChild(totalItem);
-                updateTotalsUI(playerId);
+                
             }
         });
 
@@ -213,6 +213,13 @@
             for (const key in totals) {
                 totals[key] = 0; // Reinicia els totals
             }
+            for (const key in playerStats) {
+                totals[key] = {
+                    totalScore: 0,
+                    scrabbleCount: 0,
+                    bestMove: { word: null, score: 0 }
+                }; // Reinicia els totals
+            }
 
             // Recollir les jugades en un array i ordenar-les per timestamp
             const moves = [];
@@ -244,6 +251,7 @@
             </td>
         `;
                 movesTable.appendChild(row);
+                updateTotalsUI(move.playerId)
                 
             });
             
