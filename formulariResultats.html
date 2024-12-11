@@ -128,14 +128,14 @@
                 };
 
                 // Afegir al llistat de puntuacions
-                const totalItem = document.createElement("li");
+                const totalItem = document.createElement("ul");
                 totalItem.id = `total-${playerId}`;
-                totalItem.className = "list-group-item";
+                totalItem.className = "list-group mb-2";
                 totalItem.innerHTML = `
                 <li class="fw-bold list-group-item  list-group-item-secondary">${playerName}:</li>
-                <li class="ms-2 list-group-item">Total: <span class="total-score">0</span> punts</li> 
-                <li class="ms-2 list-group-item">Scrabbles: <span class="scrabble-count">0</span></li> 
-                <li class="ms-2 list-group-item">Millor jugada: <span class="best-move">Cap</span></li>
+                <li class="list-group-item">Total: <span class="total-score">0</span> punts</li> 
+                <li class="list-group-item">Scrabbles: <span class="scrabble-count">0</span></li> 
+                <li class="list-group-item">Millor jugada: <span class="best-move">-</span></li>
             `;
                 totalsList.appendChild(totalItem);
             }
@@ -158,7 +158,7 @@
             totalItem.querySelector(".total-score").textContent = stats.totalScore;
             totalItem.querySelector(".scrabble-count").textContent = stats.scrabbleCount;
             totalItem.querySelector(".best-move").textContent =
-                stats.bestMove.word ? `${stats.bestMove.word} (${stats.bestMove.score})` : "Cap";
+                stats.bestMove.word ? `${stats.bestMove.word} (${stats.bestMove.score})` : "-";
         };
 
         const togglePlayerTurn = (currentPlayerId) => {
