@@ -138,6 +138,7 @@
                 <li class="list-group-item">Millor jugada: <span class="best-move">-</span></li>
             `;
                 totalsList.appendChild(totalItem);
+                updateTotalsUI(playerId);
             }
         });
 
@@ -197,7 +198,7 @@
                 timestamp: Date.now(),
             });
 
-            //addMove(playerId, word, score, scrabble)
+            addMove(playerId, word, score, scrabble)
 
             // Reset del formulari
             moveForm.reset();
@@ -243,7 +244,7 @@
             </td>
         `;
                 movesTable.appendChild(row);
-                addMove(move.playerId, move.word, move.score, move.scrabble)
+                
             });
             
             // Actualitzar visuals totals
