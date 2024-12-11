@@ -252,9 +252,9 @@
             <td class="score-cell ${move.scrabble ? 'scrabble' : ''}">${move.score}</td>
            
             <td class="actions text-end">
-                <span onclick="editMove('${move.id}')"><i class="bi bi-pencil"></i></span>
-                <span onclick="strikeMove('${move.id}')"><i class="bi bi-type-strikethrough"></i></span>
-                <span onclick="deleteMove('${move.id}')" style="display:none;">🗑️</span>
+                <span onclick="editMove('${move.id}' class="me-1")"><i class="bi bi-pencil"></i></span>
+                <span onclick="strikeMove('${move.id}' class="me-1")"><i class="bi bi-type-strikethrough"></i></span>
+                <span onclick="deleteMove('${move.id}' class="me-1")" style="display:none;">🗑️</span>
             </td>
         `;
                 movesTable.appendChild(row);
@@ -294,8 +294,8 @@
 
             const actionsCell = row.querySelector(".actions");
             actionsCell.innerHTML = `        
-                                        <span onclick="saveEdit('${id}')"><i class="bi bi-floppy"></i></span>
-                                        <span onclick="cancelEdit('${id}', '${currentWord}', '${currentScore}', ${isScrabble})"><i class="bi bi-x-square"></i></span>        
+                                        <span onclick="saveEdit('${id}')" class="me-1"><i class="bi bi-floppy"></i></span>
+                                        <span onclick="cancelEdit('${id}', '${currentWord}', '${currentScore}', ${isScrabble})" class="me-1"><i class="bi bi-x-square"></i></span>        
                                     `;
         }
 
@@ -324,9 +324,9 @@
 
             const actionsCell = row.querySelector(".actions");
             actionsCell.innerHTML = `
-        <span onclick="editMove('${id}')"><i class="bi bi-pencil"></i></span>
-        <span onclick="strikeMove('${id}')"><i class="bi bi-type-strikethrough"></i></span>
-        <span onclick="deleteMove('${move.id}')" style="display:none;">🗑️</span>        
+        <span onclick="editMove('${id}' class="me-1")"><i class="bi bi-pencil"></i></span>
+        <span onclick="strikeMove('${id}' class="me-1")"><i class="bi bi-type-strikethrough"></i></span>
+        <span onclick="deleteMove('${move.id}' class="me-1")" style="display:none;">🗑️</span>        
     `;
         }
 
