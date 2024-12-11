@@ -197,7 +197,7 @@
                 timestamp: Date.now(),
             });
 
-            addMove(playerId, word, score, scrabble)
+            //addMove(playerId, word, score, scrabble)
 
             // Reset del formulari
             moveForm.reset();
@@ -247,15 +247,14 @@
             });
             
             // Actualitzar visuals totals
-           /*  for (const playerKey in totals) {
+            for (const playerKey in totals) {
                 const totalItem = document.getElementById(`total-${playerKey}`);
                 if (totalItem) {
-                    totalItem.querySelector("span").textContent = totals[playerKey];
+                    //totalItem.querySelector("span").textContent = totals[playerKey];
                     const playerRef = db.ref(`marcadors/${playerKey}/punts/`)
                     playerRef.set(totals[playerKey])
-
                 }
-            } */
+            }
         });
 
                 // Funció per editar una jugada
