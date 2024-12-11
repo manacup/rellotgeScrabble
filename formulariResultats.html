@@ -269,8 +269,12 @@
                 if (totalItem) {
                     updateTotalsUI(playerKey)
                     //totalItem.querySelector("span").textContent = totals[playerKey];
-                    const playerRef = db.ref(`marcadors/${playerKey}/punts/`)
-                    playerRef.set(totals[playerKey])
+                    const playerRef = db.ref(`marcadors/${playerKey}/`)
+                    playerRef.set({
+                        punts : playerStats[playerKey].totalScore,
+                        scrabbles :  playerStats[playerKey].scrabbleCount,
+                        millorJugada: playerStats[playerKey].bestMove                        
+                    })
                 }
             }
         });
