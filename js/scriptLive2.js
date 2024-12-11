@@ -15,6 +15,7 @@ const firebaseConfig = {
 // Inicialitza Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+
 const swver = "1.3.8.live"
 let playing = false;
 actualitzarVariable("parametres/playing",false)

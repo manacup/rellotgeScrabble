@@ -103,6 +103,23 @@
 
     </main>
     <script>
+        //firebase
+
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCuiHcIayor6a31_oi8g3UhZHKjp513yic",
+            authDomain: "liverellotge.firebaseapp.com",
+            databaseURL: "https://liverellotge-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "liverellotge",
+            storageBucket: "liverellotge.firebasestorage.app",
+            messagingSenderId: "778450817091",
+            appId: "1:778450817091:web:54a6ed6ee3740b204104f6",
+        };
+
+        // Inicialitza Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
         // Funció per actualitzar el valor de variable
         function actualitzarVariable(variable, valor) {
             const inputRef = db.ref("parametres/" + variable);
