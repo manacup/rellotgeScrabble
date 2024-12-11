@@ -243,8 +243,9 @@
             </td>
         `;
                 movesTable.appendChild(row);
+                addMove(move.playerId, move.word, move.score, move.scrabble)
             });
-            updateTotalsUI(move.playerId)
+            
             // Actualitzar visuals totals
            /*  for (const playerKey in totals) {
                 const totalItem = document.getElementById(`total-${playerKey}`);
