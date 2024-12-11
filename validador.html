@@ -128,7 +128,7 @@
 
         //funcio per escoltar clics als botons
         function clickbotons(botoID) {
-            const btnRef = db.ref(botoID)
+            const btnRef = db.ref("parametres/"+botoID)
             btnRef.on("value", (btn) => {
                 if (btn.val) {
                     console.log(botoID)
@@ -137,7 +137,7 @@
                 }
             })
         }
-        clickbotons("parametres/btnValida")
+        clickbotons("btnValida")
 
         // Sincronitza l'input
         function sincronitzarInput(key, inputId) {
