@@ -193,18 +193,14 @@
                 timestamp: Date.now(),
             });
 
-            addMove(playerId, word, score, scrabble)
+            //addMove(playerId, word, score, scrabble)
 
             // Reset del formulari
             moveForm.reset();
             // Alternar el torn
             togglePlayerTurn(playerId);
         });
-  
-  
 
-
-       function actualitzaTaula(){
         movesRef.on("value", (snapshot) => {
             movesTable.innerHTML = "";
             for (const key in totals) {
@@ -259,20 +255,20 @@
 
 
             });
-       
+
 
             // Actualitzar visuals totals
             for (const playerKey in totals) {
                 const totalItem = document.getElementById(`total-${playerKey}`);
                 if (totalItem) {
+                    updateTotalsUI = (playerKey)
                     //totalItem.querySelector("span").textContent = totals[playerKey];
                     const playerRef = db.ref(`marcadors/${playerKey}/punts/`)
                     playerRef.set(totals[playerKey])
                 }
             }
-       });
-} 
-actualitzaTaula()
+        });
+
         // Funció per editar una jugada
         function editMove(id) {
             const row = document.querySelector(`tr[data-id='${id}']`);
