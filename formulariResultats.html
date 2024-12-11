@@ -114,7 +114,7 @@
                 `;
                 playerSelection.appendChild(label);
 
-       
+
                 // Inicialitzar estadístiques del jugador
                 playerStats[playerId] = {
                     totalScore: 0,
@@ -133,7 +133,7 @@
                 <li class="list-group-item">Millor jugada: <span class="best-move">-</span></li>
             `;
                 totalsList.appendChild(totalItem);
-                
+
             }
         });
 
@@ -193,7 +193,7 @@
                 timestamp: Date.now(),
             });
 
-            //addMove(playerId, word, score, scrabble)
+            addMove(playerId, word, score, scrabble)
 
             // Reset del formulari
             moveForm.reset();
@@ -208,12 +208,11 @@
             for (const key in totals) {
                 totals[key] = 0; // Reinicia els totals
             }
-            for (const key in playerStats) {
-                totals[key] = {
-                    totalScore: 0,
-                    scrabbleCount: 0,
-                    bestMove: { word: null, score: 0 }
-                }; // Reinicia els totals
+
+            for (const playerId in playerStats) {
+                playerStats[playerId].totalScore = 0;
+                playerStats[playerId].scrabbleCount = 0;
+                playerStats[playerId].bestMove = { word: null, score: 0 };
             }
 
             // Recollir les jugades en un array i ordenar-les per timestamp
@@ -222,6 +221,7 @@
                 const data = childSnapshot.val();
                 const id = childSnapshot.key;
                 totals[data.playerId] += data.score;
+
                 moves.push({ ...data, id }); // Afegir jugada a l'array
             });
 
@@ -231,6 +231,14 @@
             // Renderitzar les jugades ordenades
             let round = moves.length;
             moves.forEach((move) => {
+                // Actualitza estadístiques del jugador
+                const stats = playerStats[move.playerId];
+                stats.totalScore += move.score;
+                if (move.scrabble) stats.scrabbleCount++;
+                if (move.score > stats.bestMove.score) {
+                    stats.bestMove = { word: move.word, score: move.score };
+                }
+
                 const row = document.createElement("tr");
                 row.dataset.id = move.id;
                 row.innerHTML = `
@@ -246,10 +254,10 @@
             </td>
         `;
                 movesTable.appendChild(row);
-                addMove(move.playerId, move.word, move.score, move.scrabble)
-                
+
+
             });
-            
+
             // Actualitzar visuals totals
             for (const playerKey in totals) {
                 const totalItem = document.getElementById(`total-${playerKey}`);
@@ -261,8 +269,8 @@
             }
         });
 
-                // Funció per editar una jugada
-                function editMove(id) {
+        // Funció per editar una jugada
+        function editMove(id) {
             const row = document.querySelector(`tr[data-id='${id}']`);
             const wordCell = row.querySelector(".word-cell");
             const scoreCell = row.querySelector(".score-cell");
@@ -279,8 +287,8 @@
                 <span onclick="cancelEdit('${id}', '${currentWord}', '${currentScore}')">❌</span>
             `;
         }
-                // Funció per cancel·lar l'edició
-                function cancelEdit(id, originalWord, originalScore) {
+        // Funció per cancel·lar l'edició
+        function cancelEdit(id, originalWord, originalScore) {
             const row = document.querySelector(`tr[data-id='${id}']`);
             const wordCell = row.querySelector(".word-cell");
             const scoreCell = row.querySelector(".score-cell");
