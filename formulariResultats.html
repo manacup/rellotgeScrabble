@@ -143,16 +143,6 @@
             }
         });
 
-        // Funció per afegir jugades
-        const addMove = (playerId, word, score, scrabble) => {
-            const stats = playerStats[playerId];
-            stats.totalScore += score;
-            if (scrabble) stats.scrabbleCount++;
-            if (score > stats.bestMove.score) stats.bestMove = { word, score };
-
-            updateTotalsUI(playerId);
-        };
-
         // Actualitzar la interfície de puntuacions
         const updateTotalsUI = (playerId) => {
             const stats = playerStats[playerId];
@@ -160,7 +150,7 @@
             totalItem.querySelector(".total-score").textContent = stats.totalScore;
             totalItem.querySelector(".scrabble-count").textContent = stats.scrabbleCount;
             totalItem.querySelector(".best-move").textContent =
-                stats.bestMove.word ? `${stats.bestMove.word} (${stats.bestMove.score})` : "-";
+            stats.bestMove.word ? `${stats.bestMove.word.toUpperCase()} (${stats.bestMove.score})` : "-";
         };
 
         const togglePlayerTurn = (currentPlayerId) => {

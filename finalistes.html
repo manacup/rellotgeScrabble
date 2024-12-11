@@ -103,6 +103,12 @@
             margin: 0 5%;
             vertical-align: middle;
         }
+
+        .list-group-item {
+            margin-top: 10px;
+            font-size: 1.5em;
+            color: #ffffff;
+        }
     </style>
 </head>
 
@@ -113,6 +119,9 @@
                 id="imatge1">
             <div class="player-name" id="jugador1">Finalista 1</div>
             <div class="player-malnom" id="malnom1">El boixador de la vall</div>
+            <div class="player-stats" id="stats1">
+
+            </div>
         </div>
         <div class="vs">VS</div>
         <div class="player">
@@ -120,6 +129,9 @@
                 id="imatge2">
             <div class="player-name" id="jugador2">Finalista 2</div>
             <div class="player-malnom" id="malnom2">El somiatruites de patates</div>
+            <div class="player-stats" id="stats1">
+
+            </div>
         </div>
     </div>
     <script>
@@ -142,9 +154,11 @@
         const jugadorDiv1 = document.getElementById("jugador1")
         const malnomDiv1 = document.getElementById("malnom1")
         const imatgeDiv1 = document.getElementById("imatge1")
+        const statsDiv1 = document.getElementById("stats1")
         const jugadorDiv2 = document.getElementById("jugador2")
         const malnomDiv2 = document.getElementById("malnom2")
         const imatgeDiv2 = document.getElementById("imatge2")
+        const statsDiv2 = document.getElementById("stats2")
         
         function sincronitzaDades() {
             dataRef.on("value", (snapshot) => {
@@ -154,11 +168,21 @@
                 jugadorDiv1.textContent = jug1
                 malnomDiv1.textContent = jug.jugadors[jug1]
                 imatgeDiv1.src = "/rellotgeScrabble/images/" + jug1.replace(" ","_") + ".jpg" || null
+                statsDiv1.innerHTML = `
+                <div class="list-group-item">Total: <span class="total-score">${jug.marcadors.jugador1.punts}</span> punts</div> 
+                <div class="list-group-item">Scrabbles: <span class="scrabble-count">${jug.marcadors.jugador1.scrabbles}</span></div> 
+                <div class="list-group-item">Millor jugada: <span class="best-move">${jug.marcadors.jugador1.jugada.word.toUpperCase()} (${jug.marcadors.jugador1.jugada.score})</span></div>
+                `
                 
                 const jug2 = jug.marcadors.jugador2.nom
                 jugadorDiv2.textContent = jug2
                 malnomDiv2.textContent = jug.jugadors[jug2]
                 imatgeDiv2.src = "/rellotgeScrabble/images/" + jug2.replace(" ","_") + ".jpg" || null
+                statsDiv2.innerHTML = `
+                <div class="list-group-item">Total: <span class="total-score">${jug.marcadors.jugador2.punts}</span> punts</div> 
+                <div class="list-group-item">Scrabbles: <span class="scrabble-count">${jug.marcadors.jugador2.scrabbles}</span></div> 
+                <div class="list-group-item">Millor jugada: <span class="best-move">${jug.marcadors.jugador2.jugada.word.toUpperCase()} (${jug.marcadors.jugador2.jugada.score})</span></div>
+                `
 
 
             })
