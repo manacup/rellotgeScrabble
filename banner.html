@@ -191,6 +191,7 @@
                 document.getElementById('player1-clock').textContent = `${data.marcadors.jugador1.min}:${padZero(data.marcadors.jugador1.sec)}`;
                 document.getElementById('player1-image').src = "/rellotgeScrabble/images/" + data.marcadors.jugador1.nom.replace(" ", "_") + ".jpg"
                 var scrabbles1 = document.getElementById('player1-scrabbles')
+                scrabbles1.innerHTML = ""
                 for (let i = 0; i < data.marcadors.jugador1.scrabbles; i++) {
                     scrabbles1.innerHTML += '★';
                 } 
@@ -203,6 +204,7 @@
                 document.getElementById('player2-clock').textContent = `${data.marcadors.jugador2.min}:${padZero(data.marcadors.jugador2.sec)}`;
                 document.getElementById('player2-image').src = "/rellotgeScrabble/images/" + data.marcadors.jugador2.nom.replace(" ", "_") + ".jpg"
                 var scrabbles2 = document.getElementById('player2-scrabbles')
+                 scrabbles2.innerHTML = ""
                 for (let i = 0; i < data.marcadors.jugador2.scrabbles; i++) {
                     scrabbles2.innerHTML += '★';
                 } 
