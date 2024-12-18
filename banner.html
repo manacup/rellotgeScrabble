@@ -114,10 +114,11 @@
         }
 
         .scrabbles {
-            position: absolute;
-            bottom: 20px;
-            font-size: 24px;
+            position: relative;
+            bottom: 48px;
+            font-size: 20px;
             color: gold;
+            height: 10px;
         }
     </style>
 </head>
@@ -194,7 +195,7 @@
                 scrabbles1.innerHTML = ""
                 for (let i = 0; i < data.marcadors.jugador1.scrabbles; i++) {
                     scrabbles1.innerHTML += '★';
-                } 
+                }
 
                 // Update Player 2
                 document.getElementById('player2-name').textContent = data.marcadors.jugador2.nom;
@@ -204,10 +205,10 @@
                 document.getElementById('player2-clock').textContent = `${data.marcadors.jugador2.min}:${padZero(data.marcadors.jugador2.sec)}`;
                 document.getElementById('player2-image').src = "/rellotgeScrabble/images/" + data.marcadors.jugador2.nom.replace(" ", "_") + ".jpg"
                 var scrabbles2 = document.getElementById('player2-scrabbles')
-                 scrabbles2.innerHTML = ""
+                scrabbles2.innerHTML = ""
                 for (let i = 0; i < data.marcadors.jugador2.scrabbles; i++) {
                     scrabbles2.innerHTML += '★';
-                } 
+                }
 
                 // Highlight clocks based on playing and discount state
                 const player1Clock = document.getElementById('player1-clock');
