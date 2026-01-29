@@ -22,6 +22,13 @@ var nomjugador1;
 var nomjugador2;
 var versio = document.querySelectorAll(".verdicc");
 
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("swver").textContent = "v:" + swver;
+  
+  versio.forEach((d) => {
+    d.textContent = disc.version;
+  });
+
 // Add a leading zero to numbers less than 10.
 const padZero = (number) => {
   if (number < 10) {
@@ -491,16 +498,19 @@ for (let i = 0; i < buttons.length; i++) {
 
 document.getElementById("input").addEventListener("click", () => {
   setTimeout(() => {
-    window.scrollTo(0, 1000);
-    document.querySelectorAll(".player__digits").forEach((e) => {
-      e.classList.add("petit");
-    });
-    document.querySelectorAll(".player__tile").forEach((e) => {
-      e.classList.add("petit");
-    });
-  }, 00);
-  console.log("funciona");
-});
+      // 1. Fer scroll
+      window.scrollTo({
+        top: 1000,
+        behavior: 'smooth' // Opcional: fa que el desplaçament sigui suau
+      });
+
+      // 2. Afegir la classe "petit" a tots els elements alhora
+      const elements = document.querySelectorAll(".player__digits, .player__tile");
+      elements.forEach((e) => {
+        e.classList.add("petit");
+      });
+    }, 20);
+  });
 var fullScreen = document.getElementById("checkFullScreen");
 fullScreen.addEventListener("change", () => {
   fullScreen.checked ? openFullscreen() : closeFullscreen();
@@ -597,12 +607,7 @@ var noSleep = new NoSleep().enable();
 document.getElementById("resetBtn").addEventListener("click", () => {
   document.getElementById("ajustaments").open = false;
 });
-document.addEventListener("DOMContentLoaded", function () {
-  document.getElementById("swver").textContent = "v:" + swver;
-  
-  versio.forEach((d) => {
-    d.textContent = disc.version;
-  });
+
   var temps = localStorage.getItem("temps");
   var temps1 = JSON.parse(localStorage.getItem("tempsjug1"));
   var temps2 = JSON.parse(localStorage.getItem("tempsjug2"));
@@ -690,7 +695,4 @@ function mantenirPantallaActiva() {
 
 setInterval(mantenirPantallaActiva, 60000); // Crida la funció cada minut per mantenir la pantalla activa
 
-versio.forEach((d) => {
-    d.textContent = disc.version;
-  });
 
