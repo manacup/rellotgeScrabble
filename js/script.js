@@ -23,11 +23,11 @@ var nomjugador2;
 var versio = document.querySelectorAll(".verdicc");
 
 document.addEventListener("DOMContentLoaded", function () {
-  document.getElementById("swver").textContent = "v:" + swver;
-  
+  document.getElementById("swver").textContent = "v:" + swver;  
   versio.forEach((d) => {
     d.textContent = disc.version;
   });
+}
 
 // Add a leading zero to numbers less than 10.
 const padZero = (number) => {
@@ -607,7 +607,8 @@ var noSleep = new NoSleep().enable();
 document.getElementById("resetBtn").addEventListener("click", () => {
   document.getElementById("ajustaments").open = false;
 });
-
+document.addEventListener("DOMContentLoaded", function () {
+  
   var temps = localStorage.getItem("temps");
   var temps1 = JSON.parse(localStorage.getItem("tempsjug1"));
   var temps2 = JSON.parse(localStorage.getItem("tempsjug2"));
