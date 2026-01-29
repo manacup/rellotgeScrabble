@@ -1,5 +1,3 @@
-
-import { disc } from './dicc/dicc.js';
 const swver = "1.3.9"
 let playing = false;
 
@@ -691,5 +689,6 @@ function mantenirPantallaActiva() {
 }
 
 setInterval(mantenirPantallaActiva, 60000); // Crida la funció cada minut per mantenir la pantalla activa
+
 
 
