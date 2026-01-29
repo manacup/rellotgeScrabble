@@ -504,7 +504,7 @@ document.getElementById("input").addEventListener("click", () => {
 var fullScreen = document.getElementById("checkFullScreen");
 fullScreen.addEventListener("change", () => {
   fullScreen.checked ? openFullscreen() : closeFullscreen();
-  localStorage.setItem("fullScreen", true);
+  localStorage.setItem("fullScreen", fullScreen.checked);
 });
 var botoSo = document.getElementById("checkSo");
 botoSo.addEventListener("change", () => {
