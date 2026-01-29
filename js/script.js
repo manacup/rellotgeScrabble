@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
   versio.forEach((d) => {
     d.textContent = disc.version;
   });
-}
+});
 
 // Add a leading zero to numbers less than 10.
 const padZero = (number) => {
