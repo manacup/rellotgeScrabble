@@ -1,4 +1,4 @@
-const swver = "1.3.9"
+const swver = "1.3.10"
 let playing = false;
 
 let currentPlayer = 1;
