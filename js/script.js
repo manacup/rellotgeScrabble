@@ -598,7 +598,7 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   document.getElementById("ajustaments").open = false;
 });
 document.addEventListener("DOMContentLoaded", function () {
-  document.getElementById("swver").textContent = "v:" + swver
+  document.getElementById("swver").textContent = "v:" + swver;
   
   versio.forEach((d) => {
     d.textContent = disc.version;
@@ -690,5 +690,7 @@ function mantenirPantallaActiva() {
 
 setInterval(mantenirPantallaActiva, 60000); // Crida la funció cada minut per mantenir la pantalla activa
 
-
+versio.forEach((d) => {
+    d.textContent = disc.version;
+  });
 
