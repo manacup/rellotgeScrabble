@@ -1,3 +1,4 @@
+import { disc } from './dicc.js';
 var caches_size = 100;
 var actdict = 'disc';
 var dicts = {};
