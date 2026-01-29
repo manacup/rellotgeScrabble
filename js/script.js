@@ -496,20 +496,18 @@ for (let i = 0; i < buttons.length; i++) {
   });
 }
 
-document.getElementById("input").addEventListener("click", () => {
-  setTimeout(() => {
-      // 1. Fer scroll
-      window.scrollTo({
-        top: 1000,
-        behavior: 'smooth' // Opcional: fa que el desplaçament sigui suau
-      });
+ document.getElementById("input").addEventListener("click", () => {
 
-      // 2. Afegir la classe "petit" a tots els elements alhora
-      const elements = document.querySelectorAll(".player__digits, .player__tile");
-      elements.forEach((e) => {
-        e.classList.add("petit");
-      });
-    }, 20);
+  setTimeout(() => {
+    window.scrollTo(0, 1000);
+    document.querySelectorAll(".player__digits").forEach((e) => {
+      e.classList.add("petit");
+    });
+    document.querySelectorAll(".player__tile").forEach((e) => {
+      e.classList.add("petit");
+    });
+  }, 0);
+
   });
 var fullScreen = document.getElementById("checkFullScreen");
 fullScreen.addEventListener("change", () => {
