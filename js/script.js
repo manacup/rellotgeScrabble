@@ -1,203 +1,194 @@
-const swver = "1.4.0";
+const swver = "1.4.1";
+
+// ── Estat del joc ──────────────────────────────────────────────────────────
 let playing = false;
-
 let currentPlayer = 1;
-let descompte = true;
-
-let jug1 = true;
+let jug1 = true;    // true = temps normal, false = en penalització
 let jug2 = true;
 let so = true;
 let vibracio = true;
-let penalització = document.getElementById("penalització");
-const timerPanel = document.querySelector(".player");
+
+// ── Temps en mil·lisegons (font única de veritat) ─────────────────────────
+// p_ms: temps restant en compte enrere (s'esgota cap a 0)
+// pPenalMs: temps de penalització acumulat en compte amunt (parteix de 0)
+let p1ms = 0;
+let p2ms = 0;
+let p1penalMs = 0;
+let p2penalMs = 0;
+// Marca de temps de l'últim tick per calcular el delta real
+let lastTickMs = null;
+
+const TICK_MS = 100;  // interval del rellotge intern (alta precisió)
+
+// ── Flags d'estat ──────────────────────────────────────────────────────────
+let timesUpTriggered1 = false;
+let timesUpTriggered2 = false;
+let p1penalFinal = false;  // ha esgotat els minuts de penalització
+let p2penalFinal = false;
+
+// ── Elements del DOM ──────────────────────────────────────────────────────
+const penalitzacioEl = document.getElementById("penalització");
 const buttons = document.querySelectorAll(".bttn");
 const jugador1 = document.querySelector(".player-1");
 const jugador2 = document.querySelector(".player-2");
+const botoStart = document.querySelector(".timer__start-bttn");
+const botoSo = document.getElementById("checkSo");
+const botoVibr = document.getElementById("checkVibracio");
+const fullScreen = document.getElementById("checkFullScreen");
+const versio = document.querySelectorAll(".verdicc");
 
+// ── Àudio ─────────────────────────────────────────────────────────────────
 const timesUp = new Audio("audio/460133__eschwabe3__robot-affirmative.wav");
-const click = new Audio("audio/561660__mattruthsound.wav");
+const clickSo = new Audio("audio/561660__mattruthsound.wav");
 const compteenrere = new Audio("audio/beep-07a.wav");
-const velocitat = 1000;
+const silenci = new Audio("audio/silenci.mp3");
+// Fallback per mantenir la pantalla activa en alguns navegadors
+setInterval(() => { if (playing) silenci.play().catch(() => {}); }, 60000);
 
-var versio = document.querySelectorAll(".verdicc");
-
-// NoSleep: evita que la pantalla s'apagui durant el joc
-var noSleep = new NoSleep();
-var noSleepActiu = false;
+// ── NoSleep ────────────────────────────────────────────────────────────────
+const noSleep = new NoSleep();
+let noSleepActiu = false;
 function activaNoSleep() {
-  if (!noSleepActiu) {
-    noSleep.enable();
-    noSleepActiu = true;
+  if (!noSleepActiu) { noSleep.enable(); noSleepActiu = true; }
+}
+
+// ── Utilitats ─────────────────────────────────────────────────────────────
+const padZero = n => n < 10 ? "0" + n : String(n);
+
+function msToMinSec(ms) {
+  const totalSec = Math.max(0, Math.floor(ms / 1000));
+  return { minutes: Math.floor(totalSec / 60), seconds: totalSec % 60 };
+}
+
+// ── Actualització del display ──────────────────────────────────────────────
+function updateDisplay(n, ms) {
+  const { minutes, seconds } = msToMinSec(ms);
+  document.getElementById("min" + n).textContent = padZero(minutes);
+  document.getElementById("sec" + n).textContent = padZero(seconds);
+}
+
+// Penalització: 10 punts per cada minut o fracció de minut
+function updatePenalDisplay(n, penalMs) {
+  const fraccions = Math.ceil(penalMs / 60000) || 1;
+  document.getElementById("penal" + n).textContent =
+    "Penalització: -" + fraccions * 10 + " punts";
+}
+
+// ── Desa l'estat al localStorage ──────────────────────────────────────────
+function saveState() {
+  localStorage.setItem("tempsjug1", JSON.stringify({
+    ms: p1ms, penalMs: p1penalMs, penal: jug1,
+    jugador: document.getElementById("nomjug1").value
+  }));
+  localStorage.setItem("tempsjug2", JSON.stringify({
+    ms: p2ms, penalMs: p2penalMs, penal: jug2,
+    jugador: document.getElementById("nomjug2").value
+  }));
+}
+
+// ── Sons de compte enrere (últims 5 segons) ────────────────────────────────
+let lastBeepSec = -1;
+function checkWarningSound(ms) {
+  const sec = Math.floor(ms / 1000);
+  if (sec <= 5 && sec > 0 && sec !== lastBeepSec) {
+    lastBeepSec = sec;
+    if (so) compteenrere.play();
+    if (vibracio) window.navigator.vibrate([300]);
   }
 }
 
-// Reprodueix silenci cada minut com a fallback per mantenir pantalla activa
-const silenci = new Audio('audio/silenci.mp3');
-setInterval(() => {
-  if (playing) silenci.play().catch(() => {});
-}, 60000);
+// ── Aplica el delta de temps al jugador actiu ──────────────────────────────
+// Centralitza la lògica de descompte/penalització en un sol lloc.
+// S'utilitza tant des del tick periòdic com en el canvi de torn exacte.
+function aplicaDelta(delta) {
+  const maxPenalMs = parseInt(penalitzacioEl.value, 10) * 60000;
 
-// Afegeix zero a l'esquerra per als números inferiors a 10.
-const padZero = (number) => (number < 10 ? "0" + number : String(number));
-
-// Classe per al rellotge.
-class Timer {
-  constructor(player, minutes) {
-    this.player = player;
-    this.minutes = minutes;
-  }
-  getMinutes(timeId) {
-    return document.getElementById(timeId).textContent;
-  }
-}
-
-let p1time = new Timer("min1", document.getElementById("min1").textContent);
-let p2time = new Timer("min2", document.getElementById("min2").textContent);
-
-// Marca el jugador actiu amb classe de penalització (color vermell).
-const timeWarning = (player) => {
-  if (player === 1) {
-    document.querySelectorAll(".player__digits")[0].classList.add("penalty");
+  if (currentPlayer === 1) {
+    if (jug1) {
+      // Compte enrere normal jugador 1
+      p1ms = Math.max(0, p1ms - delta);
+      updateDisplay(1, p1ms);
+      checkWarningSound(p1ms);
+      if (p1ms === 0 && !timesUpTriggered1) {
+        timesUpTriggered1 = true;
+        jug1 = false;
+        if (so) timesUp.play();
+        if (vibracio) window.navigator.vibrate([1000]);
+      }
+    } else if (!p1penalFinal) {
+      // Penalització jugador 1 (comptador amunt)
+      p1penalMs = Math.min(p1penalMs + delta, maxPenalMs);
+      updateDisplay(1, p1penalMs);
+      updatePenalDisplay(1, p1penalMs);
+      document.querySelectorAll(".player__digits")[0].classList.add("penalty");
+      if (p1penalMs >= maxPenalMs) {
+        p1penalFinal = true;
+        if (so) timesUp.play();
+        if (vibracio) window.navigator.vibrate([100, 50, 1000]);
+      }
+    }
   } else {
-    document.querySelectorAll(".player__digits")[1].classList.add("penalty");
+    if (jug2) {
+      // Compte enrere normal jugador 2
+      p2ms = Math.max(0, p2ms - delta);
+      updateDisplay(2, p2ms);
+      checkWarningSound(p2ms);
+      if (p2ms === 0 && !timesUpTriggered2) {
+        timesUpTriggered2 = true;
+        jug2 = false;
+        if (so) timesUp.play();
+        if (vibracio) window.navigator.vibrate([1000]);
+      }
+    } else if (!p2penalFinal) {
+      // Penalització jugador 2 (comptador amunt)
+      p2penalMs = Math.min(p2penalMs + delta, maxPenalMs);
+      updateDisplay(2, p2penalMs);
+      updatePenalDisplay(2, p2penalMs);
+      document.querySelectorAll(".player__digits")[1].classList.add("penalty");
+      if (p2penalMs >= maxPenalMs) {
+        p2penalFinal = true;
+        if (so) timesUp.play();
+        if (vibracio) window.navigator.vibrate([100, 50, 1000]);
+      }
+    }
   }
-};
+}
 
-let timerId;
-let p1sec = 60;
-let p2sec = 60;
+// ── Tick del rellotge (cada TICK_MS ms) ───────────────────────────────────
+let timerId = null;
+
+function tick() {
+  if (!playing) return;
+  const now = Date.now();
+  const delta = now - lastTickMs;
+  lastTickMs = now;
+  aplicaDelta(delta);
+  saveState();
+}
 
 const startTimer = () => {
   playing = true;
-
-  timerId = setInterval(function () {
-    if (currentPlayer === 1) {
-      if (playing && jug1) {
-        p1time.minutes = parseInt(p1time.getMinutes("min1"), 10);
-        if (p1sec === 60) {
-          p1time.minutes = p1time.minutes - 1;
-        }
-        p1sec = p1sec - 1;
-        document.getElementById("sec1").textContent = padZero(p1sec);
-        document.getElementById("min1").textContent = padZero(p1time.minutes);
-
-        if (p1sec === 0 && p1time.minutes === 0) {
-          if (so) timesUp.play();
-          if (vibracio) window.navigator.vibrate([1000]);
-          jug1 = false;
-          if (descompte) tempsDescompte();
-        }
-        if (p1sec === 0) p1sec = 60;
-
-        if (p1time.minutes === 0 && p1sec <= 5) {
-          if (so) compteenrere.play();
-          if (vibracio) window.navigator.vibrate([300]);
-        }
-
-        p1time.seconds = p1sec;
-        p1time.penal = jug1;
-        p1time.jugador = document.getElementById("nomjug1").value;
-        localStorage.setItem("tempsjug1", JSON.stringify(p1time));
-      }
-    } else {
-      if (playing && jug2) {
-        p2time.minutes = parseInt(p2time.getMinutes("min2"), 10);
-        if (p2sec === 60) {
-          p2time.minutes = p2time.minutes - 1;
-        }
-        p2sec = p2sec - 1;
-        document.getElementById("sec2").textContent = padZero(p2sec);
-        document.getElementById("min2").textContent = padZero(p2time.minutes);
-
-        if (p2sec === 0 && p2time.minutes === 0) {
-          if (so) timesUp.play();
-          if (vibracio) window.navigator.vibrate([1000]);
-          jug2 = false;
-          if (descompte) tempsDescompte();
-        }
-        if (p2sec === 0) p2sec = 60;
-
-        if (p2time.minutes === 0 && p2sec <= 5) {
-          if (so) compteenrere.play();
-          if (vibracio) window.navigator.vibrate([300]);
-        }
-
-        p2time.seconds = p2sec;
-        p2time.penal = jug2;
-        p2time.jugador = document.getElementById("nomjug2").value;
-        localStorage.setItem("tempsjug2", JSON.stringify(p2time));
-      }
-    }
-  }, velocitat);
+  lastTickMs = Date.now();
+  timerId = setInterval(tick, TICK_MS);
 };
 
-let descompteID;
-let p1secpenal = 0;
-let p2secpenal = 0;
-
-function tempsDescompte() {
-  descompte = false;
-  const maxPenal = parseInt(penalització.value, 10);
-
-  descompteID = setInterval(function () {
-    if (currentPlayer === 1) {
-      if (playing && !jug1) {
-        p1time.minutes = parseInt(p1time.getMinutes("min1"), 10);
-        if (p1secpenal === 59) {
-          p1time.minutes = p1time.minutes + 1;
-          p1secpenal = 0;
-        } else {
-          p1secpenal = p1secpenal + 1;
-          document.getElementById("penal1").textContent =
-            "Penalització: -" + (p1time.minutes + 1) * 10 + " punts";
-        }
-
-        timeWarning(currentPlayer);
-        document.getElementById("sec1").textContent = padZero(p1secpenal);
-        document.getElementById("min1").textContent = padZero(p1time.minutes);
-
-        if (p1secpenal === 0 && p1time.minutes === maxPenal) {
-          if (so) timesUp.play();
-          if (vibracio) window.navigator.vibrate([100, 50, 1000]);
-          clearInterval(descompteID);
-        }
-
-        p1time.seconds = p1secpenal;
-        p1time.penal = jug1;
-        p1time.jugador = document.getElementById("nomjug1").value;
-        localStorage.setItem("tempsjug1", JSON.stringify(p1time));
-      }
-    } else {
-      if (playing && !jug2) {
-        p2time.minutes = parseInt(p2time.getMinutes("min2"), 10);
-        if (p2secpenal === 59) {
-          p2time.minutes = p2time.minutes + 1;
-          p2secpenal = 0;
-        } else {
-          p2secpenal = p2secpenal + 1;
-          document.getElementById("penal2").textContent =
-            "Penalització: -" + (p2time.minutes + 1) * 10 + " punts";
-        }
-
-        timeWarning(currentPlayer);
-        document.getElementById("sec2").textContent = padZero(p2secpenal);
-        document.getElementById("min2").textContent = padZero(p2time.minutes);
-
-        if (p2secpenal === 0 && p2time.minutes === maxPenal) {
-          if (so) timesUp.play();
-          if (vibracio) window.navigator.vibrate([100, 50, 1000]);
-          clearInterval(descompteID);
-        }
-
-        p2time.seconds = p2secpenal;
-        p2time.penal = jug2;
-        p2time.jugador = document.getElementById("nomjug2").value;
-        localStorage.setItem("tempsjug2", JSON.stringify(p2time));
-      }
-    }
-  }, velocitat);
+// ── Canvi de torn precís ───────────────────────────────────────────────────
+// En prémer la fitxa del jugador que acaba el torn:
+//  1) Es cobra al jugador actiu el delta EXACTE fins al moment del canvi.
+//  2) Es canvia currentPlayer.
+//  3) lastTickMs s'actualitza al moment exacte del canvi.
+// Així cap jugador perd ni guanya fraccions de segon entre torns.
+function canviPrecis(nouJugador) {
+  if (playing && lastTickMs !== null) {
+    const now = Date.now();
+    aplicaDelta(now - lastTickMs);
+    lastTickMs = now;
+  }
+  currentPlayer = nouJugador;
+  localStorage.setItem("jugactiu", nouJugador);
 }
 
+// ── Colors actiu/inactiu ──────────────────────────────────────────────────
 function colors1() {
   jugador1.classList.add("actiu");
   if (!jug1) {
@@ -227,55 +218,50 @@ function canvijug2() { canvitorn(1); colors1(); }
 
 function canvitorn(jug) {
   if (!playing && botoStart.textContent === "CONTINUA") {
+    // Reprèn el joc canviant de jugador
     currentPlayer = jug;
     localStorage.setItem("jugactiu", jug);
     playing = true;
-    document.querySelectorAll(".petit").forEach((e) => e.classList.remove("petit"));
+    lastTickMs = Date.now();  // ← evita cobrar el temps de pausa
+    document.querySelectorAll(".petit").forEach(e => e.classList.remove("petit"));
     document.getElementById("cont").style.display = "none";
     amagarValidador();
     botoStart.style.color = "#EEEEEE";
     botoStart.style.backgroundColor = "#606060";
     botoStart.textContent = "PAUSA / VALIDA";
-    if (so) click.play();
+    if (so) clickSo.play();
     if (vibracio) window.navigator.vibrate(50);
   } else if (!playing && botoStart.textContent === "COMENÇA") {
+    // Primera jugada: inicia el rellotge
     currentPlayer = jug;
     localStorage.setItem("jugactiu", jug);
     startTimer();
-    if (descompte && !jug1) tempsDescompte();
-    if (descompte && !jug2) tempsDescompte();
     botoStart.style.color = "#EEEEEE";
     botoStart.style.backgroundColor = "#606060";
     botoStart.textContent = "PAUSA / VALIDA";
-    if (so) click.play();
+    if (so) clickSo.play();
     if (vibracio) window.navigator.vibrate(50);
-  } else if (currentPlayer !== jug) {
-    currentPlayer = jug;
-    localStorage.setItem("jugactiu", jug);
+  } else if (playing && currentPlayer !== jug) {
+    // Canvi de torn: cobra el temps exacte al jugador que para
+    canviPrecis(jug);
     jug === 2
       ? jugador1.classList.remove("actiu")
       : jugador2.classList.remove("actiu");
-    if (so) click.play();
+    if (so) clickSo.play();
     if (vibracio) window.navigator.vibrate(50);
   }
 }
 
-// Amaga el resultat del validador i neteja l'input
+// ── Amaga el validador ────────────────────────────────────────────────────
 function amagarValidador() {
   if (typeof qryDelete === "function") qryDelete(false);
   document.querySelector(".qry").value = "";
 }
 
-var botoStart = document.querySelector(".timer__start-bttn");
-
-jugador1.addEventListener("touchstart", canvijug1, { passive: true });
-jugador1.addEventListener("click", canvijug1);
-jugador2.addEventListener("touchstart", canvijug2, { passive: true });
-jugador2.addEventListener("click", canvijug2);
-
-let ajust = document.getElementById("ajustaments");
+// ── Menú d'ajustaments ────────────────────────────────────────────────────
+const ajust = document.getElementById("ajustaments");
 ajust.addEventListener("toggle", () => {
-  if (ajust.open === true) {
+  if (ajust.open) {
     document.querySelector(".player").style.display = "none";
     document.querySelector(".full-screen").style.display = "none";
     document.querySelector("summary").textContent = "X";
@@ -286,45 +272,51 @@ ajust.addEventListener("toggle", () => {
   }
 });
 
-var tempsBtn = document.getElementById("tempsBtn");
-tempsBtn.addEventListener("click", () => {
-  var temps = document.getElementById("temps").value;
-  document.getElementById("min1").textContent = padZero(temps);
-  document.getElementById("min2").textContent = padZero(temps);
-  document.getElementById("sec1").textContent = "00";
-  document.getElementById("sec2").textContent = "00";
+// ── Botó "Nova partida" ───────────────────────────────────────────────────
+document.getElementById("tempsBtn").addEventListener("click", () => {
+  const tempsMinuts = parseInt(document.getElementById("temps").value, 10) || 30;
+  p1ms = tempsMinuts * 60000;
+  p2ms = tempsMinuts * 60000;
+  p1penalMs = 0;
+  p2penalMs = 0;
+  timesUpTriggered1 = false;
+  timesUpTriggered2 = false;
+  p1penalFinal = false;
+  p2penalFinal = false;
+  lastBeepSec = -1;
   playing = false;
+  jug1 = true;
+  jug2 = true;
+  lastTickMs = null;
 
   clearInterval(timerId);
-  p1sec = 60;
-  p2sec = 60;
-  clearInterval(descompteID);
-  p1secpenal = 0;
-  p2secpenal = 0;
+  timerId = null;
+
+  updateDisplay(1, p1ms);
+  updateDisplay(2, p2ms);
+
   botoStart.textContent = "COMENÇA";
   botoStart.style.backgroundColor = "#0071D5";
   botoStart.style.color = "";
 
   document.getElementById("ajustaments").open = false;
-  localStorage.setItem("temps", temps);
-  localStorage.setItem("penalització", penalització.value);
+  localStorage.setItem("temps", tempsMinuts);
+  localStorage.setItem("penalització", penalitzacioEl.value);
   document.getElementById("cont").style.display = "none";
   jugador1.classList.remove("actiu");
   jugador2.classList.remove("actiu");
-  document.querySelectorAll(".player__digits").forEach((a) => {
+  document.querySelectorAll(".player__digits").forEach(a => {
     a.classList.remove("penalty", "penalty_inactiu");
   });
   document.getElementById("penal1").textContent = "";
   document.getElementById("penal2").textContent = "";
-  jug1 = true;
-  jug2 = true;
-  descompte = true;
 
   localStorage.removeItem("tempsjug1");
   localStorage.removeItem("tempsjug2");
   amagarValidador();
 });
 
+// ── Noms dels jugadors ────────────────────────────────────────────────────
 document.getElementById("nomjug1").addEventListener("change", () => {
   document.getElementById("nom1").textContent = document.getElementById("nomjug1").value;
 });
@@ -332,37 +324,39 @@ document.getElementById("nomjug2").addEventListener("change", () => {
   document.getElementById("nom2").textContent = document.getElementById("nomjug2").value;
 });
 
+// ── Botó principal (COMENÇA / PAUSA / CONTINUA) ───────────────────────────
 for (let i = 0; i < buttons.length; i++) {
   buttons[i].addEventListener("click", () => {
     activaNoSleep();
-    if (buttons[i].textContent === "COMENÇA") {
+    const text = buttons[i].textContent;
+
+    if (text === "COMENÇA") {
       buttons[i].style.color = "#EEEEEE";
       buttons[i].style.backgroundColor = "#606060";
       buttons[i].textContent = "PAUSA / VALIDA";
       document.querySelector(".player-" + currentPlayer).classList.add("actiu");
       startTimer();
-      if (descompte && !jug1) { tempsDescompte(); colors1(); }
-      if (descompte && !jug2) tempsDescompte();
-    } else if (buttons[i].textContent === "PAUSA / VALIDA") {
+
+    } else if (text === "PAUSA / VALIDA") {
       playing = false;
       buttons[i].style.color = "#FFFFFF";
       buttons[i].style.backgroundColor = "#0071D5";
       buttons[i].textContent = "CONTINUA";
       jugador1.classList.remove("actiu");
       jugador2.classList.remove("actiu");
-      document.querySelectorAll(".player__digits").forEach((a) => {
-        a.classList.remove("penalty");
-      });
+      document.querySelectorAll(".player__digits").forEach(a => a.classList.remove("penalty"));
       if (!jug1) document.querySelectorAll(".player__digits")[0].classList.add("penalty_inactiu");
       if (!jug2) document.querySelectorAll(".player__digits")[1].classList.add("penalty_inactiu");
       document.getElementById("cont").style.display = "";
-      // Dóna focus a l'input del validador quan la pantalla sigui prou gran
-      setTimeout(() => {
-        if (window.innerWidth >= 600) document.querySelector(".qry").focus();
-      }, 100);
-    } else if (buttons[i].textContent === "CONTINUA") {
+      // Focus al validador només en pantalles grans (evita teclat automàtic al mòbil)
+      if (window.innerWidth >= 600) {
+        setTimeout(() => document.querySelector(".qry").focus(), 100);
+      }
+
+    } else if (text === "CONTINUA") {
       playing = true;
-      document.querySelectorAll(".petit").forEach((e) => e.classList.remove("petit"));
+      lastTickMs = Date.now();  // ← evita cobrar el temps de pausa
+      document.querySelectorAll(".petit").forEach(e => e.classList.remove("petit"));
       buttons[i].style.color = "#EEEEEE";
       buttons[i].style.backgroundColor = "#606060";
       buttons[i].textContent = "PAUSA / VALIDA";
@@ -381,47 +375,27 @@ for (let i = 0; i < buttons.length; i++) {
   });
 }
 
+// ── Input del validador ───────────────────────────────────────────────────
 document.getElementById("input").addEventListener("click", () => {
   setTimeout(() => {
     window.scrollTo(0, 1000);
-    document.querySelectorAll(".player__digits").forEach((e) => e.classList.add("petit"));
-    document.querySelectorAll(".player__tile").forEach((e) => e.classList.add("petit"));
+    document.querySelectorAll(".player__digits").forEach(e => e.classList.add("petit"));
+    document.querySelectorAll(".player__tile").forEach(e => e.classList.add("petit"));
   }, 0);
 });
 
-var fullScreen = document.getElementById("checkFullScreen");
+// ── Pantalla completa ─────────────────────────────────────────────────────
 fullScreen.addEventListener("change", () => {
   fullScreen.checked ? openFullscreen() : closeFullscreen();
   localStorage.setItem("fullScreen", fullScreen.checked);
 });
 
-var botoSo = document.getElementById("checkSo");
-botoSo.addEventListener("change", () => {
-  so = botoSo.checked;
-  localStorage.setItem("botoSo", so);
-  if (so) click.play();
-});
-
-var botoVibr = document.getElementById("checkVibracio");
-botoVibr.addEventListener("change", () => {
-  vibracio = botoVibr.checked;
-  localStorage.setItem("botoVibr", vibracio);
-  if (vibracio) window.navigator.vibrate(50);
-});
-
-var elem = document.documentElement;
+const elem = document.documentElement;
 
 function toggleFullscreen() {
-  const isFullscreen = document.fullscreenElement
-    || document.webkitFullscreenElement
-    || document.mozFullScreenElement
-    || document.msFullscreenElement;
-
-  if (isFullscreen) {
-    closeFullscreen();
-  } else {
-    openFullscreen();
-  }
+  const isFs = document.fullscreenElement || document.webkitFullscreenElement
+    || document.mozFullScreenElement || document.msFullscreenElement;
+  isFs ? closeFullscreen() : openFullscreen();
 }
 
 function openFullscreen() {
@@ -438,82 +412,91 @@ function closeFullscreen() {
   fullScreen.checked = false;
 }
 
+// ── Clics sobre les fitxes dels jugadors ─────────────────────────────────
+jugador1.addEventListener("click", canvijug1);
+jugador2.addEventListener("click", canvijug2);
+
+// ── Checkboxes de so i vibració ───────────────────────────────────────────
+botoSo.addEventListener("change", () => {
+  so = botoSo.checked;
+  localStorage.setItem("botoSo", so);
+});
+botoVibr.addEventListener("change", () => {
+  vibracio = botoVibr.checked;
+  localStorage.setItem("botoVibr", vibracio);
+});
+
+// ── Botó "Continua la partida" (del menú) ────────────────────────────────
 document.getElementById("resetBtn").addEventListener("click", () => {
   document.getElementById("ajustaments").open = false;
 });
 
+// ── Inicialització: restaura l'estat del localStorage ────────────────────
 document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("swver").textContent = "v:" + swver;
-  versio.forEach((d) => { d.textContent = disc.version; });
+  versio.forEach(d => { d.textContent = disc.version; });
 
-  var temps = localStorage.getItem("temps");
-  var temps1 = JSON.parse(localStorage.getItem("tempsjug1"));
-  var temps2 = JSON.parse(localStorage.getItem("tempsjug2"));
+  const tempsGuardat = localStorage.getItem("temps");
+  const tempsMinuts = tempsGuardat !== null ? parseInt(tempsGuardat, 10) : 30;
+  document.getElementById("temps").value = tempsMinuts;
 
-  // Preferències de so i vibració
+  if (localStorage.getItem("penalització") !== null) {
+    penalitzacioEl.value = localStorage.getItem("penalització");
+  }
+
   so = localStorage.getItem("botoSo") !== "false";
   vibracio = localStorage.getItem("botoVibr") !== "false";
   botoSo.checked = so;
   botoVibr.checked = vibracio;
 
-  // Temps de joc per defecte
-  if (temps === null) temps = 30;
-  document.getElementById("temps").value = temps;
-
-  // Temps de penalització
-  if (localStorage.getItem("penalització") !== null) {
-    penalització.value = localStorage.getItem("penalització");
-  }
-
-  // Restaura l'estat del jugador 1
-  if (temps1 !== null) {
-    document.getElementById("min1").textContent = padZero(temps1.minutes);
-    document.getElementById("sec1").textContent = padZero(temps1.seconds);
-    document.getElementById("nomjug1").value = temps1.jugador || "";
-    document.getElementById("nom1").textContent = temps1.jugador || "";
-    p1sec = temps1.seconds;
-    jug1 = temps1.penal;
+  // Restaura jugador 1
+  const raw1 = localStorage.getItem("tempsjug1");
+  const data1 = raw1 ? JSON.parse(raw1) : null;
+  if (data1 !== null && data1.ms !== undefined) {
+    p1ms = data1.ms;
+    p1penalMs = data1.penalMs || 0;
+    jug1 = data1.penal;
+    document.getElementById("nomjug1").value = data1.jugador || "";
+    document.getElementById("nom1").textContent = data1.jugador || "";
+    updateDisplay(1, jug1 ? p1ms : p1penalMs);
     if (!jug1) {
-      p1secpenal = temps1.seconds;
       document.querySelectorAll(".player__digits")[0].classList.add("penalty_inactiu");
-      document.getElementById("penal1").textContent =
-        "Penalització: -" + (temps1.minutes + 1) * 10 + " punts";
+      updatePenalDisplay(1, p1penalMs);
     }
     document.getElementById("resetBtn").style.display = "";
   } else {
-    document.getElementById("min1").textContent = padZero(temps);
-    document.getElementById("sec1").textContent = "00";
+    p1ms = tempsMinuts * 60000;
+    updateDisplay(1, p1ms);
   }
 
-  // Restaura l'estat del jugador 2
-  if (temps2 !== null) {
-    document.getElementById("min2").textContent = padZero(temps2.minutes);
-    document.getElementById("sec2").textContent = padZero(temps2.seconds);
-    document.getElementById("nomjug2").value = temps2.jugador || "";
-    document.getElementById("nom2").textContent = temps2.jugador || "";
-    p2sec = temps2.seconds;
-    jug2 = temps2.penal;
+  // Restaura jugador 2
+  const raw2 = localStorage.getItem("tempsjug2");
+  const data2 = raw2 ? JSON.parse(raw2) : null;
+  if (data2 !== null && data2.ms !== undefined) {
+    p2ms = data2.ms;
+    p2penalMs = data2.penalMs || 0;
+    jug2 = data2.penal;
+    document.getElementById("nomjug2").value = data2.jugador || "";
+    document.getElementById("nom2").textContent = data2.jugador || "";
+    updateDisplay(2, jug2 ? p2ms : p2penalMs);
     if (!jug2) {
-      p2secpenal = temps2.seconds;
       document.querySelectorAll(".player__digits")[1].classList.add("penalty_inactiu");
-      document.getElementById("penal2").textContent =
-        "Penalització: -" + (temps2.minutes + 1) * 10 + " punts";
+      updatePenalDisplay(2, p2penalMs);
     }
     document.getElementById("resetBtn").style.display = "";
   } else {
-    document.getElementById("min2").textContent = padZero(temps);
-    document.getElementById("sec2").textContent = "00";
+    p2ms = tempsMinuts * 60000;
+    updateDisplay(2, p2ms);
   }
 });
 
+// ── Service Worker ────────────────────────────────────────────────────────
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register('./sw.js');
+  navigator.serviceWorker.register("./sw.js");
 }
 
-window.onbeforeunload = function () {
-  return "Si recarregues la pàgina el comptador començarà de nou!";
-};
+window.onbeforeunload = () => "Si recarregues la pàgina el comptador començarà de nou!";
 
 document.getElementById("copy").addEventListener("click", () => {
-  document.querySelectorAll(".petit").forEach((e) => e.classList.remove("petit"));
+  document.querySelectorAll(".petit").forEach(e => e.classList.remove("petit"));
 });
