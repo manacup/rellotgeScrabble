@@ -7,553 +7,521 @@
     url("../fonts/FiraMono-Regular.otf") format("opentype");
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-}
+/* ── Reset i base ────────────────────────────────────────────────────────── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-html,
-body {
+/* Corregeix la prioritat de l'atribut hidden: els display d'una classe CSS  */
+/* no han de poder sobreescriure-la (ex: .bttn { display:block } vs hidden)  */
+[hidden] { display: none !important; }
+
+html, body {
   width: 100%;
   height: 100%;
-  background-color: #000000;
-  color: #ffffff;
-}
-
-body {
-  font-size: 100%;
+  background-color: #000;
+  color: #fff;
+  overscroll-behavior: none;
   font-family: "FiraMono-Regular", monospace;
+  font-size: 100%;
 }
 
-main {
+/* ── Joc principal ───────────────────────────────────────────────────────── */
+#joc {
   width: 100%;
   height: 100%;
-  padding: 10px;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
+  height: 100dvh;
+  padding: 8px;
 }
 
-h1 {
-  margin: 0.5rem 0;
-  font-size: 5rem;
-  text-align: center;
-}
-
-img {
-  width: 100%;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-  max-width: 600px;
-}
-
+/* ── Layout dels jugadors ────────────────────────────────────────────────── */
 .player {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  margin: 1em 0 5px 0;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: column;
   flex-direction: column;
-  height: 100%;
-}
-.nom {
-  color: white;
-  font-size: 1rem;
-}
-.penalty {
-  color: red;
-  font-size: 1rem;
-}
-.penalty_inactiu {
-  color: rgb(255, 125, 125);
-}
-.actiu {
-  color: #34e251 !important;
+  height: calc(100vh - 16px);
+  height: calc(100dvh - 16px);
 }
 
+/* ── Panells individuals ─────────────────────────────────────────────────── */
 .player__tile {
-  width: 100%;
-  height: 100%;
-  display: -webkit-box;
-  display: -ms-flexbox;
+  flex: 1 1 0;
+  min-height: 0;
   display: flex;
-  margin: 0 auto;
-  color: #ffffff;
-  max-width: 400px;
-
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
   justify-content: center;
   cursor: pointer;
-}
-.player-1 {
-  transform: rotate(180deg);
-  order: 1;
-}
-
-.player-2 {
-  transform: rotate(0deg);
-  order: 4;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  touch-action: manipulation;
+  border-radius: 10px;
 }
 
+.player__tile:active { background-color: rgba(255,255,255,0.04); }
+
+.player-1 { transform: rotate(180deg); order: 1; }
+.player-2 { order: 4; }
+
+/* ── Dígits del rellotge ─────────────────────────────────────────────────── */
+/* min() garanteix que els números no desborden l'ample del mòbil           */
+/* 30vw: 5 caràcters × 0.6em/car → "00:00" ocupa ~3 × font-size            */
+/* Per a un mòbil de 360px: 30vw = 108px → "00:00" = 324px ≤ 344px ✓      */
 .player__digits {
-  font-size: 5.5rem;
+  font-size: clamp(3rem, min(20dvh, 30vw), 7rem);
+  font-size: clamp(3rem, min(20vh, 30vw), 7rem);
   font-weight: bold;
+  text-align: center;
+  line-height: 1.15;
 }
 
+/* ── Nom del jugador ─────────────────────────────────────────────────────── */
+.nom {
+  font-size: clamp(0.8rem, 2.2dvh, 1.2rem);
+  font-size: clamp(0.8rem, 2.2vh, 1.2rem);
+  color: rgba(255,255,255,0.4);
+  margin-top: 0.3em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── Text de penalització ────────────────────────────────────────────────── */
+#penal1, #penal2 {
+  font-size: clamp(1rem, 3dvh, 1.5rem);
+  font-size: clamp(1rem, 3vh, 1.5rem);
+  margin-top: 0.25em;
+  letter-spacing: 0.02em;
+}
+
+/* ── Estats de color ─────────────────────────────────────────────────────── */
+.actiu            { color: #34e251 !important; }
+.en-penal         { color: #ff3b30 !important; }
+.en-penal-inactiu { color: rgba(255,59,48,0.4) !important; }
+
+/* ── Botons del temporitzador ────────────────────────────────────────────── */
 .timer__buttons {
-  margin-bottom: 1em;
   order: 2;
+  padding: 6px 0;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
-.timer__start-bttn,
-.timer__reset-bttn,
-.ajust_bttn,
-.btn,
-#req .qry {
+/* Base de tots els botons de joc */
+.bttn {
   width: 100%;
   display: block;
-  color: #020202;
   min-height: 50px;
-
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: bold;
-  border-radius: 8px;
-  letter-spacing: 2px;
-  margin: 0 auto 5px auto;
-  border: 4px solid #000000;
   font-family: "FiraMono-Regular", monospace;
-  position: relative;
-  text-transform: uppercase;
-}
-.timer__ajust-bttn {
-  color: #ffffff;
-}
-
-.timer__start-bttn {
-  color: #ffffff;
-  background-color: #0071d5;
-}
-
-.timer__start-bttn:hover {
-  color: #000000;
-  background-color: #ffffff;
-}
-
-.timer__reset-bttn:hover {
-  color: #ffffff;
-  background-color: #0071d5;
-}
-
-footer p {
-  margin: 0.5rem 5px;
-  text-align: center;
-}
-
-.footer__link {
-  color: #444444;
-  font-size: 0.8rem;
-}
-
-.footer__link a {
-  color: #444444;
-}
-
-@media only screen and (orientation: landscape) and (max-width: 850px) {
-  main {
-    height: auto;
-  }
-  .player {
-    margin: 0.5em auto 10px auto;
-    max-width: 700px;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: row;
-    flex-direction: row;
-    -webkit-flex-flow: wrap row;
-    flex-flow: wrap row;
-  }
-
-  .player__tile {
-    height: 150px;
-    width: 50%;
-  }
-  .player-1 {
-    transform: rotate(0deg);
-    order: 1;
-  }
-  .player-2 {
-    margin-top: 0;
-    order: 2;
-  }
-  .player__digits {
-    font-size: 5.5rem;
-  }
-  /*  .petit{
-        height: 10px;
-        font-size: 1.5rem;
-        color: #444444;
-    } */
-  .timer__buttons {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    margin: auto;
-    max-width: 400px;
-    order: 3;
-  }
-  .timer__start-bttn,
-  .timer__reset-bttn {
-    padding: 0.3em;
-    font-size: 1.5rem;
-  }
-  .penalty {
-    left: 50%;
-  }
-  footer {
-    /* font-size: 0.8em; */
-    position: relative;
-    bottom: 0;
-  }
-  #res {
-    position: fixed;
-    top: 30%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: none;
-
-    height: 200px;
-    width: 500px;
-    margin: 1em auto 0 auto;
-    color: black;
-  }
-
-}
-@media only screen and (orientation: portrait) and (min-width: 400px) {
-  .player__tile {
-    height: 400px;
-  }
-  .player__digits {
-    font-size: 6rem;
-  }
-  footer {
-    font-size: 0.8em;
-    position: fixed;
-    bottom: 2%;
-  }
-}
-
-@media only screen and (min-width: 850px) {
-  main {
-    height: auto;
-  }
-  .player {
-    margin: 1em auto 10px auto;
-    max-width: 810px;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: row;
-    flex-direction: row;
-    -webkit-flex-flow: wrap row;
-    flex-flow: wrap row;
-  }
-  .player__tile {
-    height: 200px;
-  }
-  .player-1 {
-    transform: rotate(0deg);
-    order: 1;
-  }
-  .player-2 {
-    margin-top: 0;
-    order: 2;
-  }
-  .player__digits {
-    font-size: 7rem;
-  }
-  .timer__buttons {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    margin: auto;
-    max-width: 810px;
-    order: 3;
-  }
-  .timer__start-bttn,
-  .timer__reset-bttn {
-    padding: 0.7em;
-    font-size: 1.8rem;
-  }
-  .penalty {
-    left: 50%;
-  }
-  #ajustaments {
-   width: 500px;
-  }
-}
-a {
-  color: rgb(255, 255, 255);
-}
-a img {
-  border: 0;
-}
-
-#cont {
-  margin: 0 auto;
-  width: 90%;
-  text-align: center;
-  order: 3;
-}
-
-#logo {
-  margin-top: 65px;
-}
-#req {
-  width: 500px;
-  margin: 0 auto;
-}
-/* #req .qry {
-  border-radius: 8px;
+  border-radius: 10px;
   letter-spacing: 2px;
-  margin: 0 auto 5px auto;
-  border: 4px solid #000000;
-  width: 90%;
-  font-size: 1.2em;
-  padding: 0.2em;
   text-transform: uppercase;
-} */
-#req .sch,
-#req .clr {
-  font-size: 1.2em;
-  margin-bottom: 0.5em;
+  border: none;
+  margin-bottom: 6px;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.bttn:last-child { margin-bottom: 0; }
+
+/* COMENÇA / PAUSA / CONTINUA */
+.timer__start-bttn {
+  color: #fff;
+  background-color: #0071d5;
+}
+.timer__start-bttn:active { background-color: #0062b8; }
+
+/* Comprova la jugada */
+.btn-valida {
+  color: rgba(255,255,255,0.7);
+  background-color: #141414;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  letter-spacing: 1.5px;
+  font-size: 0.88rem;
 }
 
+/* ── Botó d'ajustaments (fixat top-right) ────────────────────────────────── */
+.btn-corner {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 150;
+  background-color: rgba(18,18,18,0.88);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 7px;
+  color: rgba(255,255,255,0.7);
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 6px 11px;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  font-family: inherit;
+}
+
+/* ── Modals ──────────────────────────────────────────────────────────────── */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  background-color: #0a0a0a;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  animation: modalFadeIn 0.15s ease;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.modal__panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+}
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  position: sticky;
+  top: 0;
+  background-color: #0a0a0a;
+  z-index: 1;
+}
+
+.modal__title {
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+}
+
+.modal__close {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.65);
+  font-size: 1rem;
+  line-height: 1;
+  padding: 5px 8px;
+  cursor: pointer;
+  border-radius: 5px;
+  touch-action: manipulation;
+  font-family: inherit;
+}
+.modal__close:active { background-color: rgba(255,255,255,0.08); }
+
+.modal__body {
+  padding: 16px 16px 28px;
+  flex: 1;
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.modal__actions {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Formulari d'ajustaments ─────────────────────────────────────────────── */
+.field-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.field-label > span {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.field-label input {
+  background-color: #1a1a1a;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 8px;
+  color: #fff;
+  padding: 9px 11px;
+  font-size: 16px;            /* evita zoom automàtic a iOS */
+  font-family: "FiraMono-Regular", monospace;
+  width: 100%;
+}
+.field-label input:focus {
+  outline: none;
+  border-color: rgba(255,255,255,0.35);
+}
+
+.field-checks {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.field-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #fff;
+  cursor: pointer;
+}
+.field-check input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #0071d5;
+}
+
+/* ── Botons dins del modal ───────────────────────────────────────────────── */
+.btn-primary {
+  background-color: #0071d5;
+  color: #fff;
+}
+.btn-primary:active { background-color: #0062b8; }
+
+.btn-secondary {
+  background-color: transparent;
+  color: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.18) !important;
+}
+
+/* ── Validador de paraules ───────────────────────────────────────────────── */
+
+/* Modal body del validador: columna flexible */
+#modal-valid .modal__body {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px 20px;
+}
+
+/* Resultat gran: visible des de l'altra banda de la taula */
 #res {
   display: none;
-  padding: 1em;
-  width: 500px;
-  margin: 1em auto 0 auto;
-  color: black;
+  min-height: 52dvh;
+  min-height: 52vh;
+  border-radius: 16px;
+  margin-bottom: 14px;
+  text-align: center;
+  padding: 28px 20px 20px;
+  color: #fff;
 }
-/* #res {
-     position: absolute; 
-    top: 30%;
-    left: 50%;
-    transform: translate(50%, -50%);
-  display: none;
 
-  height: 200px;
-  width: 500px;
-  margin: 1em auto 0 auto; 
-  color: black;
-} */
+/* Icona gran via pseudo-element */
+#res.tornOK::before {
+  content: "✓";
+  display: block;
+  font-size: clamp(5rem, 18dvh, 11rem);
+  font-size: clamp(5rem, 18vh, 11rem);
+  line-height: 1;
+  margin-bottom: 14px;
+}
+#res.tornKO::before {
+  content: "✗";
+  display: block;
+  font-size: clamp(5rem, 18dvh, 11rem);
+  font-size: clamp(5rem, 18vh, 11rem);
+  line-height: 1;
+  margin-bottom: 14px;
+}
+
+#res.tornOK { background-color: #1e7c34; }
+#res.tornKO { background-color: #c0392b; }
+
 #res_info {
-  padding: 1em;
+  font-size: clamp(1.05rem, 3.5dvh, 1.5rem);
+  font-size: clamp(1.05rem, 3.5vh, 1.5rem);
+  padding: 0 4px;
+  line-height: 1.4;
 }
 #res_info strong {
   text-transform: uppercase;
   font-weight: bold;
   font-size: 1.1em;
+  display: block;
+  margin-top: 6px;
 }
 #res_timer {
-  font-size: 0.8em;
-  text-align: right;
-  padding: 1em 1em 0;
-}
-#res.tornOK {
-  border: 2px dotted #060;
-  background-color: #c5f2ce;
-}
-#res.tornKO {
-  border: 2px dotted #c00;
-  background-color: #fdd4d4;
+  font-size: 0.7rem;
+  text-align: center;
+  margin-top: 14px;
+  opacity: 0.55;
 }
 
-h1 {
-  font-size: 1.25em;
-  padding: 1em 0 0.75em 0;
-}
-p.util {
-  font-size: 0.8em;
-}
-#worder {
-  padding: 2em 0 1.5em 0;
-  line-height: 2.5em;
-}
-#worder img {
-  vertical-align: bottom;
-}
-#copy {
-  font-size: 0.85em;
-  padding: 1em;
-  line-height: 1.8em;
-  padding-bottom: 4em;
-}
-#credits {
-  font-size: 0.95em;
-}
-@media only screen and (max-width: 850px) {
-  #cont {
-    width: 100%;
-  }
-  #req {
-    width: 100%;
-  }
-  #req .qry {
-    width: 100%;
-  }
-  #res {
-    width: 90%;
-    /* margin: 1em ; */
-  }
-  #logo img {
-    max-width: 100%;
-  }
-}
+/* Grup input + botó com una sola unitat */
+#req { margin-bottom: 14px; }
 
-.blanc-text {
-  color: #ffffff;
-}
-details {
-  /* position: fixed; */
-  z-index: 100;
-  
-}
-summary {
-  list-style: none; // Remove arrow
-  &::-webkit-details-marker {
-    display: none; // Remove arrow
-  }
-}
-
-.full-screen {
-  vertical-align: middle;
-  box-sizing: border-box;
-  display: inline-block;
-  border: 0.1em solid currentColor;
-  width: 1em;
-  height: 1em;
-  position: fixed;
-  top: 10px;
-  right: 10px;
-}
-.full-screen:before,
-.full-screen:after {
-  content: "";
-  background: #000000;
-  position: absolute;
-}
-.full-screen:before {
-  width: 0.333em;
-  height: 1em;
-  left: 0.233em;
-  top: -0.1em;
-}
-.full-screen:after {
-  width: 1em;
-  height: 0.333em;
-  top: 0.233em;
-  left: -0.1em;
-}
-footer {
-  font-size: 0.8em;
-  /* position: relative;
-    bottom: 0; */
-}
-footer a {
-  color: #ffffff;
-}
-details[open] summary {
-  position: fixed;
-  right: 10px;
-}
-.petit {
-  display: none;
-}
 #wdtform {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  /* margin: 1em 0 5px 0; */
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: column;
-  justify-content: center;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 10px;
+  overflow: hidden;
 }
+
 #wdtform .qry {
-  order: 1;
-  border-top-right-radius: 0%;
-  border-bottom-right-radius: 0%;
-  border-right: 0px;
+  flex: 1 1 auto;
+  padding: 12px 14px;
+  background-color: #1a1a1a;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  font-family: "FiraMono-Regular", monospace;
 }
+#wdtform .qry:focus { outline: none; background-color: #222; }
+#wdtform .qry::placeholder { color: rgba(255,255,255,0.35); font-size: 0.9em; }
+
 #wdtform .sch {
-  order: 2;
-  border-top-left-radius: 0%;
-  border-bottom-left-radius: 0%;
+  flex: 0 0 auto;
+  width: auto;
+  padding: 12px;
+  font-family: "FiraMono-Regular", monospace;
+  font-size: 0.88rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background-color: #2a2a2a;
+  color: #fff;
+  border: none;
+  border-left: 1px solid rgba(255,255,255,0.12);
+  cursor: pointer;
+  touch-action: manipulation;
 }
-:focus {
-  outline: 0;
-  outline-color: transparent;
-  outline-style: none;
-}
+#wdtform .sch:active { background-color: #3a3a3a; }
 
-.qry::-webkit-input-placeholder {
-  /* WebKit browsers */
-  font-size: 0.8em;
-}
+#copy { font-size: 0.75em; color: rgba(255,255,255,0.45); line-height: 1.7; margin-top: 16px; }
+#copy a { color: rgba(255,255,255,0.55); }
 
-.qry:-moz-placeholder {
-  /* Mozilla Firefox 4 to 18 */
-  font-size: 0.8em;
+/* ── Peu de pàgina ───────────────────────────────────────────────────────── */
+footer {
+  margin-top: 20px;
+  font-size: 0.75em;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.9;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding-top: 14px;
 }
+footer a { color: rgba(255,255,255,0.55); }
+footer a:hover { color: rgba(255,255,255,0.85); }
 
-.qry::-moz-placeholder {
-  /* Mozilla Firefox 19+ */
-  font-size: 0.8em;
-}
+a { color: #fff; }
+small { font-size: 0.85em; }
+:focus { outline: 0; }
+.petit { display: none !important; }
 
-.qry:-ms-input-placeholder {
-  /* Internet Explorer 10+ */
-  font-size: 0.8em;
-}
-small{
-    font-size: 0.8em;
-}
-#input,
-input[type=text],
-input[type=number],
-input[type=search]{
-    width: 100%;
-}
-select {
-  width: 100%;
-}
-#parametres input, select{
-    font-size: 1.2rem;
-}
-#copy{
-    flex: 1 1 auto;
-    bottom: 0;
+/* ── Mòbil horitzontal ───────────────────────────────────────────────────── */
+@media only screen and (orientation: landscape) and (max-height: 500px) {
+  #joc { padding: 0; }
+
+  .player {
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: 100dvh;
+    height: 100vh;
+    max-width: 900px;
+    margin: 0 auto;
   }
-  #wdtform .qry {
-    padding: 5px;
+
+  .player__tile {
+    flex: 0 0 50%;
+    width: 50%;
+    /* Ocupa tota l'alçada menys la franja de botons */
+    height: calc(100dvh - 54px);
+    height: calc(100vh - 54px);
+    max-width: none;
+    border-radius: 0;
+  }
+
+  .player-1 { transform: rotate(0deg); order: 1; }
+  .player-2 { order: 2; }
+
+  /* Nombres grans que omplen l'espai disponible */
+  .player__digits {
+    font-size: clamp(2.5rem, min(18dvh, 22vw), 7rem);
+    font-size: clamp(2.5rem, min(18vh, 22vw), 7rem);
+  }
+
+  /* Franja de botons a baix de tot */
+  .timer__buttons {
+    display: flex;
+    gap: 6px;
+    width: 100%;
+    order: 3;
+    max-width: 900px;
+    height: 54px;
+    margin: 0 auto;
+    padding: 4px 8px;
+    border: none;
+    align-items: center;
+  }
+  .timer__buttons .bttn { margin-bottom: 0; min-height: 44px; }
+
+  /* Modal en horitzontal: centrat i amb scroll si cal */
+  .modal__panel {
+    max-height: 100dvh;
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+  .modal__body { padding-bottom: 16px; }
 }
 
-#wdtform .sch {
-    padding: 5px;
-}
+/* ── Pantalla gran ≥ 850px ───────────────────────────────────────────────── */
+@media only screen and (min-width: 850px) {
+  .player {
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-width: 810px;
+    margin: 1em auto 10px auto;
+    height: auto;
+  }
 
-#req {
-    max-width: 600px;
-}
+  .player__tile {
+    flex: 0 0 50%;
+    width: 50%;
+    height: 220px;
+    max-width: none;
+    border-radius: 0;
+  }
 
-#res {
-    max-width: 600px;
+  .player-1 { transform: rotate(0deg); order: 1; }
+  .player-2 { order: 2; }
+
+  .player__digits { font-size: 7rem; }
+
+  .timer__buttons {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    max-width: 810px;
+    margin: auto;
+    order: 3;
+    border: none;
+  }
+  .timer__buttons .bttn { margin-bottom: 0; }
+  .timer__start-bttn { font-size: 1.5rem; }
+
+  /* Modal centrat en pantalla gran */
+  .modal {
+    background-color: rgba(0,0,0,0.88);
+    justify-content: center;
+    align-items: center;
+  }
+  .modal__panel {
+    width: 90%;
+    max-width: 460px;
+    max-height: 92vh;
+    overflow-y: auto;
+    background-color: #111;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.09);
+    flex: none;
+  }
+  .modal__header { border-radius: 16px 16px 0 0; background-color: #111; }
 }
