@@ -229,18 +229,12 @@ html, body {
   gap: 8px;
 }
 
-/* ── Formulari d'ajustaments: 2 columnes ─────────────────────────────────── */
-.field-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
+/* ── Formulari d'ajustaments ─────────────────────────────────────────────── */
 .field-label {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  flex: 1 1 0;
+  margin-bottom: 14px;
 }
 
 .field-label > span {

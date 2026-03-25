@@ -54,7 +54,9 @@ function activaNoSleep() {
 const padZero = n => n < 10 ? "0" + n : String(n);
 
 function msToMinSec(ms) {
-  const totalSec = Math.max(0, Math.floor(ms / 1000));
+  // Math.ceil: el "00:00" apareix ÚNICAMENT quan ms===0.
+  // Amb floor, qualsevol valor entre 1ms i 999ms mostrava "00:00" en verd.
+  const totalSec = Math.ceil(Math.max(0, ms) / 1000);
   return { minutes: Math.floor(totalSec / 60), seconds: totalSec % 60 };
 }
 
