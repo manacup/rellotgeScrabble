@@ -17,8 +17,9 @@ html,
 body {
   width: 100%;
   height: 100%;
-  background-color: #000000;
-  color: #ffffff;
+  background-color: #000;
+  color: #fff;
+  overscroll-behavior: none; /* evita pull-to-refresh en mòbil */
 }
 
 body {
@@ -41,28 +42,30 @@ img {
   max-width: 600px;
 }
 
-/* ── Layout principal del joc ── */
+/* ── Layout principal del joc ────────────────────────────────────────────── */
 .player {
   display: flex;
   flex-direction: column;
-  /* Ocupa l'alçada disponible (fallback vh per a browsers antics) */
   height: calc(100vh - 20px);
   height: calc(100dvh - 20px);
   margin: 0;
 }
 
-/* ── Panells dels jugadors ── */
+/* ── Panells dels jugadors ───────────────────────────────────────────────── */
 .player__tile {
   width: 100%;
-  flex: 1 1 0;          /* creix per omplir espai disponible */
-  min-height: 100px;
+  flex: 1 1 0;
+  min-height: 0;           /* permet shrink per sota del contingut mínim */
   display: flex;
   margin: 0 auto;
-  color: #ffffff;
+  color: #fff;
   max-width: 400px;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  touch-action: manipulation;
 }
 
 .player-1 {
@@ -71,41 +74,67 @@ img {
 }
 
 .player-2 {
-  transform: rotate(0deg);
   order: 4;
 }
 
-/* ── Dígits del rellotge ── */
+/* ── Dígits del rellotge ─────────────────────────────────────────────────── */
+/* Mida: mínim 4rem, idealment 20% de l'alçada disponible, màxim 7rem      */
+/* IMPORTANT: no s'ha d'afegir cap classe que sobreescrigui aquesta mida    */
 .player__digits {
-  /* Mida adaptativa: mínim 3rem, idealment 15% de l'amplada, màxim 6rem */
-  font-size: clamp(3rem, 15vw, 6rem);
+  font-size: clamp(4rem, 20dvh, 7rem);
+  font-size: clamp(4rem, 20vh, 7rem);
   font-weight: bold;
+  text-align: center;
+  line-height: 1.1;
 }
 
+/* ── Nom del jugador ─────────────────────────────────────────────────────── */
 .nom {
-  color: white;
-  font-size: clamp(0.7rem, 2.5vw, 1rem);
+  color: rgba(255, 255, 255, 0.55);
+  font-size: clamp(0.65rem, 1.8dvh, 0.9rem);
+  font-size: clamp(0.65rem, 1.8vh, 0.9rem);
+  margin-top: 0.25em;
+  text-align: center;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-.penalty {
-  color: red;
-  font-size: clamp(0.7rem, 2.5vw, 1rem);
+/* ── Penalització: text de punts (dins de .player__digits) ───────────────── */
+/* Aquests elements NO canvien la mida del contenidor                        */
+#penal1,
+#penal2 {
+  font-size: clamp(0.65rem, 1.8dvh, 0.9rem);
+  font-size: clamp(0.65rem, 1.8vh, 0.9rem);
+  margin-top: 0.15em;
+  letter-spacing: 0.03em;
 }
 
-.penalty_inactiu {
-  color: rgb(255, 125, 125);
-}
-
+/* ── Estats de color ─────────────────────────────────────────────────────── */
+/* Actiu: jugador amb el rellotge corrent                                    */
 .actiu {
   color: #34e251 !important;
 }
 
-/* ── Botons del temporitzador ── */
-.timer__buttons {
-  margin-bottom: 0.5em;
-  order: 2;
+/* En penalització activa: dígits grans en vermell                           */
+.en-penal {
+  color: #ff3b30 !important;
 }
 
+/* En penalització però en pausa (inactiu)                                   */
+.en-penal-inactiu {
+  color: rgba(255, 59, 48, 0.45) !important;
+}
+
+/* ── Separador visual entre els dos jugadors ─────────────────────────────── */
+.timer__buttons {
+  order: 2;
+  margin: 0;
+  padding: 6px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* ── Botons generals ─────────────────────────────────────────────────────── */
 .timer__start-bttn,
 .timer__reset-bttn,
 .ajust_bttn,
@@ -120,24 +149,24 @@ img {
   border-radius: 8px;
   letter-spacing: 2px;
   margin: 0 auto 5px auto;
-  border: 4px solid #000000;
+  border: 4px solid #000;
   font-family: "FiraMono-Regular", monospace;
   position: relative;
   text-transform: uppercase;
-  touch-action: manipulation; /* evita el doble tap zoom al mòbil */
+  touch-action: manipulation;
 }
 
 .timer__start-bttn {
-  color: #ffffff;
+  color: #fff;
   background-color: #0071d5;
 }
 
 .timer__start-bttn:hover {
-  color: #000000;
-  background-color: #ffffff;
+  color: #000;
+  background-color: #fff;
 }
 
-/* ── Validador de paraules ── */
+/* ── Validador de paraules ───────────────────────────────────────────────── */
 #cont {
   margin: 0 auto;
   width: 90%;
@@ -201,7 +230,7 @@ img {
   flex: 1 1 auto;
 }
 
-/* ── Formulari del validador ── */
+/* ── Formulari del validador ─────────────────────────────────────────────── */
 #wdtform {
   display: flex;
   flex-direction: row;
@@ -215,6 +244,7 @@ img {
   border-right: 0;
   padding: 5px;
   flex: 1 1 auto;
+  font-size: 16px; /* evita zoom automàtic a iOS */
 }
 
 #wdtform .sch {
@@ -226,44 +256,59 @@ img {
   width: auto;
 }
 
-/* ── Menú d'ajustaments ── */
+/* ── Botons de menú ──────────────────────────────────────────────────────── */
+/* details sempre present en el DOM, z-index alt per quedar sobre el joc    */
 details {
   z-index: 100;
 }
 
+/* Botó "Ajustaments" / "X": sempre fixat a la cantonada superior dreta.    */
+/* D'aquesta manera mai se superposa amb el botó de pantalla completa.      */
 summary {
   list-style: none;
   cursor: pointer;
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 102;
+  background-color: rgba(20, 20, 20, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  padding: 5px 11px;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 summary::-webkit-details-marker {
   display: none;
 }
 
-details[open] summary {
-  position: fixed;
-  right: 10px;
-  top: 10px;
-  z-index: 101;
-}
+/* Quan el menú és obert, el resum ja és fixed per la regla anterior.       */
+/* Eliminem la declaració duplicada; ja no cal redefinir la posició.        */
 
-/* ── Botó de pantalla completa ── */
+/* ── Botó de pantalla completa ───────────────────────────────────────────── */
+/* Situat a la cantonada superior ESQUERRA per no col·lisionar mai amb       */
+/* el botó "Ajustaments" que és a la dreta.                                  */
 .full-screen {
+  position: fixed;
+  top: 14px;
+  left: 10px;
+  z-index: 101;
   vertical-align: middle;
   box-sizing: border-box;
   display: inline-block;
-  border: 0.1em solid currentColor;
-  width: 1em;
-  height: 1em;
-  position: fixed;
-  top: 10px;
-  right: 10px;
+  border: 0.1em solid rgba(255, 255, 255, 0.5);
+  width: 1.1em;
+  height: 1.1em;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
 }
 
 .full-screen::before,
 .full-screen::after {
   content: "";
-  background: #000000;
+  background: #000;
   position: absolute;
 }
 
@@ -281,13 +326,13 @@ details[open] summary {
   left: -0.1em;
 }
 
-/* ── Estils d'ajustaments ── */
+/* ── Panell d'ajustaments ────────────────────────────────────────────────── */
 .blanc-text {
-  color: #ffffff;
+  color: #fff;
 }
 
 a {
-  color: #ffffff;
+  color: #fff;
 }
 
 a img {
@@ -296,10 +341,12 @@ a img {
 
 footer {
   font-size: 0.8em;
+  margin-top: 1.5em;
+  line-height: 1.9em;
 }
 
 footer a {
-  color: #ffffff;
+  color: rgba(255, 255, 255, 0.75);
 }
 
 small {
@@ -311,6 +358,7 @@ input[type="text"],
 input[type="number"],
 input[type="search"] {
   width: 100%;
+  font-size: 16px; /* evita zoom automàtic a iOS en focus */
 }
 
 select {
@@ -319,7 +367,7 @@ select {
 
 #parametres input,
 #parametres select {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 .petit {
@@ -334,9 +382,9 @@ select {
   font-size: 0.8em;
 }
 
-/* ── Media queries ── */
+/* ── Media queries ───────────────────────────────────────────────────────── */
 
-/* Mòbil en horitzontal: panells costat a costat */
+/* Mòbil en horitzontal: panells costat a costat                             */
 @media only screen and (orientation: landscape) and (max-height: 500px) {
   .player {
     flex-direction: row;
@@ -347,9 +395,8 @@ select {
   }
 
   .player__tile {
-    flex: 0 0 auto;
+    flex: 0 0 50%;          /* exactament la meitat, iguals sempre */
     width: 50%;
-    /* alçada: 38% de la finestra, entre 100px i 200px */
     height: clamp(100px, 38dvh, 200px);
     height: clamp(100px, 38vh, 200px);
     max-width: none;
@@ -365,9 +412,8 @@ select {
   }
 
   .player__digits {
-    /* Adaptat a l'alçada disponible en horitzontal */
-    font-size: clamp(2.5rem, 9dvh, 5rem);
-    font-size: clamp(2.5rem, 9vh, 5rem);
+    font-size: clamp(2.5rem, 10dvh, 5rem);
+    font-size: clamp(2.5rem, 10vh, 5rem);
   }
 
   .timer__buttons {
@@ -376,6 +422,8 @@ select {
     order: 3;
     max-width: 600px;
     margin: 4px auto;
+    border: none;
+    padding: 0;
   }
 
   #cont {
@@ -394,7 +442,7 @@ select {
   }
 }
 
-/* Pantalla gran (≥ 850px): disposició horitzontal */
+/* Pantalla gran (≥ 850px): disposició horitzontal                           */
 @media only screen and (min-width: 850px) {
   .player {
     flex-direction: row;
@@ -405,7 +453,7 @@ select {
   }
 
   .player__tile {
-    flex: 0 0 auto;
+    flex: 0 0 50%;
     width: 50%;
     height: 200px;
     max-width: none;
@@ -430,6 +478,7 @@ select {
     max-width: 810px;
     margin: auto;
     order: 3;
+    border: none;
   }
 
   .timer__start-bttn,

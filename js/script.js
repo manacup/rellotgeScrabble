@@ -120,7 +120,7 @@ function aplicaDelta(delta) {
       p1penalMs = Math.min(p1penalMs + delta, maxPenalMs);
       updateDisplay(1, p1penalMs);
       updatePenalDisplay(1, p1penalMs);
-      document.querySelectorAll(".player__digits")[0].classList.add("penalty");
+      document.querySelectorAll(".player__digits")[0].classList.add("en-penal");
       if (p1penalMs >= maxPenalMs) {
         p1penalFinal = true;
         if (so) timesUp.play();
@@ -144,7 +144,7 @@ function aplicaDelta(delta) {
       p2penalMs = Math.min(p2penalMs + delta, maxPenalMs);
       updateDisplay(2, p2penalMs);
       updatePenalDisplay(2, p2penalMs);
-      document.querySelectorAll(".player__digits")[1].classList.add("penalty");
+      document.querySelectorAll(".player__digits")[1].classList.add("en-penal");
       if (p2penalMs >= maxPenalMs) {
         p2penalFinal = true;
         if (so) timesUp.play();
@@ -192,24 +192,24 @@ function canviPrecis(nouJugador) {
 function colors1() {
   jugador1.classList.add("actiu");
   if (!jug1) {
-    document.querySelectorAll(".player__digits")[0].classList.remove("penalty_inactiu");
-    document.querySelectorAll(".player__digits")[0].classList.add("penalty");
+    document.querySelectorAll(".player__digits")[0].classList.remove("en-penal-inactiu");
+    document.querySelectorAll(".player__digits")[0].classList.add("en-penal");
   }
   if (!jug2) {
-    document.querySelectorAll(".player__digits")[1].classList.remove("penalty");
-    document.querySelectorAll(".player__digits")[1].classList.add("penalty_inactiu");
+    document.querySelectorAll(".player__digits")[1].classList.remove("en-penal");
+    document.querySelectorAll(".player__digits")[1].classList.add("en-penal-inactiu");
   }
 }
 
 function colors2() {
   jugador2.classList.add("actiu");
   if (!jug2) {
-    document.querySelectorAll(".player__digits")[1].classList.remove("penalty_inactiu");
-    document.querySelectorAll(".player__digits")[1].classList.add("penalty");
+    document.querySelectorAll(".player__digits")[1].classList.remove("en-penal-inactiu");
+    document.querySelectorAll(".player__digits")[1].classList.add("en-penal");
   }
   if (!jug1) {
-    document.querySelectorAll(".player__digits")[0].classList.remove("penalty");
-    document.querySelectorAll(".player__digits")[0].classList.add("penalty_inactiu");
+    document.querySelectorAll(".player__digits")[0].classList.remove("en-penal");
+    document.querySelectorAll(".player__digits")[0].classList.add("en-penal-inactiu");
   }
 }
 
@@ -306,7 +306,7 @@ document.getElementById("tempsBtn").addEventListener("click", () => {
   jugador1.classList.remove("actiu");
   jugador2.classList.remove("actiu");
   document.querySelectorAll(".player__digits").forEach(a => {
-    a.classList.remove("penalty", "penalty_inactiu");
+    a.classList.remove("en-penal", "en-penal-inactiu");
   });
   document.getElementById("penal1").textContent = "";
   document.getElementById("penal2").textContent = "";
@@ -344,9 +344,9 @@ for (let i = 0; i < buttons.length; i++) {
       buttons[i].textContent = "CONTINUA";
       jugador1.classList.remove("actiu");
       jugador2.classList.remove("actiu");
-      document.querySelectorAll(".player__digits").forEach(a => a.classList.remove("penalty"));
-      if (!jug1) document.querySelectorAll(".player__digits")[0].classList.add("penalty_inactiu");
-      if (!jug2) document.querySelectorAll(".player__digits")[1].classList.add("penalty_inactiu");
+      document.querySelectorAll(".player__digits").forEach(a => a.classList.remove("en-penal"));
+      if (!jug1) document.querySelectorAll(".player__digits")[0].classList.add("en-penal-inactiu");
+      if (!jug2) document.querySelectorAll(".player__digits")[1].classList.add("en-penal-inactiu");
       document.getElementById("cont").style.display = "";
       // Focus al validador només en pantalles grans (evita teclat automàtic al mòbil)
       if (window.innerWidth >= 600) {
@@ -362,12 +362,12 @@ for (let i = 0; i < buttons.length; i++) {
       buttons[i].textContent = "PAUSA / VALIDA";
       document.querySelector(".player-" + currentPlayer).classList.add("actiu");
       if (currentPlayer === 1 && !jug1) {
-        document.querySelectorAll(".player__digits")[0].classList.remove("penalty_inactiu");
-        document.querySelectorAll(".player__digits")[0].classList.add("penalty");
+        document.querySelectorAll(".player__digits")[0].classList.remove("en-penal-inactiu");
+        document.querySelectorAll(".player__digits")[0].classList.add("en-penal");
       }
       if (currentPlayer === 2 && !jug2) {
-        document.querySelectorAll(".player__digits")[1].classList.remove("penalty_inactiu");
-        document.querySelectorAll(".player__digits")[1].classList.add("penalty");
+        document.querySelectorAll(".player__digits")[1].classList.remove("en-penal-inactiu");
+        document.querySelectorAll(".player__digits")[1].classList.add("en-penal");
       }
       document.getElementById("cont").style.display = "none";
       amagarValidador();
@@ -460,7 +460,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("nom1").textContent = data1.jugador || "";
     updateDisplay(1, jug1 ? p1ms : p1penalMs);
     if (!jug1) {
-      document.querySelectorAll(".player__digits")[0].classList.add("penalty_inactiu");
+      document.querySelectorAll(".player__digits")[0].classList.add("en-penal-inactiu");
       updatePenalDisplay(1, p1penalMs);
     }
     document.getElementById("resetBtn").style.display = "";
@@ -480,7 +480,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("nom2").textContent = data2.jugador || "";
     updateDisplay(2, jug2 ? p2ms : p2penalMs);
     if (!jug2) {
-      document.querySelectorAll(".player__digits")[1].classList.add("penalty_inactiu");
+      document.querySelectorAll(".player__digits")[1].classList.add("en-penal-inactiu");
       updatePenalDisplay(2, p2penalMs);
     }
     document.getElementById("resetBtn").style.display = "";
