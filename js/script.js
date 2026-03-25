@@ -112,6 +112,9 @@ function aplicaDelta(delta) {
       if (p1ms === 0 && !timesUpTriggered1) {
         timesUpTriggered1 = true;
         jug1 = false;
+        // Canvia el color immediatament, sense esperar el tick de penalització
+        document.querySelectorAll(".player__digits")[0].classList.add("en-penal");
+        updatePenalDisplay(1, 0);
         if (so) timesUp.play();
         if (vibracio) window.navigator.vibrate([1000]);
       }
@@ -136,6 +139,9 @@ function aplicaDelta(delta) {
       if (p2ms === 0 && !timesUpTriggered2) {
         timesUpTriggered2 = true;
         jug2 = false;
+        // Canvia el color immediatament, sense esperar el tick de penalització
+        document.querySelectorAll(".player__digits")[1].classList.add("en-penal");
+        updatePenalDisplay(2, 0);
         if (so) timesUp.play();
         if (vibracio) window.navigator.vibrate([1000]);
       }
