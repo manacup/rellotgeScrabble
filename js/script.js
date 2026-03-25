@@ -1,4 +1,4 @@
-const swver = "1.4.3";
+const swver = "1.4.4";
 
 // ── Estat del joc ──────────────────────────────────────────────────────────
 let playing = false;
@@ -50,6 +50,12 @@ function activaNoSleep() {
   if (!noSleepActiu) { noSleep.enable(); noSleepActiu = true; }
 }
 
+// ── Vibració (amb fallback segur) ─────────────────────────────────────────
+function vibra(pattern) {
+  if (!vibracio || !navigator.vibrate) return;
+  try { navigator.vibrate(pattern); } catch (e) {}
+}
+
 // ── Utilitats ─────────────────────────────────────────────────────────────
 const padZero = n => n < 10 ? "0" + n : String(n);
 
@@ -66,9 +72,14 @@ function updateDisplay(n, ms) {
   document.getElementById("sec" + n).textContent = padZero(seconds);
 }
 
-// 10 punts per cada minut o fracció de minut
+// 10 punts per cada minut o fracció de minut.
+// penalMs===0 significa que la penalització encara no ha començat → no mostrar res.
 function updatePenalDisplay(n, penalMs) {
-  const fraccions = Math.ceil(penalMs / 60000) || 1;
+  if (penalMs === 0) {
+    document.getElementById("penal" + n).textContent = "";
+    return;
+  }
+  const fraccions = Math.ceil(penalMs / 60000);
   document.getElementById("penal" + n).textContent =
     "Penalització: -" + fraccions * 10 + " punts";
 }
@@ -92,7 +103,7 @@ function checkWarningSound(ms) {
   if (sec <= 5 && sec > 0 && sec !== lastBeepSec) {
     lastBeepSec = sec;
     if (so) compteenrere.play();
-    if (vibracio) window.navigator.vibrate([300]);
+    vibra([300]);
   }
 }
 
@@ -116,7 +127,7 @@ function aplicaDelta(delta) {
         updateDisplay(1, 0);
         updatePenalDisplay(1, 0);
         if (so) timesUp.play();
-        if (vibracio) window.navigator.vibrate([1000]);
+        vibra([1000]);
       } else if (p1ms > 0) {
         // Compte enrere normal: mai arriba a mostrar "00:00" en verd
         updateDisplay(1, p1ms);
@@ -131,7 +142,7 @@ function aplicaDelta(delta) {
       if (p1penalMs >= maxPenalMs) {
         p1penalFinal = true;
         if (so) timesUp.play();
-        if (vibracio) window.navigator.vibrate([100, 50, 1000]);
+        vibra([100, 50, 1000]);
       }
     }
 
@@ -146,7 +157,7 @@ function aplicaDelta(delta) {
         updateDisplay(2, 0);
         updatePenalDisplay(2, 0);
         if (so) timesUp.play();
-        if (vibracio) window.navigator.vibrate([1000]);
+        vibra([1000]);
       } else if (p2ms > 0) {
         updateDisplay(2, p2ms);
         checkWarningSound(p2ms);
@@ -160,7 +171,7 @@ function aplicaDelta(delta) {
       if (p2penalMs >= maxPenalMs) {
         p2penalFinal = true;
         if (so) timesUp.play();
-        if (vibracio) window.navigator.vibrate([100, 50, 1000]);
+        vibra([100, 50, 1000]);
       }
     }
   }
@@ -234,7 +245,7 @@ function canvitorn(jug) {
     botoStart.textContent = "PAUSA";
     botoValida.hidden = true;
     if (so) clickSo.play();
-    if (vibracio) window.navigator.vibrate(50);
+    vibra(50);
   } else if (!playing && botoStart.textContent === "COMENÇA") {
     // Primera jugada: inicia el rellotge
     currentPlayer = jug;
@@ -243,7 +254,7 @@ function canvitorn(jug) {
     botoStart.textContent = "PAUSA";
     botoValida.hidden = true;
     if (so) clickSo.play();
-    if (vibracio) window.navigator.vibrate(50);
+    vibra(50);
   } else if (playing && currentPlayer !== jug) {
     // Canvi de torn en curs: cobra el temps exacte al jugador sortint
     canviPrecis(jug);
@@ -251,7 +262,7 @@ function canvitorn(jug) {
       ? jugador1.classList.remove("actiu")
       : jugador2.classList.remove("actiu");
     if (so) clickSo.play();
-    if (vibracio) window.navigator.vibrate(50);
+    vibra(50);
   }
 }
 
