@@ -40,8 +40,8 @@
     <p style="color:#FC0000;text-align:center">Activa el javascript per utilitzar l'aplicació</p>
   </noscript>
 
-  <!-- ══ Joc principal ══════════════════════════════════════════════════════ -->
-  <main id="joc" hidden>
+  <!-- ══ Joc principal (sempre visible darrere dels modals) ════════════════ -->
+  <main id="joc">
 
     <div class="player">
 
@@ -70,10 +70,7 @@
 
     </div>
 
-    <button id="btn-ajust"      class="btn-corner btn-corner--right"
-            type="button" aria-label="Ajustaments">☰</button>
-    <button id="btn-fullscreen" class="btn-corner btn-corner--left"
-            type="button" aria-label="Pantalla completa" hidden>⛶</button>
+    <button id="btn-ajust" class="btn-corner" type="button" aria-label="Ajustaments">☰</button>
 
   </main>
 
@@ -92,27 +89,29 @@
       <div class="modal__body">
         <form id="parametres">
 
-          <label class="field-label">
-            <span>Minuts de joc</span>
-            <input type="number" id="temps" value="25" min="1" max="99">
-          </label>
+          <div class="field-row">
+            <label class="field-label">
+              <span>Minuts de joc</span>
+              <input type="number" id="temps" value="25" min="1" max="99">
+            </label>
+            <label class="field-label">
+              <span>Minuts de penalització</span>
+              <input type="number" id="penalització" value="5" min="1" max="30">
+            </label>
+          </div>
 
-          <label class="field-label">
-            <span>Minuts extra amb penalització</span>
-            <input type="number" id="penalització" value="5" min="1" max="30">
-          </label>
-
-          <label class="field-label">
-            <span>Jugador 1</span>
-            <input type="text" id="nomjug1" value="" autocomplete="off"
-                   spellcheck="false" placeholder="Nom opcional">
-          </label>
-
-          <label class="field-label">
-            <span>Jugador 2</span>
-            <input type="text" id="nomjug2" value="" autocomplete="off"
-                   spellcheck="false" placeholder="Nom opcional">
-          </label>
+          <div class="field-row">
+            <label class="field-label">
+              <span>Jugador 1</span>
+              <input type="text" id="nomjug1" value="" autocomplete="off"
+                     spellcheck="false" placeholder="Nom opcional">
+            </label>
+            <label class="field-label">
+              <span>Jugador 2</span>
+              <input type="text" id="nomjug2" value="" autocomplete="off"
+                     spellcheck="false" placeholder="Nom opcional">
+            </label>
+          </div>
 
           <div class="field-checks">
             <label class="field-check">
@@ -122,10 +121,6 @@
             <label class="field-check">
               <input type="checkbox" id="checkVibracio" checked>
               <span>Vibració</span>
-            </label>
-            <label class="field-check">
-              <input type="checkbox" id="checkFullScreen">
-              <span>Pantalla completa</span>
             </label>
           </div>
 
@@ -137,11 +132,13 @@
         </form>
 
         <footer>
-          <div><small>Fet per <a href="mailto:tonillull@gmail.com" target="_blank">Antoni Llull</a> ❤</small></div>
-          <div><small>Validador: <a href="https://icon.cat/wordertorn/" target="_blank">WORdERtorn</a></small></div>
-          <div><small>Diccionari DISC <a href="http://diccionari.totescrable.cat/" target="_blank"><span class="verdicc"></span></a></small></div>
-          <div><small><a href="https://github.com/manacup/manacup.github.io/tree/main/rellotgeScrabble" target="_blank">Codi font (GitHub)</a></small></div>
-          <div><small><span id="swver"></span></small></div>
+          <small>
+            Fet per <a href="mailto:tonillull@gmail.com" target="_blank">Antoni Llull</a> ❤ ·
+            Validador <a href="https://icon.cat/wordertorn/" target="_blank">WORdERtorn</a> ·
+            DISC <a href="http://diccionari.totescrable.cat/" target="_blank"><span class="verdicc"></span></a> ·
+            <a href="https://github.com/manacup/manacup.github.io/tree/main/rellotgeScrabble" target="_blank">GitHub</a> ·
+            <span id="swver"></span>
+          </small>
         </footer>
       </div>
     </div>
@@ -187,7 +184,7 @@
         <div id="copy">
           <p><small>
             Motor VISC: <a href="mailto:iroca@icon.cat">Isaac Roca</a> ·
-            Diccionari DISC <a href="http://diccionari.totescrable.cat/que-es/"
+            DISC <a href="http://diccionari.totescrable.cat/que-es/"
             target="_blank"><span class="verdicc"></span></a>
           </small></p>
         </div>
