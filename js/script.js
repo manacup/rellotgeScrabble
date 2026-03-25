@@ -1,4 +1,4 @@
-const swver = "1.4.1";
+const swver = "1.4.2";
 
 // ── Estat del joc ──────────────────────────────────────────────────────────
 let playing = false;
@@ -9,40 +9,39 @@ let so = true;
 let vibracio = true;
 
 // ── Temps en mil·lisegons (font única de veritat) ─────────────────────────
-// p_ms: temps restant en compte enrere (s'esgota cap a 0)
-// pPenalMs: temps de penalització acumulat en compte amunt (parteix de 0)
 let p1ms = 0;
 let p2ms = 0;
 let p1penalMs = 0;
 let p2penalMs = 0;
-// Marca de temps de l'últim tick per calcular el delta real
 let lastTickMs = null;
 
-const TICK_MS = 100;  // interval del rellotge intern (alta precisió)
+const TICK_MS = 100;
 
 // ── Flags d'estat ──────────────────────────────────────────────────────────
 let timesUpTriggered1 = false;
 let timesUpTriggered2 = false;
-let p1penalFinal = false;  // ha esgotat els minuts de penalització
+let p1penalFinal = false;
 let p2penalFinal = false;
 
 // ── Elements del DOM ──────────────────────────────────────────────────────
 const penalitzacioEl = document.getElementById("penalització");
-const buttons = document.querySelectorAll(".bttn");
 const jugador1 = document.querySelector(".player-1");
 const jugador2 = document.querySelector(".player-2");
 const botoStart = document.querySelector(".timer__start-bttn");
+const botoValida = document.getElementById("btn-valida");
 const botoSo = document.getElementById("checkSo");
 const botoVibr = document.getElementById("checkVibracio");
 const fullScreen = document.getElementById("checkFullScreen");
 const versio = document.querySelectorAll(".verdicc");
+const modalAjust = document.getElementById("modal-ajust");
+const modalValid = document.getElementById("modal-valid");
+const jocEl = document.getElementById("joc");
 
 // ── Àudio ─────────────────────────────────────────────────────────────────
 const timesUp = new Audio("audio/460133__eschwabe3__robot-affirmative.wav");
 const clickSo = new Audio("audio/561660__mattruthsound.wav");
 const compteenrere = new Audio("audio/beep-07a.wav");
 const silenci = new Audio("audio/silenci.mp3");
-// Fallback per mantenir la pantalla activa en alguns navegadors
 setInterval(() => { if (playing) silenci.play().catch(() => {}); }, 60000);
 
 // ── NoSleep ────────────────────────────────────────────────────────────────
@@ -67,7 +66,7 @@ function updateDisplay(n, ms) {
   document.getElementById("sec" + n).textContent = padZero(seconds);
 }
 
-// Penalització: 10 punts per cada minut o fracció de minut
+// Penalització: 10 pts per cada minut o fracció
 function updatePenalDisplay(n, penalMs) {
   const fraccions = Math.ceil(penalMs / 60000) || 1;
   document.getElementById("penal" + n).textContent =
@@ -98,28 +97,23 @@ function checkWarningSound(ms) {
 }
 
 // ── Aplica el delta de temps al jugador actiu ──────────────────────────────
-// Centralitza la lògica de descompte/penalització en un sol lloc.
-// S'utilitza tant des del tick periòdic com en el canvi de torn exacte.
 function aplicaDelta(delta) {
   const maxPenalMs = parseInt(penalitzacioEl.value, 10) * 60000;
 
   if (currentPlayer === 1) {
     if (jug1) {
-      // Compte enrere normal jugador 1
       p1ms = Math.max(0, p1ms - delta);
       updateDisplay(1, p1ms);
       checkWarningSound(p1ms);
       if (p1ms === 0 && !timesUpTriggered1) {
         timesUpTriggered1 = true;
         jug1 = false;
-        // Canvia el color immediatament, sense esperar el tick de penalització
         document.querySelectorAll(".player__digits")[0].classList.add("en-penal");
         updatePenalDisplay(1, 0);
         if (so) timesUp.play();
         if (vibracio) window.navigator.vibrate([1000]);
       }
     } else if (!p1penalFinal) {
-      // Penalització jugador 1 (comptador amunt)
       p1penalMs = Math.min(p1penalMs + delta, maxPenalMs);
       updateDisplay(1, p1penalMs);
       updatePenalDisplay(1, p1penalMs);
@@ -132,21 +126,18 @@ function aplicaDelta(delta) {
     }
   } else {
     if (jug2) {
-      // Compte enrere normal jugador 2
       p2ms = Math.max(0, p2ms - delta);
       updateDisplay(2, p2ms);
       checkWarningSound(p2ms);
       if (p2ms === 0 && !timesUpTriggered2) {
         timesUpTriggered2 = true;
         jug2 = false;
-        // Canvia el color immediatament, sense esperar el tick de penalització
         document.querySelectorAll(".player__digits")[1].classList.add("en-penal");
         updatePenalDisplay(2, 0);
         if (so) timesUp.play();
         if (vibracio) window.navigator.vibrate([1000]);
       }
     } else if (!p2penalFinal) {
-      // Penalització jugador 2 (comptador amunt)
       p2penalMs = Math.min(p2penalMs + delta, maxPenalMs);
       updateDisplay(2, p2penalMs);
       updatePenalDisplay(2, p2penalMs);
@@ -160,7 +151,7 @@ function aplicaDelta(delta) {
   }
 }
 
-// ── Tick del rellotge (cada TICK_MS ms) ───────────────────────────────────
+// ── Rellotge ──────────────────────────────────────────────────────────────
 let timerId = null;
 
 function tick() {
@@ -179,11 +170,6 @@ const startTimer = () => {
 };
 
 // ── Canvi de torn precís ───────────────────────────────────────────────────
-// En prémer la fitxa del jugador que acaba el torn:
-//  1) Es cobra al jugador actiu el delta EXACTE fins al moment del canvi.
-//  2) Es canvia currentPlayer.
-//  3) lastTickMs s'actualitza al moment exacte del canvi.
-// Així cap jugador perd ni guanya fraccions de segon entre torns.
 function canviPrecis(nouJugador) {
   if (playing && lastTickMs !== null) {
     const now = Date.now();
@@ -224,31 +210,27 @@ function canvijug2() { canvitorn(1); colors1(); }
 
 function canvitorn(jug) {
   if (!playing && botoStart.textContent === "CONTINUA") {
-    // Reprèn el joc canviant de jugador
     currentPlayer = jug;
     localStorage.setItem("jugactiu", jug);
     playing = true;
-    lastTickMs = Date.now();  // ← evita cobrar el temps de pausa
-    document.querySelectorAll(".petit").forEach(e => e.classList.remove("petit"));
-    document.getElementById("cont").style.display = "none";
-    amagarValidador();
-    botoStart.style.color = "#EEEEEE";
-    botoStart.style.backgroundColor = "#606060";
-    botoStart.textContent = "PAUSA / VALIDA";
+    lastTickMs = Date.now();
+    botoStart.style.color = "#fff";
+    botoStart.style.backgroundColor = "#0071d5";
+    botoStart.textContent = "PAUSA";
+    botoValida.hidden = true;
     if (so) clickSo.play();
     if (vibracio) window.navigator.vibrate(50);
   } else if (!playing && botoStart.textContent === "COMENÇA") {
-    // Primera jugada: inicia el rellotge
     currentPlayer = jug;
     localStorage.setItem("jugactiu", jug);
     startTimer();
-    botoStart.style.color = "#EEEEEE";
-    botoStart.style.backgroundColor = "#606060";
-    botoStart.textContent = "PAUSA / VALIDA";
+    botoStart.style.color = "";
+    botoStart.style.backgroundColor = "";
+    botoStart.textContent = "PAUSA";
+    botoValida.hidden = true;
     if (so) clickSo.play();
     if (vibracio) window.navigator.vibrate(50);
   } else if (playing && currentPlayer !== jug) {
-    // Canvi de torn: cobra el temps exacte al jugador que para
     canviPrecis(jug);
     jug === 2
       ? jugador1.classList.remove("actiu")
@@ -258,24 +240,109 @@ function canvitorn(jug) {
   }
 }
 
-// ── Amaga el validador ────────────────────────────────────────────────────
+// ── Modals ─────────────────────────────────────────────────────────────────
+function obreModal(id) {
+  document.getElementById(id).hidden = false;
+}
+
+function tancaModal(id) {
+  document.getElementById(id).hidden = true;
+}
+
+// ── Validador: amaga resultats i buida input ───────────────────────────────
 function amagarValidador() {
   if (typeof qryDelete === "function") qryDelete(false);
   document.querySelector(".qry").value = "";
+  tancaModal("modal-valid");
 }
 
-// ── Menú d'ajustaments ────────────────────────────────────────────────────
-const ajust = document.getElementById("ajustaments");
-ajust.addEventListener("toggle", () => {
-  if (ajust.open) {
-    document.querySelector(".player").style.display = "none";
-    document.querySelector(".full-screen").style.display = "none";
-    document.querySelector("summary").textContent = "X";
-  } else {
-    document.querySelector(".player").style.display = "";
-    document.querySelector(".full-screen").style.display = "";
-    document.querySelector("summary").textContent = "Ajustaments";
+// ── Botó ajustaments ───────────────────────────────────────────────────────
+document.getElementById("btn-ajust").addEventListener("click", () => {
+  obreModal("modal-ajust");
+});
+
+document.getElementById("close-ajust").addEventListener("click", () => {
+  tancaModal("modal-ajust");
+});
+
+// ── Botó "Comprova la jugada" ─────────────────────────────────────────────
+botoValida.addEventListener("click", () => {
+  // Sortir de pantalla completa per evitar l'overlay d'autocompleció d'Android
+  if (document.fullscreenElement || document.webkitFullscreenElement) {
+    closeFullscreen();
   }
+  obreModal("modal-valid");
+  // Focus després d'un petit retard per assegurar que el modal és visible
+  setTimeout(() => document.querySelector(".qry").focus(), 100);
+});
+
+document.getElementById("close-valid").addEventListener("click", () => {
+  amagarValidador();
+});
+
+// ── Botó pantalla completa ────────────────────────────────────────────────
+document.getElementById("btn-fullscreen").addEventListener("click", toggleFullscreen);
+
+// ── Botó principal (COMENÇA / PAUSA / CONTINUA) ───────────────────────────
+botoStart.addEventListener("click", () => {
+  activaNoSleep();
+  const text = botoStart.textContent;
+
+  if (text === "COMENÇA") {
+    botoStart.style.color = "";
+    botoStart.style.backgroundColor = "";
+    botoStart.textContent = "PAUSA";
+    botoValida.hidden = true;
+    document.querySelector(".player-" + currentPlayer).classList.add("actiu");
+    startTimer();
+
+  } else if (text === "PAUSA") {
+    playing = false;
+    botoStart.style.color = "#fff";
+    botoStart.style.backgroundColor = "#0071d5";
+    botoStart.textContent = "CONTINUA";
+    botoValida.hidden = false;
+    jugador1.classList.remove("actiu");
+    jugador2.classList.remove("actiu");
+    document.querySelectorAll(".player__digits").forEach(a => a.classList.remove("en-penal"));
+    if (!jug1) document.querySelectorAll(".player__digits")[0].classList.add("en-penal-inactiu");
+    if (!jug2) document.querySelectorAll(".player__digits")[1].classList.add("en-penal-inactiu");
+
+  } else if (text === "CONTINUA") {
+    playing = true;
+    lastTickMs = Date.now();
+    botoStart.style.color = "";
+    botoStart.style.backgroundColor = "";
+    botoStart.textContent = "PAUSA";
+    botoValida.hidden = true;
+    document.querySelector(".player-" + currentPlayer).classList.add("actiu");
+    if (currentPlayer === 1 && !jug1) {
+      document.querySelectorAll(".player__digits")[0].classList.remove("en-penal-inactiu");
+      document.querySelectorAll(".player__digits")[0].classList.add("en-penal");
+    }
+    if (currentPlayer === 2 && !jug2) {
+      document.querySelectorAll(".player__digits")[1].classList.remove("en-penal-inactiu");
+      document.querySelectorAll(".player__digits")[1].classList.add("en-penal");
+    }
+  }
+});
+
+// ── Clics sobre les fitxes dels jugadors ─────────────────────────────────
+jugador1.addEventListener("click", canvijug1);
+jugador2.addEventListener("click", canvijug2);
+
+// ── Checkboxes de so, vibració i pantalla completa ───────────────────────
+botoSo.addEventListener("change", () => {
+  so = botoSo.checked;
+  localStorage.setItem("botoSo", so);
+});
+botoVibr.addEventListener("change", () => {
+  vibracio = botoVibr.checked;
+  localStorage.setItem("botoVibr", vibracio);
+});
+fullScreen.addEventListener("change", () => {
+  fullScreen.checked ? openFullscreen() : closeFullscreen();
+  localStorage.setItem("fullScreen", fullScreen.checked);
 });
 
 // ── Botó "Nova partida" ───────────────────────────────────────────────────
@@ -294,6 +361,7 @@ document.getElementById("tempsBtn").addEventListener("click", () => {
   jug1 = true;
   jug2 = true;
   lastTickMs = null;
+  currentPlayer = 1;
 
   clearInterval(timerId);
   timerId = null;
@@ -302,13 +370,10 @@ document.getElementById("tempsBtn").addEventListener("click", () => {
   updateDisplay(2, p2ms);
 
   botoStart.textContent = "COMENÇA";
-  botoStart.style.backgroundColor = "#0071D5";
   botoStart.style.color = "";
+  botoStart.style.backgroundColor = "";
+  botoValida.hidden = true;
 
-  document.getElementById("ajustaments").open = false;
-  localStorage.setItem("temps", tempsMinuts);
-  localStorage.setItem("penalització", penalitzacioEl.value);
-  document.getElementById("cont").style.display = "none";
   jugador1.classList.remove("actiu");
   jugador2.classList.remove("actiu");
   document.querySelectorAll(".player__digits").forEach(a => {
@@ -317,9 +382,22 @@ document.getElementById("tempsBtn").addEventListener("click", () => {
   document.getElementById("penal1").textContent = "";
   document.getElementById("penal2").textContent = "";
 
+  localStorage.setItem("temps", tempsMinuts);
+  localStorage.setItem("penalització", penalitzacioEl.value);
   localStorage.removeItem("tempsjug1");
   localStorage.removeItem("tempsjug2");
+
   amagarValidador();
+  tancaModal("modal-ajust");
+
+  // Mostra el joc
+  jocEl.hidden = false;
+  document.getElementById("btn-fullscreen").hidden = false;
+});
+
+// ── Botó "Continua la partida" ────────────────────────────────────────────
+document.getElementById("resetBtn").addEventListener("click", () => {
+  tancaModal("modal-ajust");
 });
 
 // ── Noms dels jugadors ────────────────────────────────────────────────────
@@ -330,72 +408,7 @@ document.getElementById("nomjug2").addEventListener("change", () => {
   document.getElementById("nom2").textContent = document.getElementById("nomjug2").value;
 });
 
-// ── Botó principal (COMENÇA / PAUSA / CONTINUA) ───────────────────────────
-for (let i = 0; i < buttons.length; i++) {
-  buttons[i].addEventListener("click", () => {
-    activaNoSleep();
-    const text = buttons[i].textContent;
-
-    if (text === "COMENÇA") {
-      buttons[i].style.color = "#EEEEEE";
-      buttons[i].style.backgroundColor = "#606060";
-      buttons[i].textContent = "PAUSA / VALIDA";
-      document.querySelector(".player-" + currentPlayer).classList.add("actiu");
-      startTimer();
-
-    } else if (text === "PAUSA / VALIDA") {
-      playing = false;
-      buttons[i].style.color = "#FFFFFF";
-      buttons[i].style.backgroundColor = "#0071D5";
-      buttons[i].textContent = "CONTINUA";
-      jugador1.classList.remove("actiu");
-      jugador2.classList.remove("actiu");
-      document.querySelectorAll(".player__digits").forEach(a => a.classList.remove("en-penal"));
-      if (!jug1) document.querySelectorAll(".player__digits")[0].classList.add("en-penal-inactiu");
-      if (!jug2) document.querySelectorAll(".player__digits")[1].classList.add("en-penal-inactiu");
-      document.getElementById("cont").style.display = "";
-      // Focus al validador només en pantalles grans (evita teclat automàtic al mòbil)
-      if (window.innerWidth >= 600) {
-        setTimeout(() => document.querySelector(".qry").focus(), 100);
-      }
-
-    } else if (text === "CONTINUA") {
-      playing = true;
-      lastTickMs = Date.now();  // ← evita cobrar el temps de pausa
-      document.querySelectorAll(".petit").forEach(e => e.classList.remove("petit"));
-      buttons[i].style.color = "#EEEEEE";
-      buttons[i].style.backgroundColor = "#606060";
-      buttons[i].textContent = "PAUSA / VALIDA";
-      document.querySelector(".player-" + currentPlayer).classList.add("actiu");
-      if (currentPlayer === 1 && !jug1) {
-        document.querySelectorAll(".player__digits")[0].classList.remove("en-penal-inactiu");
-        document.querySelectorAll(".player__digits")[0].classList.add("en-penal");
-      }
-      if (currentPlayer === 2 && !jug2) {
-        document.querySelectorAll(".player__digits")[1].classList.remove("en-penal-inactiu");
-        document.querySelectorAll(".player__digits")[1].classList.add("en-penal");
-      }
-      document.getElementById("cont").style.display = "none";
-      amagarValidador();
-    }
-  });
-}
-
-// ── Input del validador ───────────────────────────────────────────────────
-document.getElementById("input").addEventListener("click", () => {
-  setTimeout(() => {
-    window.scrollTo(0, 1000);
-    document.querySelectorAll(".player__digits").forEach(e => e.classList.add("petit"));
-    document.querySelectorAll(".player__tile").forEach(e => e.classList.add("petit"));
-  }, 0);
-});
-
 // ── Pantalla completa ─────────────────────────────────────────────────────
-fullScreen.addEventListener("change", () => {
-  fullScreen.checked ? openFullscreen() : closeFullscreen();
-  localStorage.setItem("fullScreen", fullScreen.checked);
-});
-
 const elem = document.documentElement;
 
 function toggleFullscreen() {
@@ -418,26 +431,7 @@ function closeFullscreen() {
   fullScreen.checked = false;
 }
 
-// ── Clics sobre les fitxes dels jugadors ─────────────────────────────────
-jugador1.addEventListener("click", canvijug1);
-jugador2.addEventListener("click", canvijug2);
-
-// ── Checkboxes de so i vibració ───────────────────────────────────────────
-botoSo.addEventListener("change", () => {
-  so = botoSo.checked;
-  localStorage.setItem("botoSo", so);
-});
-botoVibr.addEventListener("change", () => {
-  vibracio = botoVibr.checked;
-  localStorage.setItem("botoVibr", vibracio);
-});
-
-// ── Botó "Continua la partida" (del menú) ────────────────────────────────
-document.getElementById("resetBtn").addEventListener("click", () => {
-  document.getElementById("ajustaments").open = false;
-});
-
-// ── Inicialització: restaura l'estat del localStorage ────────────────────
+// ── Inicialització ────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("swver").textContent = "v:" + swver;
   versio.forEach(d => { d.textContent = disc.version; });
@@ -469,7 +463,10 @@ document.addEventListener("DOMContentLoaded", function () {
       document.querySelectorAll(".player__digits")[0].classList.add("en-penal-inactiu");
       updatePenalDisplay(1, p1penalMs);
     }
-    document.getElementById("resetBtn").style.display = "";
+    document.getElementById("resetBtn").hidden = false;
+    jocEl.hidden = false;
+    document.getElementById("btn-fullscreen").hidden = false;
+    obreModal("modal-ajust");
   } else {
     p1ms = tempsMinuts * 60000;
     updateDisplay(1, p1ms);
@@ -489,7 +486,6 @@ document.addEventListener("DOMContentLoaded", function () {
       document.querySelectorAll(".player__digits")[1].classList.add("en-penal-inactiu");
       updatePenalDisplay(2, p2penalMs);
     }
-    document.getElementById("resetBtn").style.display = "";
   } else {
     p2ms = tempsMinuts * 60000;
     updateDisplay(2, p2ms);
@@ -502,7 +498,3 @@ if ("serviceWorker" in navigator) {
 }
 
 window.onbeforeunload = () => "Si recarregues la pàgina el comptador començarà de nou!";
-
-document.getElementById("copy").addEventListener("click", () => {
-  document.querySelectorAll(".petit").forEach(e => e.classList.remove("petit"));
-});

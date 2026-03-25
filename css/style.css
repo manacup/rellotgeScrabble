@@ -19,7 +19,7 @@ body {
   height: 100%;
   background-color: #000;
   color: #fff;
-  overscroll-behavior: none; /* evita pull-to-refresh en mòbil */
+  overscroll-behavior: none;
 }
 
 body {
@@ -27,45 +27,42 @@ body {
   font-family: "FiraMono-Regular", monospace;
 }
 
-main {
+/* ── Joc principal ───────────────────────────────────────────────────────── */
+#joc {
   width: 100%;
   height: 100%;
+  height: 100dvh;
   padding: 10px;
   box-sizing: border-box;
 }
 
-img {
-  width: 100%;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-  max-width: 600px;
-}
+#joc[hidden] { display: none; }
 
-/* ── Layout principal del joc ────────────────────────────────────────────── */
+/* ── Layout dels jugadors ────────────────────────────────────────────────── */
 .player {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 20px);
   height: calc(100dvh - 20px);
-  margin: 0;
 }
 
-/* ── Panells dels jugadors ───────────────────────────────────────────────── */
+/* ── Panells individuals ─────────────────────────────────────────────────── */
 .player__tile {
-  width: 100%;
   flex: 1 1 0;
-  min-height: 0;           /* permet shrink per sota del contingut mínim */
+  min-height: 0;
   display: flex;
-  margin: 0 auto;
-  color: #fff;
-  max-width: 400px;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   touch-action: manipulation;
+  border-radius: 12px;
+  transition: background-color 0.15s;
+}
+
+.player__tile:active {
+  background-color: rgba(255, 255, 255, 0.04);
 }
 
 .player-1 {
@@ -78,11 +75,9 @@ img {
 }
 
 /* ── Dígits del rellotge ─────────────────────────────────────────────────── */
-/* Mida: mínim 4rem, idealment 20% de l'alçada disponible, màxim 7rem      */
-/* IMPORTANT: no s'ha d'afegir cap classe que sobreescrigui aquesta mida    */
 .player__digits {
-  font-size: clamp(4rem, 20dvh, 7rem);
-  font-size: clamp(4rem, 20vh, 7rem);
+  font-size: clamp(4rem, 22dvh, 8rem);
+  font-size: clamp(4rem, 22vh, 8rem);
   font-weight: bold;
   text-align: center;
   line-height: 1.1;
@@ -90,301 +85,351 @@ img {
 
 /* ── Nom del jugador ─────────────────────────────────────────────────────── */
 .nom {
-  color: rgba(255, 255, 255, 0.55);
-  font-size: clamp(0.65rem, 1.8dvh, 0.9rem);
-  font-size: clamp(0.65rem, 1.8vh, 0.9rem);
-  margin-top: 0.25em;
-  text-align: center;
-  letter-spacing: 0.05em;
+  font-size: clamp(0.6rem, 1.6dvh, 0.85rem);
+  font-size: clamp(0.6rem, 1.6vh, 0.85rem);
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 0.3em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-/* ── Penalització: text de punts (dins de .player__digits) ───────────────── */
-/* Aquests elements NO canvien la mida del contenidor                        */
+/* ── Text de penalització (-10 pts) ─────────────────────────────────────── */
 #penal1,
 #penal2 {
-  font-size: clamp(0.65rem, 1.8dvh, 0.9rem);
-  font-size: clamp(0.65rem, 1.8vh, 0.9rem);
-  margin-top: 0.15em;
+  font-size: clamp(0.6rem, 1.6dvh, 0.85rem);
+  font-size: clamp(0.6rem, 1.6vh, 0.85rem);
+  margin-top: 0.2em;
   letter-spacing: 0.03em;
 }
 
 /* ── Estats de color ─────────────────────────────────────────────────────── */
-/* Actiu: jugador amb el rellotge corrent                                    */
-.actiu {
-  color: #34e251 !important;
-}
+.actiu        { color: #34e251 !important; }
+.en-penal     { color: #ff3b30 !important; }
+.en-penal-inactiu { color: rgba(255, 59, 48, 0.4) !important; }
 
-/* En penalització activa: dígits grans en vermell                           */
-.en-penal {
-  color: #ff3b30 !important;
-}
-
-/* En penalització però en pausa (inactiu)                                   */
-.en-penal-inactiu {
-  color: rgba(255, 59, 48, 0.45) !important;
-}
-
-/* ── Separador visual entre els dos jugadors ─────────────────────────────── */
+/* ── Botons del temporitzador ────────────────────────────────────────────── */
 .timer__buttons {
   order: 2;
-  margin: 0;
   padding: 6px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* ── Botons generals ─────────────────────────────────────────────────────── */
-.timer__start-bttn,
-.timer__reset-bttn,
-.ajust_bttn,
-.btn,
-#req .qry {
+/* Base de tots els botons de joc */
+.bttn {
   width: 100%;
   display: block;
-  color: #020202;
-  min-height: 48px;
-  font-size: 1.1rem;
+  min-height: 52px;
+  font-size: 1rem;
   font-weight: bold;
-  border-radius: 8px;
-  letter-spacing: 2px;
-  margin: 0 auto 5px auto;
-  border: 4px solid #000;
   font-family: "FiraMono-Regular", monospace;
-  position: relative;
+  border-radius: 10px;
+  letter-spacing: 2px;
   text-transform: uppercase;
+  border: none;
+  margin-bottom: 6px;
+  cursor: pointer;
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
+.bttn:last-child { margin-bottom: 0; }
+
+/* Botó principal COMENÇA / PAUSA / CONTINUA */
 .timer__start-bttn {
   color: #fff;
   background-color: #0071d5;
 }
 
 .timer__start-bttn:hover {
-  color: #000;
-  background-color: #fff;
+  background-color: #0062b8;
+}
+
+/* Botó "Comprova la jugada" */
+.btn-valida {
+  color: rgba(255, 255, 255, 0.7);
+  background-color: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  letter-spacing: 1.5px;
+  font-size: 0.9rem;
+}
+
+/* ── Botons de cantonada (ajustaments + pantalla completa) ───────────────── */
+.btn-corner {
+  position: fixed;
+  top: 10px;
+  z-index: 150;
+  background-color: rgba(18, 18, 18, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 7px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 6px 11px;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  font-family: inherit;
+}
+
+.btn-corner--right { right: 10px; }
+.btn-corner--left  { left: 10px; }
+
+.btn-corner[hidden] { display: none; }
+
+/* ── Modals ──────────────────────────────────────────────────────────────── */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  background-color: #0a0a0a;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  animation: modalFadeIn 0.15s ease;
+}
+
+.modal[hidden] { display: none; }
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.modal__panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+}
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  top: 0;
+  background-color: #0a0a0a;
+  z-index: 1;
+}
+
+.modal__title {
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.modal__close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 6px 8px;
+  cursor: pointer;
+  border-radius: 6px;
+  touch-action: manipulation;
+  font-family: inherit;
+}
+
+.modal__close:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.modal__body {
+  padding: 24px 16px 40px;
+  flex: 1;
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.modal__actions {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Formulari d'ajustaments ─────────────────────────────────────────────── */
+.field-label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 20px;
+}
+
+.field-label > span {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.field-label input {
+  background-color: #161616;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #fff;
+  padding: 11px 13px;
+  font-size: 16px;
+  font-family: "FiraMono-Regular", monospace;
+  width: 100%;
+}
+
+.field-label input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.field-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.field-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+}
+
+.field-check input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #0071d5;
+}
+
+/* ── Botons dins del modal ───────────────────────────────────────────────── */
+.btn-primary {
+  background-color: #0071d5;
+  color: #fff;
+}
+
+.btn-primary:hover { background-color: #0062b8; }
+
+.btn-secondary {
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
 /* ── Validador de paraules ───────────────────────────────────────────────── */
-#cont {
-  margin: 0 auto;
-  width: 90%;
-  text-align: center;
-  order: 3;
-  flex-shrink: 0;
-}
-
 #req {
   width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
+  margin-bottom: 16px;
 }
 
-#req .sch,
-#req .clr {
-  font-size: 1.2em;
-  margin-bottom: 0.5em;
-}
-
-#res {
-  display: none;
-  padding: 1em;
-  width: 90%;
-  max-width: 600px;
-  margin: 1em auto 0 auto;
-  color: black;
-}
-
-#res_info {
-  padding: 1em;
-}
-
-#res_info strong {
-  text-transform: uppercase;
-  font-weight: bold;
-  font-size: 1.1em;
-}
-
-#res_timer {
-  font-size: 0.8em;
-  text-align: right;
-  padding: 1em 1em 0;
-}
-
-#res.tornOK {
-  border: 2px dotted #060;
-  background-color: #c5f2ce;
-}
-
-#res.tornKO {
-  border: 2px dotted #c00;
-  background-color: #fdd4d4;
-}
-
-#copy {
-  font-size: 0.85em;
-  padding: 1em;
-  line-height: 1.8em;
-  padding-bottom: 4em;
-  flex: 1 1 auto;
-}
-
-/* ── Formulari del validador ─────────────────────────────────────────────── */
 #wdtform {
   display: flex;
   flex-direction: row;
-  justify-content: center;
 }
 
 #wdtform .qry {
   order: 1;
+  flex: 1 1 auto;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   border-right: 0;
-  padding: 5px;
-  flex: 1 1 auto;
-  font-size: 16px; /* evita zoom automàtic a iOS */
+  padding: 12px;
+  background-color: #161616;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 16px;
+  font-family: "FiraMono-Regular", monospace;
 }
+
+#wdtform .qry:focus { outline: none; border-color: rgba(255,255,255,0.3); }
+
+#wdtform .qry::placeholder { color: rgba(255,255,255,0.25); font-size: 0.9em; }
 
 #wdtform .sch {
   order: 2;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  padding: 5px;
   flex: 0 0 auto;
   width: auto;
-}
-
-/* ── Botons de menú ──────────────────────────────────────────────────────── */
-/* details sempre present en el DOM, z-index alt per quedar sobre el joc    */
-details {
-  z-index: 100;
-}
-
-/* Botó "Ajustaments" / "X": sempre fixat a la cantonada superior dreta.    */
-/* D'aquesta manera mai se superposa amb el botó de pantalla completa.      */
-summary {
-  list-style: none;
-  cursor: pointer;
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  z-index: 102;
-  background-color: rgba(20, 20, 20, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 6px;
-  padding: 5px 11px;
-  font-size: 0.82rem;
-  letter-spacing: 0.06em;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding: 12px 16px;
+  font-family: "FiraMono-Regular", monospace;
+  font-size: 0.9rem;
+  font-weight: bold;
+  letter-spacing: 1px;
   text-transform: uppercase;
-}
-
-summary::-webkit-details-marker {
-  display: none;
-}
-
-/* Quan el menú és obert, el resum ja és fixed per la regla anterior.       */
-/* Eliminem la declaració duplicada; ja no cal redefinir la posició.        */
-
-/* ── Botó de pantalla completa ───────────────────────────────────────────── */
-/* Situat a la cantonada superior ESQUERRA per no col·lisionar mai amb       */
-/* el botó "Ajustaments" que és a la dreta.                                  */
-.full-screen {
-  position: fixed;
-  top: 14px;
-  left: 10px;
-  z-index: 101;
-  vertical-align: middle;
-  box-sizing: border-box;
-  display: inline-block;
-  border: 0.1em solid rgba(255, 255, 255, 0.5);
-  width: 1.1em;
-  height: 1.1em;
-  color: rgba(255, 255, 255, 0.5);
+  background-color: #222;
+  color: rgba(255,255,255,0.8);
+  border: 1px solid rgba(255,255,255,0.12);
   cursor: pointer;
+  touch-action: manipulation;
 }
 
-.full-screen::before,
-.full-screen::after {
-  content: "";
-  background: #000;
-  position: absolute;
+#res {
+  display: none;
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  color: #000;
 }
 
-.full-screen::before {
-  width: 0.333em;
-  height: 1em;
-  left: 0.233em;
-  top: -0.1em;
+#res_info { padding: 4px; }
+
+#res_info strong {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1.05em;
 }
 
-.full-screen::after {
-  width: 1em;
-  height: 0.333em;
-  top: 0.233em;
-  left: -0.1em;
+#res_timer {
+  font-size: 0.75em;
+  text-align: right;
+  margin-top: 8px;
+  color: rgba(0,0,0,0.5);
 }
 
-/* ── Panell d'ajustaments ────────────────────────────────────────────────── */
-.blanc-text {
-  color: #fff;
+#res.tornOK { border: 2px dotted #060; background-color: #c5f2ce; }
+#res.tornKO { border: 2px dotted #c00; background-color: #fdd4d4; }
+
+#copy {
+  font-size: 0.78em;
+  color: rgba(255, 255, 255, 0.3);
+  line-height: 1.7;
+  margin-top: 24px;
 }
 
-a {
-  color: #fff;
-}
+#copy a { color: rgba(255, 255, 255, 0.4); }
 
-a img {
-  border: 0;
-}
-
+/* ── Peu de pàgina (dins modal ajustaments) ──────────────────────────────── */
 footer {
-  font-size: 0.8em;
-  margin-top: 1.5em;
-  line-height: 1.9em;
+  margin-top: 32px;
+  font-size: 0.78em;
+  line-height: 2em;
+  color: rgba(255, 255, 255, 0.35);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding-top: 16px;
 }
 
-footer a {
-  color: rgba(255, 255, 255, 0.75);
-}
+footer a { color: rgba(255, 255, 255, 0.45); }
+footer a:hover { color: rgba(255, 255, 255, 0.75); }
 
-small {
-  font-size: 0.8em;
-}
+a { color: #fff; }
 
-#input,
-input[type="text"],
-input[type="number"],
-input[type="search"] {
-  width: 100%;
-  font-size: 16px; /* evita zoom automàtic a iOS en focus */
-}
+small { font-size: 0.85em; }
 
-select {
-  width: 100%;
-}
+:focus { outline: 0; }
 
-#parametres input,
-#parametres select {
-  font-size: 1.1rem;
-}
+.petit { display: none !important; }
 
-.petit {
-  display: none !important;
-}
-
-:focus {
-  outline: 0;
-}
-
-.qry::placeholder {
-  font-size: 0.8em;
-}
-
-/* ── Media queries ───────────────────────────────────────────────────────── */
-
-/* Mòbil en horitzontal: panells costat a costat                             */
+/* ── Mòbil horitzontal ───────────────────────────────────────────────────── */
 @media only screen and (orientation: landscape) and (max-height: 500px) {
   .player {
     flex-direction: row;
@@ -395,11 +440,12 @@ select {
   }
 
   .player__tile {
-    flex: 0 0 50%;          /* exactament la meitat, iguals sempre */
+    flex: 0 0 50%;
     width: 50%;
     height: clamp(100px, 38dvh, 200px);
     height: clamp(100px, 38vh, 200px);
     max-width: none;
+    border-radius: 0;
   }
 
   .player-1 {
@@ -407,42 +453,28 @@ select {
     order: 1;
   }
 
-  .player-2 {
-    order: 2;
-  }
+  .player-2 { order: 2; }
 
   .player__digits {
-    font-size: clamp(2.5rem, 10dvh, 5rem);
-    font-size: clamp(2.5rem, 10vh, 5rem);
+    font-size: clamp(2.5rem, 10dvh, 5.5rem);
+    font-size: clamp(2.5rem, 10vh, 5.5rem);
   }
 
   .timer__buttons {
     display: flex;
+    gap: 6px;
     width: 100%;
     order: 3;
     max-width: 600px;
     margin: 4px auto;
+    padding: 4px 0;
     border: none;
-    padding: 0;
   }
 
-  #cont {
-    width: 100%;
-    order: 4;
-  }
-
-  #res {
-    width: 90%;
-    max-width: 500px;
-  }
-
-  #ajustaments {
-    width: 100%;
-    max-width: 500px;
-  }
+  .timer__buttons .bttn { margin-bottom: 0; }
 }
 
-/* Pantalla gran (≥ 850px): disposició horitzontal                           */
+/* ── Pantalla gran ≥ 850px ───────────────────────────────────────────────── */
 @media only screen and (min-width: 850px) {
   .player {
     flex-direction: row;
@@ -457,6 +489,7 @@ select {
     width: 50%;
     height: 200px;
     max-width: none;
+    border-radius: 0;
   }
 
   .player-1 {
@@ -464,16 +497,13 @@ select {
     order: 1;
   }
 
-  .player-2 {
-    order: 2;
-  }
+  .player-2 { order: 2; }
 
-  .player__digits {
-    font-size: 7rem;
-  }
+  .player__digits { font-size: 7rem; }
 
   .timer__buttons {
     display: flex;
+    gap: 8px;
     width: 100%;
     max-width: 810px;
     margin: auto;
@@ -481,18 +511,30 @@ select {
     border: none;
   }
 
-  .timer__start-bttn,
-  .timer__reset-bttn {
-    padding: 0.7em;
-    font-size: 1.8rem;
+  .timer__buttons .bttn { margin-bottom: 0; }
+
+  .timer__start-bttn { font-size: 1.6rem; }
+
+  /* Modal centrat en pantalla gran */
+  .modal {
+    background-color: rgba(0, 0, 0, 0.88);
+    justify-content: center;
+    align-items: center;
   }
 
-  #ajustaments {
-    width: 500px;
+  .modal__panel {
+    width: 90%;
+    max-width: 460px;
+    max-height: 92vh;
+    overflow-y: auto;
+    background-color: #111;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    flex: none;
   }
 
-  footer {
-    position: relative;
-    bottom: 0;
+  .modal__header {
+    border-radius: 16px 16px 0 0;
+    background-color: #111;
   }
 }
