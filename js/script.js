@@ -1,4 +1,4 @@
-const swver = "1.4.4";
+const swver = "1.4.5";
 
 // ── Estat del joc ──────────────────────────────────────────────────────────
 let playing = false;
@@ -59,17 +59,14 @@ function vibra(pattern) {
 // ── Utilitats ─────────────────────────────────────────────────────────────
 const padZero = n => n < 10 ? "0" + n : String(n);
 
-function msToMinSec(ms) {
-  // Math.ceil: el "00:00" apareix ÚNICAMENT quan ms===0.
-  // Amb floor, qualsevol valor entre 1ms i 999ms mostrava "00:00" en verd.
-  const totalSec = Math.ceil(Math.max(0, ms) / 1000);
-  return { minutes: Math.floor(totalSec / 60), seconds: totalSec % 60 };
-}
-
-function updateDisplay(n, ms) {
-  const { minutes, seconds } = msToMinSec(ms);
-  document.getElementById("min" + n).textContent = padZero(minutes);
-  document.getElementById("sec" + n).textContent = padZero(seconds);
+// countDown=true (per defecte): Math.ceil → "00:00" només quan ms===0
+// countDown=false (compte amunt penal): Math.floor → es veu 00:00 durant el primer segon
+function updateDisplay(n, ms, countDown = true) {
+  const totalSec = countDown
+    ? Math.ceil(Math.max(0, ms) / 1000)
+    : Math.floor(Math.max(0, ms) / 1000);
+  document.getElementById("min" + n).textContent = padZero(Math.floor(totalSec / 60));
+  document.getElementById("sec" + n).textContent = padZero(totalSec % 60);
 }
 
 // 10 punts per cada minut o fracció de minut.
@@ -97,9 +94,11 @@ function saveState() {
 }
 
 // ── Sons de compte enrere ─────────────────────────────────────────────────
+// Usa Math.ceil (igual que updateDisplay) perquè el bip coincideixi exactament
+// amb el canvi de xifra a la pantalla.
 let lastBeepSec = -1;
 function checkWarningSound(ms) {
-  const sec = Math.floor(ms / 1000);
+  const sec = Math.ceil(ms / 1000);
   if (sec <= 5 && sec > 0 && sec !== lastBeepSec) {
     lastBeepSec = sec;
     if (so) compteenrere.play();
@@ -137,7 +136,7 @@ function aplicaDelta(delta) {
     } else if (!p1penalFinal) {
       p1penalMs = Math.min(p1penalMs + delta, maxPenalMs);
       digits()[0].classList.add("en-penal");
-      updateDisplay(1, p1penalMs);
+      updateDisplay(1, p1penalMs, false);   // count-up: Math.floor
       updatePenalDisplay(1, p1penalMs);
       if (p1penalMs >= maxPenalMs) {
         p1penalFinal = true;
@@ -166,7 +165,7 @@ function aplicaDelta(delta) {
     } else if (!p2penalFinal) {
       p2penalMs = Math.min(p2penalMs + delta, maxPenalMs);
       digits()[1].classList.add("en-penal");
-      updateDisplay(2, p2penalMs);
+      updateDisplay(2, p2penalMs, false);   // count-up: Math.floor
       updatePenalDisplay(2, p2penalMs);
       if (p2penalMs >= maxPenalMs) {
         p2penalFinal = true;

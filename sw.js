@@ -1,4 +1,4 @@
-const CACHE = 'rellotgeScrabble-1.4.4';
+const CACHE = 'rellotgeScrabble-1.4.5';
 
 const FILES = [
   './',

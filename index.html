@@ -157,26 +157,24 @@
 
       <div class="modal__body">
 
-        <div id="req">
-          <form id="wdtform" name="wdtform" action="wordertorn">
-            <div id="input">
-              <input type="text" class="qry" name="q"
-                     placeholder="Escriviu un o més mots"
-                     autocomplete="off"
-                     autocorrect="off"
-                     autocapitalize="off"
-                     spellcheck="false"
-                     value="">
-            </div>
-            <div id="buttons">
-              <input class="sch btn" name="sch" type="button" value="valida">
-            </div>
-          </form>
-        </div>
-
+        <!-- Resultat (gran, visible des de lluny) -->
         <div id="res">
           <div id="res_info"></div>
           <div id="res_timer"></div>
+        </div>
+
+        <!-- Formulari de cerca -->
+        <div id="req">
+          <form id="wdtform" name="wdtform" action="wordertorn">
+            <input type="text" class="qry" name="q"
+                   placeholder="Escriviu un o més mots"
+                   autocomplete="off"
+                   autocorrect="off"
+                   autocapitalize="off"
+                   spellcheck="false"
+                   value="">
+            <input class="sch btn" name="sch" type="button" value="valida">
+          </form>
         </div>
 
         <div id="copy">

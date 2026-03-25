@@ -83,9 +83,9 @@ html, body {
 
 /* ── Text de penalització ────────────────────────────────────────────────── */
 #penal1, #penal2 {
-  font-size: clamp(0.6rem, 1.5dvh, 0.85rem);
-  font-size: clamp(0.6rem, 1.5vh, 0.85rem);
-  margin-top: 0.2em;
+  font-size: clamp(1rem, 3dvh, 1.5rem);
+  font-size: clamp(1rem, 3vh, 1.5rem);
+  margin-top: 0.25em;
   letter-spacing: 0.02em;
 }
 
@@ -295,62 +295,109 @@ html, body {
 }
 
 /* ── Validador de paraules ───────────────────────────────────────────────── */
-#req { width: 100%; margin-bottom: 14px; }
 
-#wdtform { display: flex; }
+/* Modal body del validador: columna flexible */
+#modal-valid .modal__body {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px 20px;
+}
+
+/* Resultat gran: visible des de l'altra banda de la taula */
+#res {
+  display: none;
+  min-height: 52dvh;
+  min-height: 52vh;
+  border-radius: 16px;
+  margin-bottom: 14px;
+  text-align: center;
+  padding: 28px 20px 20px;
+  color: #fff;
+}
+
+/* Icona gran via pseudo-element */
+#res.tornOK::before {
+  content: "✓";
+  display: block;
+  font-size: clamp(5rem, 18dvh, 11rem);
+  font-size: clamp(5rem, 18vh, 11rem);
+  line-height: 1;
+  margin-bottom: 14px;
+}
+#res.tornKO::before {
+  content: "✗";
+  display: block;
+  font-size: clamp(5rem, 18dvh, 11rem);
+  font-size: clamp(5rem, 18vh, 11rem);
+  line-height: 1;
+  margin-bottom: 14px;
+}
+
+#res.tornOK { background-color: #1e7c34; }
+#res.tornKO { background-color: #c0392b; }
+
+#res_info {
+  font-size: clamp(1.05rem, 3.5dvh, 1.5rem);
+  font-size: clamp(1.05rem, 3.5vh, 1.5rem);
+  padding: 0 4px;
+  line-height: 1.4;
+}
+#res_info strong {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1.1em;
+  display: block;
+  margin-top: 6px;
+}
+#res_timer {
+  font-size: 0.7rem;
+  text-align: center;
+  margin-top: 14px;
+  opacity: 0.55;
+}
+
+/* Grup input + botó com una sola unitat */
+#req { margin-bottom: 14px; }
+
+#wdtform {
+  display: flex;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 10px;
+  overflow: hidden;
+}
 
 #wdtform .qry {
-  order: 1;
   flex: 1 1 auto;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  border-right: 0;
-  padding: 11px 12px;
+  padding: 12px 14px;
   background-color: #1a1a1a;
-  border: 1px solid rgba(255,255,255,0.14);
-  border-radius: 8px;
+  border: none;
   color: #fff;
   font-size: 16px;
   font-family: "FiraMono-Regular", monospace;
 }
-#wdtform .qry:focus { outline: none; border-color: rgba(255,255,255,0.35); }
-#wdtform .qry::placeholder { color: rgba(255,255,255,0.22); font-size: 0.9em; }
+#wdtform .qry:focus { outline: none; background-color: #222; }
+#wdtform .qry::placeholder { color: rgba(255,255,255,0.35); font-size: 0.9em; }
 
 #wdtform .sch {
-  order: 2;
   flex: 0 0 auto;
   width: auto;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  padding: 11px 16px;
+  padding: 12px 18px;
   font-family: "FiraMono-Regular", monospace;
   font-size: 0.88rem;
   font-weight: bold;
   letter-spacing: 1px;
   text-transform: uppercase;
-  background-color: #222;
-  color: rgba(255,255,255,0.8);
-  border: 1px solid rgba(255,255,255,0.14);
+  background-color: #2a2a2a;
+  color: #fff;
+  border: none;
+  border-left: 1px solid rgba(255,255,255,0.12);
   cursor: pointer;
   touch-action: manipulation;
 }
-#wdtform .sch:active { background-color: #333; }
+#wdtform .sch:active { background-color: #3a3a3a; }
 
-#res {
-  display: none;
-  padding: 12px;
-  border-radius: 10px;
-  margin-bottom: 14px;
-  color: #000;
-}
-#res_info { padding: 2px; }
-#res_info strong { text-transform: uppercase; font-weight: bold; font-size: 1.05em; }
-#res_timer { font-size: 0.75em; text-align: right; margin-top: 6px; color: rgba(0,0,0,0.45); }
-#res.tornOK { border: 2px dotted #060; background-color: #c5f2ce; }
-#res.tornKO { border: 2px dotted #c00; background-color: #fdd4d4; }
-
-#copy { font-size: 0.75em; color: rgba(255,255,255,0.28); line-height: 1.7; margin-top: 20px; }
-#copy a { color: rgba(255,255,255,0.38); }
+#copy { font-size: 0.75em; color: rgba(255,255,255,0.45); line-height: 1.7; margin-top: 16px; }
+#copy a { color: rgba(255,255,255,0.55); }
 
 /* ── Peu de pàgina ───────────────────────────────────────────────────────── */
 footer {
