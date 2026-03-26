@@ -1,4 +1,4 @@
-const swver = "1.4.9";
+const swver = "1.4.10";
 
 // ── Estat del joc ──────────────────────────────────────────────────────────
 let playing = false;
@@ -47,7 +47,10 @@ setInterval(() => { if (playing) silenci.play().catch(() => {}); }, 60000);
 const noSleep = new NoSleep();
 let noSleepActiu = false;
 function activaNoSleep() {
-  if (!noSleepActiu) { noSleep.enable(); noSleepActiu = true; }
+  if (!noSleepActiu) {
+    try { const r = noSleep.enable(); if (r && r.catch) r.catch(() => {}); } catch (e) {}
+    noSleepActiu = true;
+  }
 }
 
 // ── Vibració (amb fallback segur) ─────────────────────────────────────────
@@ -308,9 +311,7 @@ document.querySelector(".qry").addEventListener("input", function () {
 
 // ── Botó principal ─────────────────────────────────────────────────────────
 botoStart.addEventListener("click", () => {
-  // Afegeix això dins del listener de clic del botó principal
-console.log("Suport de vibració:", !!navigator.vibrate);
-navigator.vibrate(500); // Hauria de vibrar sí o sí en clicar
+
   activaNoSleep();
   const text = botoStart.textContent;
 
