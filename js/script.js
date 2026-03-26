@@ -235,6 +235,7 @@ function canvijug1() { canvitorn(2); colors2(); }
 function canvijug2() { canvitorn(1); colors1(); }
 
 function canvitorn(jug) {
+  activaNoSleep();
   if (!playing && botoStart.textContent === "CONTINUA") {
     // Reprèn el joc i canvia de jugador
     currentPlayer = jug;
@@ -244,7 +245,7 @@ function canvitorn(jug) {
     botoStart.textContent = "PAUSA";
     botoValida.hidden = true;
     if (so) clickSo.play();
-    vibra(50);
+    vibra([100]);
   } else if (!playing && botoStart.textContent === "COMENÇA") {
     // Primera jugada: inicia el rellotge
     currentPlayer = jug;
@@ -253,7 +254,7 @@ function canvitorn(jug) {
     botoStart.textContent = "PAUSA";
     botoValida.hidden = true;
     if (so) clickSo.play();
-    vibra(50);
+    vibra([100]);
   } else if (playing && currentPlayer !== jug) {
     // Canvi de torn en curs: cobra el temps exacte al jugador sortint
     canviPrecis(jug);
@@ -261,7 +262,7 @@ function canvitorn(jug) {
       ? jugador1.classList.remove("actiu")
       : jugador2.classList.remove("actiu");
     if (so) clickSo.play();
-    vibra(50);
+    vibra([100]);
   }
 }
 
@@ -350,6 +351,7 @@ botoVibr.addEventListener("change", () => {
 
 // ── Nova partida ───────────────────────────────────────────────────────────
 document.getElementById("tempsBtn").addEventListener("click", () => {
+  activaNoSleep();
   const tempsMinuts = parseInt(document.getElementById("temps").value, 10) || 30;
 
   p1ms = tempsMinuts * 60000;
@@ -393,6 +395,7 @@ document.getElementById("tempsBtn").addEventListener("click", () => {
 
 // ── Continua la partida ────────────────────────────────────────────────────
 document.getElementById("resetBtn").addEventListener("click", () => {
+  activaNoSleep();
   tancaModal("modal-ajust");
 });
 
