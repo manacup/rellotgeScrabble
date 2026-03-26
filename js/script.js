@@ -1,4 +1,4 @@
-const swver = "1.4.5";
+const swver = "1.4.9";
 
 // ── Estat del joc ──────────────────────────────────────────────────────────
 let playing = false;
@@ -126,7 +126,7 @@ function aplicaDelta(delta) {
         updateDisplay(1, 0);
         updatePenalDisplay(1, 0);
         if (so) timesUp.play();
-        vibra([1000]);
+        vibra([400]);
       } else if (p1ms > 0) {
         // Compte enrere normal: mai arriba a mostrar "00:00" en verd
         updateDisplay(1, p1ms);
@@ -141,7 +141,7 @@ function aplicaDelta(delta) {
       if (p1penalMs >= maxPenalMs) {
         p1penalFinal = true;
         if (so) timesUp.play();
-        vibra([100, 50, 1000]);
+        vibra([400, 50, 400]);
       }
     }
 
@@ -156,7 +156,7 @@ function aplicaDelta(delta) {
         updateDisplay(2, 0);
         updatePenalDisplay(2, 0);
         if (so) timesUp.play();
-        vibra([1000]);
+        vibra([400]);
       } else if (p2ms > 0) {
         updateDisplay(2, p2ms);
         checkWarningSound(p2ms);
@@ -170,7 +170,7 @@ function aplicaDelta(delta) {
       if (p2penalMs >= maxPenalMs) {
         p2penalFinal = true;
         if (so) timesUp.play();
-        vibra([100, 50, 1000]);
+        vibra([400, 50, 400]);
       }
     }
   }
@@ -308,6 +308,9 @@ document.querySelector(".qry").addEventListener("input", function () {
 
 // ── Botó principal ─────────────────────────────────────────────────────────
 botoStart.addEventListener("click", () => {
+  // Afegeix això dins del listener de clic del botó principal
+console.log("Suport de vibració:", !!navigator.vibrate);
+navigator.vibrate(500); // Hauria de vibrar sí o sí en clicar
   activaNoSleep();
   const text = botoStart.textContent;
 
