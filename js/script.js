@@ -296,6 +296,16 @@ botoValida.addEventListener("click", () => {
 
 document.getElementById("close-valid").addEventListener("click", amagarValidador);
 
+document.getElementById("btn-continua-valid").addEventListener("click", () => {
+  botoStart.click();
+});
+
+document.querySelector(".qry").addEventListener("input", function () {
+  const pos = this.selectionStart;
+  this.value = this.value.toUpperCase();
+  this.setSelectionRange(pos, pos);
+});
+
 // ── Botó principal ─────────────────────────────────────────────────────────
 botoStart.addEventListener("click", () => {
   activaNoSleep();
